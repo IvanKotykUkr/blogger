@@ -64,7 +64,7 @@ posts.put("/:id", (req:Request, res:Response) => {
 });
 posts.delete("/:id", (req:Request, res:Response) => {
     const id = +req.params.id;
-    const index:any = listposts.find(b => b.id === id);
+    const index:any = listposts.findIndex(b => b.id === id);
 
     if ( index === -1){
         res.send(404)
