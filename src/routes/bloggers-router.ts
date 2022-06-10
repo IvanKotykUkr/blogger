@@ -1,25 +1,22 @@
 import {Request, Response, Router} from "express";
+import {bloggersRepositories} from "../repositories/bloggers-repositories";
 
 export const bloggersRouter = Router({})
 
 
 
-const bloggers =[
-    {id:1,name:'Ihor',youtubeUrl:'snocfjdsoifjs'},
-    {id:2,name:'Vasya',youtubeUrl:'dsaklmfokdso'},
-    {id:3,name:'Petya',youtubeUrl:'skjidpjweipdji'},
-    {id:4,name:'Borya',youtubeUrl:'zxpzkocomdcs'},
 
-];
 
 
 
 bloggersRouter.get( "/", ( req:Request, res:Response ) => {
+    let bloggers =bloggersRepositories.allBloggers
+
     res.send(bloggers)
+
 } );
 bloggersRouter.get("/:id", (req:Request, res:Response) => {
-    const id = +req.params.id;
-    const blogger = bloggers.find(b => b.id === id);
+    let blogger = bloggersRepositories.findBloggersById(+req.params.id)
     if(!blogger){
         res.sendStatus(404)
     }else {
@@ -31,23 +28,16 @@ bloggersRouter.get("/:id", (req:Request, res:Response) => {
 
 });
 bloggersRouter.post("/", (req:Request, res:Response) => {
+ const newBlogger =   bloggersRepositories.createBlogger(req.body.name, req.body.youtubeUrl)
 
-
-    const newBlogger={
-        id:+(new Date()),
-        name:req.body.name,
-        youtubeUrl:req.body.youtubeUrl
-    }
-    bloggers.push(newBlogger)
     res.send(newBlogger)
 });
 
 bloggersRouter.put("/:id", (req:Request, res:Response) => {
-    let blogger = bloggers.find(b => b.id === +req.params.id);
-    if(blogger){
-        blogger.name = req.body.name
-        blogger.youtubeUrl= req.body.youtubeUrl
-        res.sendStatus(204)
+    const isUpdated = bloggersRepositories.updateBloggers(+req.params.id,req.body.name,req.body.youtubeUrl)
+    if(isUpdated){
+
+        res.send(isUpdated).sendStatus(204)
     }else {
 
         res.sendStatus(404)
@@ -55,15 +45,14 @@ bloggersRouter.put("/:id", (req:Request, res:Response) => {
 
 });
 bloggersRouter.delete("/:id", (req:Request, res:Response) => {
-    const id = +req.params.id;
-    const index:any = bloggers.find(b => b.id === id);
+    const isDeleted  = bloggersRepositories.deleteBloggers(+req.params.id)
 
-    if ( index === -1){
-        res.send(404)
+    if ( isDeleted){
+        res.sendStatus(204)
     }else {
 
-        bloggers.splice(index,1)
-        res.sendStatus(204)
+
+        res.sendStatus(404)
     }
 
 });
