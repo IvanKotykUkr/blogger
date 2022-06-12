@@ -8,7 +8,7 @@ import {posts} from "./routes/posts-router";
 const app = express();
 app.use(bodyParser.json())
 app.use(cors())
-const port = 5001
+const port = process.env.PORT || 5001
 
 
 app.use('/bloggers', bloggersRouter )
