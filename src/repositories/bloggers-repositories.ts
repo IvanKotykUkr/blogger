@@ -1,19 +1,25 @@
-const bloggers =[
+export const bloggers =[
     {id:1,name:'Ihor',youtubeUrl:'snocfjdsoifjs'},
     {id:2,name:'Vasya',youtubeUrl:'dsaklmfokdso'},
     {id:3,name:'Petya',youtubeUrl:'skjidpjweipdji'},
     {id:4,name:'Borya',youtubeUrl:'zxpzkocomdcs'},
+    {id:5,name:'Zoriana',youtubeUrl:'dslmfkldsmkf'},
 
 ];
 
 
 export const bloggersRepositories = {
+    allBloggers : (bloggers),
     findBloggersById(id: number) {
         let blogger = bloggers.find(b => b.id === id)
-        return blogger;
+       if(blogger) {
+           return blogger;
+       }else {
+          false
+       }
 
     },
-    allBloggers : (bloggers),
+
 
     createBlogger(name:string,youtubeUrl:string){
         const newBlogger={
