@@ -7,6 +7,11 @@ export const bloggers =[
 
 ];
 
+const errorid={
+    "id": 0,
+    "name": "string",
+    "youtubeUrl": "string"
+}
 
 export const bloggersRepositories = {
     allBloggers : (bloggers),
@@ -15,7 +20,7 @@ export const bloggersRepositories = {
        if(blogger) {
            return blogger;
        }else {
-          false
+          return errorid;
        }
 
     },
