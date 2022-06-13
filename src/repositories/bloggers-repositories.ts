@@ -1,9 +1,5 @@
 export const bloggers =[
     {id:1,name:'Ihor',youtubeUrl:'snocfjdsoifjs'},
-    {id:2,name:'Vasya',youtubeUrl:'dsaklmfokdso'},
-    {id:3,name:'Petya',youtubeUrl:'skjidpjweipdji'},
-    {id:4,name:'Borya',youtubeUrl:'zxpzkocomdcs'},
-    {id:5,name:'Zoriana',youtubeUrl:'dslmfkldsmkf'},
 
 ];
 

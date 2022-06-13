@@ -4,11 +4,6 @@ import {bloggers, bloggersRepositories} from "./bloggers-repositories";
 
 const listposts =[
     {id: 1, title: "Sity", shortDescription: "BigSity", content: "Fany", bloggerId:1, bloggerName:"Zoriana"},
-    {id: 2, title: "Music", shortDescription: "Disco", content: "Fany", bloggerId:2, bloggerName:"Masha"},
-    {id: 3, title: "Movie", shortDescription: "Trairel", content: "Inters", bloggerIdo:3, bloggerName:"Petya"},
-    {id: 4, title: "Design", shortDescription: "Modern", content: "Interes", bloggerId:4, bloggerName:"Vasya"},
-    {id: 5, title: "Picture", shortDescription: "Old", content: "Interes", bloggerId:5, bloggerName:"Ihor"},
-
 
 ];
 
