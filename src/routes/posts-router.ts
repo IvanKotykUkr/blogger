@@ -54,7 +54,7 @@ posts.put("/:id",
 
 
     if (isUpdated){
-        res.send(isUpdated).sendStatus(204)
+        res.status(204).json(isUpdated)
 
 
     }else {

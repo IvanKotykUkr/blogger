@@ -11,7 +11,9 @@ export const bloggerIdtValidation = body('bloggerId').trim(undefined).isNumeric(
 export const inputValidationPost = (req:Request,res:Response,next:NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        res.status(400).json({ errors: errors.array() });
+        res.status(400).json({ errorssMessages: errors.array().map(er =>{
+                return{'message':er.msg, 'field':er.param}
+            }) });
     }else {
         next()
     }

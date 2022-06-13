@@ -48,6 +48,7 @@ bloggersRouter.put("/:id", nameValidation,
     if(isUpdated){
 
         res.status(204).json(isUpdated)
+
     }else {
 
         res.sendStatus(404)
