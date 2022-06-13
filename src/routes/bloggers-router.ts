@@ -58,11 +58,11 @@ bloggersRouter.delete("/:id", (req:Request, res:Response) => {
     const isDeleted  = bloggersRepositories.deleteBloggers(+req.params.id)
 
     if ( isDeleted){
-        res.sendStatus(204)
+        res.sendStatus(404)
     }else {
 
 
-        res.sendStatus(404)
+        res.sendStatus(204)
     }
 
 });
