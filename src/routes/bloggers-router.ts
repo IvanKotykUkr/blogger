@@ -33,6 +33,7 @@ bloggersRouter.get("/",(req:Request, res:Response)=> {
 });
 bloggersRouter.post("/",
     nameValidation,
+    inputValidationBlogger,
     youtubeUrlValidation,
     inputValidationBlogger,
     (req:Request, res:Response) => {
@@ -42,6 +43,8 @@ bloggersRouter.post("/",
 });
 
 bloggersRouter.put("/:id", nameValidation,
+    nameValidation,
+    inputValidationBlogger,
     youtubeUrlValidation,
     inputValidationBlogger,(req:Request, res:Response) => {
     const isUpdated = bloggersRepositories.updateBloggers(+req.params.id,req.body.name,req.body.youtubeUrl)
