@@ -65,12 +65,12 @@ posts.put("/:id",
 posts.delete("/:id", (req:Request, res:Response) => {
     const isDeleted  = postsRepositories.deletePost(+req.params.id)
 
-    if ( isDeleted!==null){
+    if ( isDeleted){
         res.sendStatus(204)
     }else {
 
-
         res.sendStatus(404)
+
     }
 });
 

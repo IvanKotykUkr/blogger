@@ -1,5 +1,5 @@
-import { bloggersRepositories} from "./bloggers-repositories";
-import {bloggersRouter} from "../routes/bloggers-router";
+import {bloggers, bloggersRepositories} from "./bloggers-repositories";
+
 
 
 const listposts =[
@@ -53,13 +53,12 @@ export const postsRepositories = {
 
     },
     deletePost(id:number){
-       const index = listposts.findIndex(p=>p.id===id)
-      if(index){
-              listposts.splice(index,1)
-          return
-      }else {
-          return 
-      }
+        for (let i=0;i<listposts.length;i++) {
+            if (listposts[i].id === id) {
+               listposts.splice(i, 1)
+                return true;
+            }
+        }
 
 
 
