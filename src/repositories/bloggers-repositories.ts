@@ -16,7 +16,7 @@ export const bloggersRepositories = {
        if(blogger) {
            return blogger;
        }else {
-          return errorid;
+          return ;
        }
 
     },
