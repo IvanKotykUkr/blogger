@@ -38,7 +38,7 @@ bloggersRouter.post("/",
     (req:Request, res:Response) => {
  const newBlogger =   bloggersRepositories.createBlogger(req.body.name, req.body.youtubeUrl)
 
-    res.sendStatus(201).send(newBlogger)
+        res.status(201).json(newBlogger)
 });
 
 bloggersRouter.put("/:id", nameValidation,
@@ -47,7 +47,7 @@ bloggersRouter.put("/:id", nameValidation,
     const isUpdated = bloggersRepositories.updateBloggers(+req.params.id,req.body.name,req.body.youtubeUrl)
     if(isUpdated){
 
-        res.send(isUpdated).sendStatus(204)
+        res.status(204).json(isUpdated)
     }else {
 
         res.sendStatus(404)
