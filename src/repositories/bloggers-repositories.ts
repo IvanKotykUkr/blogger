@@ -45,16 +45,12 @@ export const bloggersRepositories = {
             return blogger;
         }
     },
-    deleteBloggers(id:number){
-        const index = bloggers.findIndex(b => b.id === id);
-
-        if ( index){
-            bloggers.splice(index,1)
-            return
-        }else {
-            return false
+    deleteBloggers(id:number) {
+        for (let i=0;i<bloggers.length;i++) {
+            if (bloggers[i].id === id) {
+                bloggers.splice(i, 1)
+                return true;
+            }
         }
-
-    }
-
+        },
 }
