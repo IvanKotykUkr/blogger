@@ -42,9 +42,15 @@ const newPost = postsRepositories.createPost(req.body.title,req.body.shortDescri
         if (newPost) {
             res.status(201).send(newPost)
         } else {
-            res.status(404).send()
-        }
+            res.status(404).json({
+                errorsMessages:
+                    [{
+                        message: "Invalid value",
+                        field: "bloggerId"
+                    }]
+            })
 
+        }
 });
 
 posts.put("/:id",
@@ -62,7 +68,13 @@ posts.put("/:id",
 
 
     }else {
-        res.sendStatus(404)
+        res.sendStatus(404).json({
+            errorsMessages:
+                [{
+                    message: "Invalid value",
+                    field: "bloggerId"
+                }]
+        })
 }
 });
 

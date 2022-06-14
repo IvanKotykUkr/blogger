@@ -6,7 +6,7 @@ import {NextFunction,Request,Response} from "express";
 
 
 export const nameValidation = body('name').trim().isString().isLength({min:2,max:15});
-export const youtubeUrlValidation = body('youtubeUrl').isString().isLength({max:100}).isURL()
+export const youtubeUrlValidation = body('youtubeUrl').isString().isLength({max:100}).isURL();
 
 export const inputValidationBlogger = (req:Request,res:Response,next:NextFunction) => {
     const errors = validationResult(req);
