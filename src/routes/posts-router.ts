@@ -42,7 +42,7 @@ const newPost = postsRepositories.createPost(req.body.title,req.body.shortDescri
         if (newPost) {
             res.status(201).send(newPost)
         } else {
-            res.status(404).json({
+            res.status(400).json({
                 errorsMessages:
                     [{
                         message: "Invalid value",
@@ -68,7 +68,7 @@ posts.put("/:id",
 
 
     }else {
-        res.status(404).json({
+        res.status(400).json({
             errorsMessages:
                 [{
                     message: "Invalid value",
