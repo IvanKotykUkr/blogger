@@ -67,13 +67,7 @@ posts.put("/:id",
         if (isUpdated){
             res.status(204).json(isUpdated)
         }else {
-            res.sendStatus(404).json({
-                errorsMessages:
-                    [{
-                        message: "Invalid value",
-                        field: "bloggerId"
-                    }]
-            })
+            res.sendStatus(400)
         }
 
 });
