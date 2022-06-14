@@ -63,19 +63,19 @@ posts.put("/:id",
 
 
 
-    if (isUpdated){
-        res.status(204)
 
+        if (isUpdated){
+            res.status(204).json(isUpdated)
+        }else {
+            res.sendStatus(404).json({
+                errorsMessages:
+                    [{
+                        message: "Invalid value",
+                        field: "bloggerId"
+                    }]
+            })
+        }
 
-    }else {
-        res.status(400).json({
-            errorsMessages:
-                [{
-                    message: "Invalid value",
-                    field: "bloggerId"
-                }]
-        })
-}
 });
 
 posts.delete("/:id", (req:Request, res:Response) => {
