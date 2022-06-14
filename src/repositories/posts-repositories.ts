@@ -51,9 +51,11 @@ export const postsRepositories = {
     updatePost(id:number,title: string, shortDescription: string, content: string, bloggerId: number,){
         let blogger:any =bloggersRepositories.findBloggersById(bloggerId)
 
-        let upPost:any = listposts.find(p => p.id === id);
+        let upPost:any;
 
         if( blogger){
+            upPost= listposts.find(p => p.id === id);
+            if (upPost)
             upPost.title = title,
                 upPost.shortDescription= shortDescription,
                 upPost.content = content,
@@ -63,7 +65,7 @@ export const postsRepositories = {
         }else {
             upPost = null
         }
-        return upPost
+        return (upPost)
 
     },
 
