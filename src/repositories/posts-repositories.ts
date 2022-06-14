@@ -56,11 +56,11 @@ export const postsRepositories = {
         if( blogger){
             upPost= listposts.find(p => p.id === id);
             if (upPost)
-            upPost.title = title,
-                upPost.shortDescription= shortDescription,
-                upPost.content = content,
-                upPost.bloggerId = bloggerId,
-                upPost.bloggerName = blogger.name
+                upPost.title = title,
+                    upPost.shortDescription= shortDescription,
+                    upPost.content = content,
+                    upPost.bloggerId = bloggerId,
+                    upPost.bloggerName = blogger.name
             return upPost;
         }else {
             upPost = null
