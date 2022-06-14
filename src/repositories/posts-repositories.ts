@@ -41,18 +41,20 @@ export const postsRepositories = {
         return(newpost)
     },
     updatePost(id:number,title: string, shortDescription: string, content: string, bloggerId: number,){
-        let bloggerNameUp:any =bloggersRepositories.findBloggersById(bloggerId)
-        let upPost = listposts.find(p => p.id === id);
+        let blogger:any =bloggersRepositories.findBloggersById(bloggerId)
+        let upPost:any = listposts.find(p => p.id === id);
        
-      if( upPost){
+      if( blogger){
            upPost.title = title,
            upPost.shortDescription= shortDescription,
            upPost.content = content,
            upPost.bloggerId = bloggerId,
-           upPost.bloggerName = bloggerNameUp.name
+           upPost.bloggerName = blogger.name
 
            return upPost;
-        }
+        }else {
+          upPost = null
+      }
 
     },
     deletePost(id:number){

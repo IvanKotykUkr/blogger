@@ -64,11 +64,11 @@ posts.put("/:id",
 
 
     if (isUpdated){
-        res.status(204).json(isUpdated)
+        res.status(204)
 
 
     }else {
-        res.sendStatus(404).json({
+        res.status(404).json({
             errorsMessages:
                 [{
                     message: "Invalid value",
