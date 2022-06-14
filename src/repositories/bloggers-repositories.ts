@@ -11,12 +11,13 @@ const errorid={
 
 export const bloggersRepositories = {
     allBloggers : (bloggers),
+
     findBloggersById(id: number) {
         let blogger = bloggers.find(b => b.id === id)
        if(blogger) {
            return blogger;
        }else {
-          return ;
+          return null;
        }
 
     },

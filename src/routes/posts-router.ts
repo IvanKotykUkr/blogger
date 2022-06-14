@@ -38,9 +38,13 @@ posts.post("/",
     bloggerIdtValidation,
     inputValidationPost,
     (req:Request, res:Response) => {
-const newpost = postsRepositories.createPost(req.body.title,req.body.shortDescription,req.body.content,+req.body.bloggerId)
+const newPost = postsRepositories.createPost(req.body.title,req.body.shortDescription,req.body.content,+req.body.bloggerId)
+        if (newPost) {
+            res.status(201).send(newPost)
+        } else {
+            res.status(404).send()
+        }
 
-    res.send(newpost)
 });
 
 posts.put("/:id",

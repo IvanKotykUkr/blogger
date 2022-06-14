@@ -17,19 +17,27 @@ export const postsRepositories = {
     },
     createPost(title: string, shortDescription: string, content: string, bloggerId: number){
 
-       let bloggerName:any =bloggersRepositories.findBloggersById(bloggerId)
+       let blogger: any = bloggersRepositories.findBloggersById(bloggerId)
+        let newpost;
 
+        if (blogger) {
+             newpost= {
+                id: +(new Date()),
+                title: title,
+                shortDescription: shortDescription,
+                content: content,
+                bloggerId: bloggerId,
+                bloggerName: blogger.name,
+            }
+            listposts.push(newpost)
 
-        const newpost= {
-            id: +(new Date()),
-            title: title,
-            shortDescription: shortDescription,
-            content: content,
-            bloggerId: bloggerId,
-            bloggerName: bloggerName.name,
+        } else {
+           newpost = null
         }
 
-        listposts.push(newpost)
+
+
+
         return(newpost)
     },
     updatePost(id:number,title: string, shortDescription: string, content: string, bloggerId: number,){
