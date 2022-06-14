@@ -13,7 +13,6 @@ export const inputValidationPost = (req:Request,res:Response,next:NextFunction) 
     if (!errors.isEmpty()) {
         let newError = errors.array()
         res.status(400).json({
-            resultCode: 1,
             errorsMessages: newError.map(er =>({
                 message: er.msg,
                 field: er.param
