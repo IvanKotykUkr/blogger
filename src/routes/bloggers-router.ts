@@ -33,10 +33,11 @@ bloggersRouter.get("/",async (req:Request, res:Response)=> {
     res.status(200).send(bllogers)
 });
 bloggersRouter.post("/",
+    basicAuthorization,
     nameValidation,
     youtubeUrlValidation,
     inputValidationBlogger,
-    basicAuthorization,
+
    async (req:Request, res:Response) => {
  const newBlogger = await  bloggersRepositories.createBlogger(req.body.name, req.body.youtubeUrl)
 
@@ -44,10 +45,11 @@ bloggersRouter.post("/",
 });
 
 bloggersRouter.put("/:id",
+    basicAuthorization,
     nameValidation,
     youtubeUrlValidation,
     inputValidationBlogger,
-    basicAuthorization,
+
     async (req:Request, res:Response) => {
     const isUpdated = await bloggersRepositories.updateBloggers(+req.params.id,req.body.name,req.body.youtubeUrl)
     if(isUpdated){

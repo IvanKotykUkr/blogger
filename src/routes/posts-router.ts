@@ -33,12 +33,14 @@ postsRouter.get("/:id", async (req:Request, res:Response) => {
 });
 
 postsRouter.post("/",
+
+    basicAuthorization,
     titleValidation,
     shortDescriptionValidation,
     contentValidation,
     bloggerIdtValidation,
     inputValidationPost,
-    basicAuthorization,
+
    async (req:Request, res:Response) => {
 const newPost = await postsRepositories.createPost(req.body.title,req.body.shortDescription,req.body.content,+req.body.bloggerId)
         if (newPost) {
@@ -56,12 +58,13 @@ const newPost = await postsRepositories.createPost(req.body.title,req.body.short
 });
 
 postsRouter.put("/:id",
+    basicAuthorization,
     titleValidation,
     shortDescriptionValidation,
     contentValidation,
     bloggerIdtValidation,
     inputValidationPost,
-    basicAuthorization,
+
     async (req:Request, res:Response) => {
    const isUpdated = await postsRepositories.updatePost(+req.params.id,req.body.title,req.body.shortDescription,req.body.content,+req.body.bloggerId)
 
