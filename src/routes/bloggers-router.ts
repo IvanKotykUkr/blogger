@@ -15,8 +15,8 @@ export const bloggersRouter = Router({})
 
 
 
-bloggersRouter.get("/:id", (req:Request, res:Response) => {
-    let blogger = bloggersRepositories.findBloggersById(+req.params.id)
+bloggersRouter.get("/:id", async (req:Request, res:Response) => {
+    let blogger = await bloggersRepositories.findBloggersById(+req.params.id)
     if(!blogger){
         res.sendStatus(404)
     }else {

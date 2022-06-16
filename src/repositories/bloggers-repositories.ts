@@ -5,11 +5,6 @@ export const bloggers =[
 
 ];
 
-const errorid={
-    "id": 0,
-    "name": "string",
-    "youtubeUrl": "string"
-}
 
 export const bloggersRepositories = {
     async getBloggers(){
