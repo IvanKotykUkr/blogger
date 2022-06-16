@@ -1,3 +1,5 @@
+
+
 export const bloggers =[
     {id:1,name:'Ihor',youtubeUrl:'snocfjdsoifjs'},
 
@@ -10,9 +12,11 @@ const errorid={
 }
 
 export const bloggersRepositories = {
-    allBloggers : (bloggers),
+    async getBloggers(){
+        return bloggers
+    },
 
-    findBloggersById(id: number) {
+    async findBloggersById(id: number) {
         let blogger = bloggers.find(b => b.id === id)
        if(blogger) {
            return blogger;
@@ -23,7 +27,8 @@ export const bloggersRepositories = {
     },
 
 
-    createBlogger(name:string,youtubeUrl:string){
+    async createBlogger(name:string,youtubeUrl:string){
+        
         const newBlogger={
             id:+(new Date()),
             name:name,
@@ -34,7 +39,7 @@ export const bloggersRepositories = {
 
 
     },
-    updateBloggers(id:number,name:string,youtubeUrl:string){
+    async updateBloggers(id:number,name:string,youtubeUrl:string){
         let blogger = bloggers.find(b => b.id === id);
         if(blogger){
             blogger.name = name;
@@ -42,7 +47,7 @@ export const bloggersRepositories = {
             return blogger;
         }
     },
-    deleteBloggers(id:number) {
+    async deleteBloggers(id:number) {
         for (let i=0;i<bloggers.length;i++) {
             if (bloggers[i].id === id) {
                 bloggers.splice(i, 1)

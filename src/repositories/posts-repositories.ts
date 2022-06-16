@@ -1,31 +1,26 @@
-import {bloggers, bloggersRepositories} from "./bloggers-repositories";
+import { bloggersRepositories} from "./bloggers-repositories";
 
-/*type typelistspost = [{
-    id: number,
-    title: string,
-    shortDescription: string,
-    content: string,
-    bloggerId: number,
-    bloggerName: string
-}]
-*/
+
+
 
 const listposts =[
-    {id: 1, title: "Sity", shortDescription: "BigSity", content: "Fany", bloggerId:1, bloggerName:"Zoriana"},
+    {id: 1, title: "Sisty", shortDescription: "BigSity", content: "Fany", bloggerId:1, bloggerName:"Zoriana"},
 
 ];
 
 
 
 export const postsRepositories = {
-    allposts : (listposts),
-    findPostsById(id:number){
+   async getPosts(){
+        return listposts
+    },
+    async findPostsById(id:number){
         const post = listposts.find(b => b.id === id);
         return post;
     },
-    createPost(title: string, shortDescription: string, content: string, bloggerId: number){
+    async createPost(title: string, shortDescription: string, content: string, bloggerId: number){
 
-       let blogger: any = bloggersRepositories.findBloggersById(bloggerId)
+       let blogger: any = await bloggersRepositories.findBloggersById(bloggerId)
         let newpost;
 
         if (blogger) {
@@ -48,8 +43,8 @@ export const postsRepositories = {
 
         return(newpost)
     },
-    updatePost(id:number,title: string, shortDescription: string, content: string, bloggerId: number,){
-        let blogger:any =bloggersRepositories.findBloggersById(bloggerId)
+   async updatePost(id:number,title: string, shortDescription: string, content: string, bloggerId: number,){
+        let blogger:any = await bloggersRepositories.findBloggersById(bloggerId)
 
         let upPost:any;
 
@@ -70,7 +65,7 @@ export const postsRepositories = {
     },
 
 
-    deletePost(id:number){
+    async deletePost(id:number){
         for (let i=0;i<listposts.length;i++) {
             if (listposts[i].id === id) {
                listposts.splice(i, 1)

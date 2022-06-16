@@ -6,20 +6,21 @@ import {
     shortDescriptionValidation,
     titleValidation
 } from "../midlewares/input-validation-midlewares-posts";
+import {basicAuthorization} from "../midlewares/basicAuth";
 
 
-export const posts = Router({})
+export const postsRouter = Router({})
 
 
 
 
 
-posts.get( "/", ( req:Request, res:Response ) => {
-   const listposts = postsRepositories.allposts
-    res.send(listposts)
+postsRouter.get( "/", async ( req:Request, res:Response ) => {
+   const posts = await postsRepositories.getPosts()
+    res.status(200).send(posts)
 } );
-posts.get("/:id", (req:Request, res:Response) => {
-    const post = postsRepositories.findPostsById(+req.params.id)
+postsRouter.get("/:id", async (req:Request, res:Response) => {
+    const post = await postsRepositories.findPostsById(+req.params.id)
     if(!post){
         res.sendStatus(404)
     }else {
@@ -31,14 +32,15 @@ posts.get("/:id", (req:Request, res:Response) => {
 
 });
 
-posts.post("/",
+postsRouter.post("/",
     titleValidation,
     shortDescriptionValidation,
     contentValidation,
     bloggerIdtValidation,
     inputValidationPost,
-    (req:Request, res:Response) => {
-const newPost = postsRepositories.createPost(req.body.title,req.body.shortDescription,req.body.content,+req.body.bloggerId)
+    basicAuthorization,
+   async (req:Request, res:Response) => {
+const newPost = await postsRepositories.createPost(req.body.title,req.body.shortDescription,req.body.content,+req.body.bloggerId)
         if (newPost) {
             res.status(201).send(newPost)
         } else {
@@ -53,13 +55,15 @@ const newPost = postsRepositories.createPost(req.body.title,req.body.shortDescri
         }
 });
 
-posts.put("/:id",
+postsRouter.put("/:id",
     titleValidation,
     shortDescriptionValidation,
     contentValidation,
     bloggerIdtValidation,
-    inputValidationPost, (req:Request, res:Response) => {
-   const isUpdated = postsRepositories.updatePost(+req.params.id,req.body.title,req.body.shortDescription,req.body.content,+req.body.bloggerId)
+    inputValidationPost,
+    basicAuthorization,
+    async (req:Request, res:Response) => {
+   const isUpdated = await postsRepositories.updatePost(+req.params.id,req.body.title,req.body.shortDescription,req.body.content,+req.body.bloggerId)
 
 
 
@@ -84,8 +88,8 @@ posts.put("/:id",
 
     });
 
-posts.delete("/:id", (req:Request, res:Response) => {
-    const isDeleted  = postsRepositories.deletePost(+req.params.id)
+postsRouter.delete("/:id", basicAuthorization,async (req:Request, res:Response) => {
+    const isDeleted  = await postsRepositories.deletePost(+req.params.id)
 
     if ( isDeleted){
         res.sendStatus(204)

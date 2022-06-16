@@ -5,6 +5,7 @@ import {
     nameValidation,
     youtubeUrlValidation
 } from "../midlewares/input-validation-midlewares-bloggers";
+import {basicAuthorization} from "../midlewares/basicAuth";
 
 export const bloggersRouter = Router({})
 
@@ -27,16 +28,17 @@ bloggersRouter.get("/:id", (req:Request, res:Response) => {
 
 });
 
-bloggersRouter.get("/",(req:Request, res:Response)=> {
-    const bllogers = bloggersRepositories.allBloggers
-    res.send(bllogers)
+bloggersRouter.get("/",async (req:Request, res:Response)=> {
+    const bllogers = await bloggersRepositories.getBloggers()
+    res.status(200).send(bllogers)
 });
 bloggersRouter.post("/",
     nameValidation,
     youtubeUrlValidation,
     inputValidationBlogger,
-    (req:Request, res:Response) => {
- const newBlogger =   bloggersRepositories.createBlogger(req.body.name, req.body.youtubeUrl)
+    basicAuthorization,
+   async (req:Request, res:Response) => {
+ const newBlogger = await  bloggersRepositories.createBlogger(req.body.name, req.body.youtubeUrl)
 
         res.status(201).json(newBlogger)
 });
@@ -44,9 +46,10 @@ bloggersRouter.post("/",
 bloggersRouter.put("/:id",
     nameValidation,
     youtubeUrlValidation,
-    inputValidationBlogger
-    ,(req:Request, res:Response) => {
-    const isUpdated = bloggersRepositories.updateBloggers(+req.params.id,req.body.name,req.body.youtubeUrl)
+    inputValidationBlogger,
+    basicAuthorization,
+    async (req:Request, res:Response) => {
+    const isUpdated = await bloggersRepositories.updateBloggers(+req.params.id,req.body.name,req.body.youtubeUrl)
     if(isUpdated){
 
         res.status(204).json(isUpdated)
@@ -57,8 +60,8 @@ bloggersRouter.put("/:id",
     }
 
 });
-bloggersRouter.delete("/:id", (req:Request, res:Response) => {
-    const isDeleted  = bloggersRepositories.deleteBloggers(+req.params.id)
+bloggersRouter.delete("/:id",basicAuthorization, async (req:Request, res:Response) => {
+    const isDeleted  = await bloggersRepositories.deleteBloggers(+req.params.id)
 
     if ( isDeleted){
         res.sendStatus(204)
