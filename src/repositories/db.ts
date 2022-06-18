@@ -7,7 +7,7 @@ export const client = new MongoClient(mongoUrl);
 const db=client.db("api")
 export const bloggerCollection = db.collection("bloggers");
 export const postsCollection = db.collection("posts")
-export async function rundDb(){
+export async function runDb(){
     try{
         await client.connect();
         await client.db("blogger").command({ping:1});

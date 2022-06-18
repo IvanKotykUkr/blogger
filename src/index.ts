@@ -3,7 +3,7 @@ import cors from 'cors'
 import bodyParser from "body-parser";
 import {bloggersRouter} from "./routes/bloggers-router";
 import {postsRouter} from "./routes/posts-router";
-import {rundDb} from "./repositories/db";
+import {runDb} from "./repositories/db";
 
 
 
@@ -19,7 +19,7 @@ app.use('/bloggers', bloggersRouter )
 app.use('/posts', postsRouter)
 
 const startApp = async ()=> {
-    await rundDb()
+    await runDb()
 
     app.listen(port, () => {
         console.log(`server started at http://localhost:${port}`);
