@@ -1,10 +1,11 @@
 import {Request, Response, Router} from "express";
-import {postsRepositories} from "../repositories/posts-repositories";
+import {postsRepositories} from "../repositories/posts-db-repositories";
 import {
     bloggerIdtValidation,
     contentValidation, inputValidationPost,
     shortDescriptionValidation,
-    titleValidation
+    titleValidation,
+
 } from "../midlewares/input-validation-midlewares-posts";
 import {basicAuthorization} from "../midlewares/basicAuth";
 

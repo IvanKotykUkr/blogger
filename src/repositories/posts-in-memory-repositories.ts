@@ -1,4 +1,4 @@
-import { bloggersRepositories} from "./bloggers-repositories";
+import { bloggersRepositories} from "./bloggers-in-memory-repositories";
 
 
 

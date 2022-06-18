@@ -1,9 +1,11 @@
 import {Request, Response, Router} from "express";
-import {bloggersRepositories} from "../repositories/bloggers-repositories";
+import {bloggersRepositories} from "../repositories/bloggers-db-repositories";
 import {
+
     inputValidationBlogger,
     nameValidation,
-    youtubeUrlValidation
+    youtubeUrlValidation,
+
 } from "../midlewares/input-validation-midlewares-bloggers";
 import {basicAuthorization} from "../midlewares/basicAuth";
 
@@ -28,9 +30,12 @@ bloggersRouter.get("/:id", async (req:Request, res:Response) => {
 
 });
 
-bloggersRouter.get("/",async (req:Request, res:Response)=> {
+bloggersRouter.get("/" ,async (req:Request, res:Response)=> {
     const bllogers = await bloggersRepositories.getBloggers()
+
     res.status(200).send(bllogers)
+
+
 });
 bloggersRouter.post("/",
     basicAuthorization,
@@ -38,7 +43,7 @@ bloggersRouter.post("/",
     youtubeUrlValidation,
     inputValidationBlogger,
 
-   async (req:Request, res:Response) => {
+async (req:Request, res:Response) => {
  const newBlogger = await  bloggersRepositories.createBlogger(req.body.name, req.body.youtubeUrl)
 
         res.status(201).json(newBlogger)
@@ -49,6 +54,7 @@ bloggersRouter.put("/:id",
     nameValidation,
     youtubeUrlValidation,
     inputValidationBlogger,
+
 
     async (req:Request, res:Response) => {
     const isUpdated = await bloggersRepositories.updateBloggers(+req.params.id,req.body.name,req.body.youtubeUrl)

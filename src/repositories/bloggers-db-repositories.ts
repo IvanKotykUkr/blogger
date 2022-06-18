@@ -1,18 +1,15 @@
+import {bloggerCollection} from "./db";
 
-
-export const bloggers =[
-    {id:1,name:'Ihor',youtubeUrl:'snocfjdsoifjs'},
-
-];
 
 
 export const bloggersRepositories = {
     async getBloggers(){
-        return bloggers
+      return  bloggerCollection.find({}).toArray()
+
     },
 
     async findBloggersById(id: number) {
-        let blogger = bloggers.find(b => b.id === id)
+        let blogger= await bloggerCollection.findOne({id:id})
        if(blogger) {
            return blogger;
        }else {
@@ -29,25 +26,20 @@ export const bloggersRepositories = {
             name:name,
             youtubeUrl:youtubeUrl
         }
-        bloggers.push(newBlogger)
+      const result = await bloggerCollection.insertOne(newBlogger)
+
         return (newBlogger)
 
 
     },
     async updateBloggers(id:number,name:string,youtubeUrl:string){
-        let blogger = bloggers.find(b => b.id === id);
-        if(blogger){
-            blogger.name = name;
-            blogger.youtubeUrl=youtubeUrl;
-            return blogger;
-        }
+
+       const result = await  bloggerCollection.updateOne({id:id},{$set:{name:name,youtubeUrl:youtubeUrl}})
+        return result.matchedCount === 1
+
     },
     async deleteBloggers(id:number) {
-        for (let i=0;i<bloggers.length;i++) {
-            if (bloggers[i].id === id) {
-                bloggers.splice(i, 1)
-                return true;
-            }
-        }
+        const result = await bloggerCollection.deleteOne({id:id})
+         return result.deletedCount === 1
         },
 }
