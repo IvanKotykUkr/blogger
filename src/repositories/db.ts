@@ -1,7 +1,7 @@
 import {MongoClient}from'mongodb'
 
 
-const mongoUrl = process.env.mongoUrl||"mongodb+srv://admin:1234@cluster0.74ecla5.mongodb.net/?retryWrites=true&w=majority" ;
+const mongoUrl = "mongodb+srv://admin:1234@cluster0.74ecla5.mongodb.net/?retryWrites=true&w=majority" ;
 
 export const client = new MongoClient(mongoUrl);
 const db=client.db("api")
