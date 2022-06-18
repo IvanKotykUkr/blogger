@@ -525,14 +525,14 @@ etag@~1.8.1:
 
 express-basic-auth@^1.2.1:
   version "1.2.1"
-  resolved "https://registry.npmjs.org/express-basic-auth/-/express-basic-auth-1.2.1.tgz"
+  resolved "https://registry.yarnpkg.com/express-basic-auth/-/express-basic-auth-1.2.1.tgz#d31241c03a915dd55db7e5285573049cfcc36381"
   integrity sha512-L6YQ1wQ/mNjVLAmK3AG1RK6VkokA1BIY6wmiH304Xtt/cLTps40EusZsU1Uop+v9lTDPxdtzbFmdXfFO3KEnwA==
   dependencies:
     basic-auth "^2.0.1"
 
 express-ip-filter-middleware@^1.0.22:
   version "1.0.22"
-  resolved "https://registry.npmjs.org/express-ip-filter-middleware/-/express-ip-filter-middleware-1.0.22.tgz"
+  resolved "https://registry.yarnpkg.com/express-ip-filter-middleware/-/express-ip-filter-middleware-1.0.22.tgz#f80cd8f8c16a422d5cf850a4d00ee2e58fab8955"
   integrity sha512-aIqRT/MvWaCk+D7CGBe5L4/zpMNtaB6AlfIpQwpkcmxIxxvTdhZ0EHxpnEUUfN9VUZLViQgkvfDZ8Vms35nxNg==
   dependencies:
     ipaddr.js "^2.0.0"
