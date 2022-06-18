@@ -1,13 +1,11 @@
 import { bloggersRepositories} from "./bloggers-db-repositories";
 import { postsCollection} from "./db";
+import {postsService} from "../domain/posts-service";
 
 
 
 
-const __listposts =[
-    {id: 1, title: "Sisty", shortDescription: "BigSity", content: "Fany", bloggerId:1, bloggerName:"Zoriana"},
 
-];
 
 
 
@@ -19,41 +17,14 @@ export const postsRepositories = {
         const post =  postsCollection.findOne({id:id})
         return post;
     },
-    async createPost(title: string, shortDescription: string, content: string, bloggerId: number){
+    async createPost(newpost:any){
 
-       let blogger: any = await bloggersRepositories.findBloggersById(bloggerId)
-        let newpost;
-
-        if (blogger) {
-             newpost= {
-                id: +(new Date()),
-                title: title,
-                shortDescription: shortDescription,
-                content: content,
-                bloggerId: bloggerId,
-                bloggerName: blogger.name,
-            }
-            const result = await postsCollection.insertOne(newpost)
-
-        } else {
-           newpost = null
-        }
-
-        return(newpost)
+       const result = await postsCollection.insertOne(newpost)
+        return newpost
     },
-   async updatePost(id:number,title: string, shortDescription: string, content: string, bloggerId: number,){
-        let blogger:any = await bloggersRepositories.findBloggersById(bloggerId)
-
-
-
-        if( blogger){
-            const result = await  postsCollection.updateOne({id:id},{$set:{title:title,shortDescription:shortDescription,content:content,bloggerId:bloggerId,bloggerName:blogger.name}})
-            return result.matchedCount === 1
-        }else {
-            return null
-        }
-
-
+   async updatePost(id:number,title:string,shortDescription:string,content:string,bloggerId:number,bloggerName:string){
+       const result = await  postsCollection.updateOne({id:id},{$set:{title:title,shortDescription:shortDescription,content:content,bloggerId:bloggerId,bloggerName:bloggerName}})
+       return result.matchedCount === 1
     },
 
 

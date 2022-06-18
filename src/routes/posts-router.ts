@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import {postsRepositories} from "../repositories/posts-db-repositories";
+import {postsService} from "../domain/posts-service";
 import {
     bloggerIdtValidation,
     contentValidation, inputValidationPost,
@@ -17,11 +17,11 @@ export const postsRouter = Router({})
 
 
 postsRouter.get( "/", async ( req:Request, res:Response ) => {
-   const posts = await postsRepositories.getPosts()
+   const posts = await postsService.getPosts()
     res.status(200).send(posts)
 } );
 postsRouter.get("/:id", async (req:Request, res:Response) => {
-    const post = await postsRepositories.findPostsById(+req.params.id)
+    const post = await postsService.findPostsById(+req.params.id)
     if(!post){
         res.sendStatus(404)
     }else {
@@ -43,17 +43,17 @@ postsRouter.post("/",
     inputValidationPost,
 
    async (req:Request, res:Response) => {
-const newPost = await postsRepositories.createPost(req.body.title,req.body.shortDescription,req.body.content,+req.body.bloggerId)
+const newPost = await postsService.createPost(req.body.title,req.body.shortDescription,req.body.content,+req.body.bloggerId)
         if (newPost) {
             res.status(201).send(newPost)
         } else {
-            res.status(400).json({
+            res.status(404)/*.json({
                 errorsMessages:
                     [{
                         message: "Invalid value",
                         field: "bloggerId"
                     }]
-            })
+            })*/
 
         }
 });
@@ -67,7 +67,7 @@ postsRouter.put("/:id",
     inputValidationPost,
 
     async (req:Request, res:Response) => {
-   const isUpdated = await postsRepositories.updatePost(+req.params.id,req.body.title,req.body.shortDescription,req.body.content,+req.body.bloggerId)
+   const isUpdated = await postsService.updatePost(+req.params.id,req.body.title,req.body.shortDescription,req.body.content,+req.body.bloggerId)
 
 
 
@@ -93,7 +93,7 @@ postsRouter.put("/:id",
     });
 
 postsRouter.delete("/:id", basicAuthorization,async (req:Request, res:Response) => {
-    const isDeleted  = await postsRepositories.deletePost(+req.params.id)
+    const isDeleted  = await postsService.deletePost(+req.params.id)
 
     if ( isDeleted){
         res.sendStatus(204)

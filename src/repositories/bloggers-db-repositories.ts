@@ -19,15 +19,10 @@ export const bloggersRepositories = {
     },
 
 
-    async createBlogger(name:string,youtubeUrl:string){
+    async createBlogger(newBlogger:any){
         
-        const newBlogger={
-            id:+(new Date()),
-            name:name,
-            youtubeUrl:youtubeUrl
-        }
-      const result = await bloggerCollection.insertOne(newBlogger)
 
+      const result = await bloggerCollection.insertOne(newBlogger)
         return (newBlogger)
 
 

@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import {bloggersRepositories} from "../repositories/bloggers-db-repositories";
+import {bloggersService} from "../domain/bloggers-service";
 import {
 
     inputValidationBlogger,
@@ -18,7 +18,7 @@ export const bloggersRouter = Router({})
 
 
 bloggersRouter.get("/:id", async (req:Request, res:Response) => {
-    let blogger = await bloggersRepositories.findBloggersById(+req.params.id)
+    let blogger = await bloggersService.findBloggersById(+req.params.id)
     if(!blogger){
         res.sendStatus(404)
     }else {
@@ -31,7 +31,7 @@ bloggersRouter.get("/:id", async (req:Request, res:Response) => {
 });
 
 bloggersRouter.get("/" ,async (req:Request, res:Response)=> {
-    const bllogers = await bloggersRepositories.getBloggers()
+    const bllogers = await bloggersService.getBloggers()
 
     res.status(200).send(bllogers)
 
@@ -44,7 +44,7 @@ bloggersRouter.post("/",
     inputValidationBlogger,
 
 async (req:Request, res:Response) => {
- const newBlogger = await  bloggersRepositories.createBlogger(req.body.name, req.body.youtubeUrl)
+ const newBlogger = await  bloggersService.createBlogger(req.body.name, req.body.youtubeUrl)
 
         res.status(201).json(newBlogger)
 });
@@ -57,7 +57,7 @@ bloggersRouter.put("/:id",
 
 
     async (req:Request, res:Response) => {
-    const isUpdated = await bloggersRepositories.updateBloggers(+req.params.id,req.body.name,req.body.youtubeUrl)
+    const isUpdated = await bloggersService.updateBloggers(+req.params.id,req.body.name,req.body.youtubeUrl)
     if(isUpdated){
 
         res.status(204).json(isUpdated)
@@ -69,7 +69,7 @@ bloggersRouter.put("/:id",
 
 });
 bloggersRouter.delete("/:id",basicAuthorization, async (req:Request, res:Response) => {
-    const isDeleted  = await bloggersRepositories.deleteBloggers(+req.params.id)
+    const isDeleted  = await bloggersService.deleteBloggers(+req.params.id)
 
     if ( isDeleted){
         res.sendStatus(204)
