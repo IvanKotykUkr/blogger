@@ -57,6 +57,21 @@ export const postsService = {
        return await postsRepositories.deletePost(id)
 
 
+    },
+    async findPostsByIdBlogger(bloggerId:number){
+        return await  postsRepositories.findPostsByIdBlogger(bloggerId)
+    },
+    async createPostByBloggerId(bloggerId:number,title:string,shortDescription:string,content:string,bloggerName:string){
+       let newpost= {
+            id: +(new Date()),
+            title: title,
+            shortDescription: shortDescription,
+            content: content,
+            bloggerId: bloggerId,
+            bloggerName: bloggerName,
+        }
+        const generatedPost = postsRepositories.createPost(newpost)
+        return generatedPost
     }
 
 }

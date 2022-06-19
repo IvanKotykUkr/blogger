@@ -33,6 +33,10 @@ export const postsRepositories = {
         return result.deletedCount === 1
 
 
+   },
+   async findPostsByIdBlogger(bloggerId:number){
+       const posts = postsCollection.find({bloggerId:bloggerId}).toArray()
+       return posts
    }
 
 }

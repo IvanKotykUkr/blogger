@@ -8,6 +8,12 @@ import {
 
 } from "../midlewares/input-validation-midlewares-bloggers";
 import {basicAuthorization} from "../midlewares/basicAuth";
+import {
+    contentValidation, inputValidationPost,
+    shortDescriptionValidation,
+    titleValidation
+} from "../midlewares/input-validation-midlewares-posts";
+
 
 export const bloggersRouter = Router({})
 
@@ -31,9 +37,9 @@ bloggersRouter.get("/:id", async (req:Request, res:Response) => {
 });
 
 bloggersRouter.get("/" ,async (req:Request, res:Response)=> {
-    const bllogers = await bloggersService.getBloggers()
+    const bloggers = await bloggersService.getBloggers()
 
-    res.status(200).send(bllogers)
+    res.status(200).send(bloggers)
 
 
 });
@@ -79,6 +85,36 @@ bloggersRouter.delete("/:id",basicAuthorization, async (req:Request, res:Respons
 
     }
 
+});
+bloggersRouter.get('/:id/posts',async (req:Request,res:Response) =>{
+    let bloggerPosts:any = await bloggersService.getPostsbyIdBlogger(+req.params.id)
+    if (bloggerPosts){
+        res.send(bloggerPosts)
+
+    }else {
+        res.sendStatus(404)
+    }
+
+
+});
+bloggersRouter.post('/:id/posts',
+    basicAuthorization,
+    titleValidation,
+    shortDescriptionValidation,
+    contentValidation,
+    inputValidationPost,
+    async (req:Request,res:Response) =>{
+    let newPosts:any=await bloggersService.createPostbyBloggerId(
+        +req.params.id,
+        req.body.title,
+        req.body.shortDescription,
+        req.body.content)
+    if (newPosts){
+        res.status(201).json(newPosts)
+
+    }else {
+        res.sendStatus(404)
+    }
 });
 
 

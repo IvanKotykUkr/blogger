@@ -37,4 +37,6 @@ export const bloggersRepositories = {
         const result = await bloggerCollection.deleteOne({id:id})
          return result.deletedCount === 1
         },
+
+
 }

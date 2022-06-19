@@ -1,5 +1,6 @@
 
 import {bloggersRepositories} from "../repositories/bloggers-db-repositories";
+import {postsService} from "./posts-service";
 
 
 export const bloggersService = {
@@ -39,4 +40,21 @@ export const bloggersService = {
     async deleteBloggers(id:number) {
         return await bloggersRepositories.deleteBloggers(id)
     },
+    async getPostsbyIdBlogger(id:number) {
+        let blogger: any = await this.findBloggersById(id)
+
+
+        let findPosts:any= await postsService.findPostsByIdBlogger(blogger.id)
+        return findPosts
+    },
+    async createPostbyBloggerId(id:number,title:string,shortDescription:string,content:string){
+        let blogger: any = await this.findBloggersById(id)
+        if (blogger) {
+            let newPosts: any = await postsService.createPostByBloggerId(blogger.id, title, shortDescription, content,blogger.name)
+            return newPosts
+        }else {
+            return  null
+        }
+
+    }
 }
