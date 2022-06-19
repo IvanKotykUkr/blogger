@@ -47,7 +47,7 @@ const newPost = await postsService.createPost(req.body.title,req.body.shortDescr
         if (newPost) {
             res.status(201).send(newPost)
         } else {
-            res.status(404).json({
+            res.status(400).json({
                 errorsMessages:
                     [{
                         message: "Invalid value",

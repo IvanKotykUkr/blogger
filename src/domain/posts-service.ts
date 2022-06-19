@@ -1,6 +1,6 @@
 import {postsRepositories} from "../repositories/posts-db-repositories";
 import {bloggersService} from "./bloggers-service";
-import {postsCollection} from "../repositories/db";
+
 
 
 export const postsService = {

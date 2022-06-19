@@ -42,10 +42,14 @@ export const bloggersService = {
     },
     async getPostsbyIdBlogger(id:number) {
         let blogger: any = await this.findBloggersById(id)
+        if (blogger){
+            let findPosts:any= await postsService.findPostsByIdBlogger(blogger.id)
+            return findPosts
+        }else {
+            return null
+        }
 
 
-        let findPosts:any= await postsService.findPostsByIdBlogger(blogger.id)
-        return findPosts
     },
     async createPostbyBloggerId(id:number,title:string,shortDescription:string,content:string){
         let blogger: any = await this.findBloggersById(id)
