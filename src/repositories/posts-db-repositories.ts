@@ -11,10 +11,10 @@ import {postsService} from "../domain/posts-service";
 
 export const postsRepositories = {
    async getPosts(){
-        return postsCollection.find({}).toArray()
+        return postsCollection.find({}).project({_id:0}).toArray()
     },
     async findPostsById(id:number){
-        const post =  postsCollection.findOne({id:id})
+        const post =  postsCollection.findOne({id:id} ,{projection:{_id:0}})
         return post;
     },
     async createPost(newpost:any){

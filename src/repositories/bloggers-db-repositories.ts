@@ -4,12 +4,12 @@ import {bloggerCollection} from "./db";
 
 export const bloggersRepositories = {
     async getBloggers(){
-      return  bloggerCollection.find({}).toArray()
+      return  bloggerCollection.find({}).project({_id:0}).toArray()
 
     },
 
     async findBloggersById(id: number) {
-        let blogger= await bloggerCollection.findOne({id:id})
+        let blogger= await bloggerCollection.findOne({id:id} ,{projection:{_id:0}})
        if(blogger) {
            return blogger;
        }else {
