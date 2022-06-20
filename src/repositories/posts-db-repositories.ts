@@ -35,7 +35,7 @@ export const postsRepositories = {
 
    },
    async findPostsByIdBlogger(bloggerId:number){
-       const posts = postsCollection.find({bloggerId:bloggerId}).toArray()
+       const posts = postsCollection.find({bloggerId:bloggerId}).project({_id:0}).toArray()
        return posts
    }
 
