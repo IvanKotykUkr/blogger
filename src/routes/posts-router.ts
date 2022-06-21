@@ -17,7 +17,9 @@ export const postsRouter = Router({})
 
 
 postsRouter.get( "/", async ( req:Request, res:Response ) => {
-   const posts = await postsService.getPosts()
+    const pagenumber= req.query.PageNumber ||  1;
+    const pagesize = req.query.PageSize ||  10;
+   const posts = await postsService.getPosts(+pagenumber,+pagesize)
     res.status(200).send(posts)
 } );
 postsRouter.get("/:id", async (req:Request, res:Response) => {
@@ -43,7 +45,11 @@ postsRouter.post("/",
     inputValidationPost,
 
    async (req:Request, res:Response) => {
-const newPost = await postsService.createPost(req.body.title,req.body.shortDescription,req.body.content,+req.body.bloggerId)
+const newPost = await postsService.createPost(
+    req.body.title,
+    req.body.shortDescription,
+    req.body.content,
+    +req.body.bloggerId)
         if (newPost) {
             res.status(201).send(newPost)
         } else {

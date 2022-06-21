@@ -23,8 +23,10 @@ export const bloggersRouter = Router({})
 
 
 
-bloggersRouter.get("/:id", async (req:Request, res:Response) => {
+bloggersRouter.get("/:id",
+    async (req:Request, res:Response) => {
     let blogger = await bloggersService.findBloggersById(+req.params.id)
+
     if(!blogger){
         res.sendStatus(404)
     }else {
@@ -36,10 +38,17 @@ bloggersRouter.get("/:id", async (req:Request, res:Response) => {
 
 });
 
-bloggersRouter.get("/" ,async (req:Request, res:Response)=> {
-    const bloggers = await bloggersService.getBloggers()
+bloggersRouter.get("/" ,
 
-    res.status(200).send(bloggers)
+    async (req:Request, res:Response)=> {
+
+    const searchnameterm= req.query.SearchNameTerm ||  undefined;
+    const pagenumber= req.query.PageNumber ||  1;
+    const pagesize = req.query.PageSize ||  10;
+    const bloggers = await bloggersService.getBloggers(searchnameterm,+pagenumber,+pagesize)
+
+
+    res.status(200).json(bloggers)
 
 
 });
@@ -87,7 +96,9 @@ bloggersRouter.delete("/:id",basicAuthorization, async (req:Request, res:Respons
 
 });
 bloggersRouter.get('/:id/posts',async (req:Request,res:Response) =>{
-    let bloggerPosts:any = await bloggersService.getPostsbyIdBlogger(+req.params.id)
+    const pagenumber= req.query.PageNumber ||  1;
+    const pagesize = req.query.PageSize ||  10;
+    let bloggerPosts:any = await bloggersService.getPostsbyIdBlogger(+req.params.id,+pagenumber,+pagesize)
     if (bloggerPosts){
         res.send(bloggerPosts)
 

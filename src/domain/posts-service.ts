@@ -4,8 +4,23 @@ import {bloggersService} from "./bloggers-service";
 
 
 export const postsService = {
-    async getPosts(){
-        return postsRepositories.getPosts()
+    async getPosts(pagenumber:number ,pagesize:number){
+
+        const posts = await  postsRepositories.getPosts()
+        let totalCount = posts.length
+        let page = pagenumber
+        let pageSize = pagesize
+        let pagesCount = Math.ceil(totalCount / pageSize)
+        const items = await postsRepositories.getPostsPagination(page, pageSize)
+        let post = {
+            pagesCount,
+            page,
+            pageSize,
+            totalCount,
+            items,
+
+        }
+        return post
     },
     async findPostsById(id:number){
         return   postsRepositories.findPostsById(id)
@@ -58,8 +73,22 @@ export const postsService = {
 
 
     },
-    async findPostsByIdBlogger(bloggerId:number){
-        return await  postsRepositories.findPostsByIdBlogger(bloggerId)
+    async findPostsByIdBlogger(bloggerId:number,pagenumber:number ,pagesize:number){
+        const posts = await  postsRepositories.findPostsByIdBlogger(bloggerId)
+        let totalCount = posts.length
+        let page = pagenumber
+        let pageSize = pagesize
+        let pagesCount = Math.ceil(totalCount / pageSize)
+        const items = await postsRepositories.findPostsByIdBloggerPagination(bloggerId,page, pageSize)
+        let post = {
+            pagesCount,
+            page,
+            pageSize,
+            totalCount,
+            items,
+
+        }
+        return post
     },
     async createPostByBloggerId(bloggerId:number,title:string,shortDescription:string,content:string,bloggerName:string){
        let newpost= {

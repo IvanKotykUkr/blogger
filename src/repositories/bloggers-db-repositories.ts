@@ -4,9 +4,20 @@ import {bloggerCollection} from "./db";
 
 export const bloggersRepositories = {
     async getBloggers(){
-      return  bloggerCollection.find({}).project({_id:0}).toArray()
+
+        const bloggers = await bloggerCollection.find({}).project({_id:0}).toArray()
+      return bloggers
 
     },
+    async getBloggersPaginaton(number:number,size:number){
+        const bloggers =  await bloggerCollection.find({}).skip(number).limit(size).project({_id:0}).toArray()
+        return bloggers
+    },
+    async getBloggersSearchTerm(number:number,size:number,name:string){
+        const bloggers =  await bloggerCollection.find({name}).skip(number).limit(size).project({_id:0}).toArray()
+        return bloggers
+    },
+
 
     async findBloggersById(id: number) {
         let blogger= await bloggerCollection.findOne({id:id} ,{projection:{_id:0}})

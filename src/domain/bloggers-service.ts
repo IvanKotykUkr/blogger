@@ -1,13 +1,47 @@
 
 import {bloggersRepositories} from "../repositories/bloggers-db-repositories";
 import {postsService} from "./posts-service";
+import {match} from "assert";
+
+
 
 
 export const bloggersService = {
-    async getBloggers(){
-        return  bloggersRepositories.getBloggers()
 
+    async getBloggers(searchnameterm: any,pagenumber:number ,pagesize:number){
+
+
+        const bloggers = await bloggersRepositories.getBloggers()
+
+        let totalCount = bloggers.length
+        let page = pagenumber
+        let pageSize = pagesize
+        let pagesCount = Math.ceil(totalCount / pageSize)
+
+        if(!searchnameterm) {
+            const items = await bloggersRepositories.getBloggersPaginaton(page, pageSize)
+            let blogger = {
+                pagesCount,
+                page,
+                pageSize,
+                totalCount,
+                items,
+
+            }
+            return blogger
+        }else {
+            const items = await bloggersRepositories.getBloggersSearchTerm(page, pageSize,searchnameterm)
+            let blogger = {
+                pagesCount,
+                page,
+                pageSize,
+                totalCount,
+                items,
+            }
+            return  blogger
+        }
     },
+
 
     async findBloggersById(id: number) {
         let blogger= await bloggersRepositories.findBloggersById(id)
@@ -40,10 +74,10 @@ export const bloggersService = {
     async deleteBloggers(id:number) {
         return await bloggersRepositories.deleteBloggers(id)
     },
-    async getPostsbyIdBlogger(id:number) {
+    async getPostsbyIdBlogger(id:number,pagenumber:number ,pageesize:number) {
         let blogger: any = await this.findBloggersById(id)
         if (blogger){
-            let findPosts:any= await postsService.findPostsByIdBlogger(blogger.id)
+            let findPosts:any= await postsService.findPostsByIdBlogger(blogger.id,pagenumber,pageesize)
             return findPosts
         }else {
             return null
