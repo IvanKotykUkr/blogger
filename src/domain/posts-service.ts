@@ -8,10 +8,10 @@ export const postsService = {
 
         const posts = await  postsRepositories.getPosts()
         let totalCount = posts.length
-        let page = pagenumber-1
+        let page = pagenumber
         let pageSize = pagesize
         let pagesCount = Math.ceil(totalCount / pageSize)
-        const items = await postsRepositories.getPostsPagination(page, pageSize)
+        const items = await postsRepositories.getPostsPagination(page-1, pageSize)
         let post = {
             pagesCount,
             page,
@@ -83,10 +83,10 @@ export const postsService = {
     async findPostsByIdBlogger(bloggerId:number,pagenumber:number ,pagesize:number){
         const posts = await  postsRepositories.findPostsByIdBlogger(bloggerId)
         let totalCount = posts.length
-        let page = pagenumber-1
+        let page = pagenumber
         let pageSize = pagesize
         let pagesCount = Math.ceil(totalCount / pageSize)
-        const items = await postsRepositories.findPostsByIdBloggerPagination(bloggerId,page, pageSize)
+        const items = await postsRepositories.findPostsByIdBloggerPagination(bloggerId,page-1, pageSize)
         let post = {
             pagesCount,
             page,
