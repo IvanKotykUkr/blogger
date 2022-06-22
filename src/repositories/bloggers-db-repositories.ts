@@ -9,8 +9,8 @@ export const bloggersRepositories = {
       return bloggers
 
     },
-    async getBloggersPaginaton(number:number,size:number){
-        const bloggers =  await bloggerCollection.find({}).skip( number > 0 ? ( ( number - 1 ) * size ) : 0 ).limit(number).project({_id:0}).toArray()
+    async getBloggersPaginaton(size:number,number:number){
+        const bloggers =  await bloggerCollection.find({}).skip(  ( number - 1 ) * size ).limit(size).project({_id:0}).toArray()
         return bloggers
     },
     async getBloggersSearchTerm(number:number,size:number,name:string){
