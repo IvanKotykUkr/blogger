@@ -8,7 +8,7 @@ import {match} from "assert";
 
 export const bloggersService = {
 
-    async getBloggers(searchnameterm: any,pagenumber:number ,pagesize:number){
+    async getBloggers(searchnameterm: any,pagesize:number,pagenumber:number ){
 
 
         const bloggers = await bloggersRepositories.getBloggers()
@@ -19,7 +19,7 @@ export const bloggersService = {
         let pagesCount = Math.ceil(totalCount / pageSize)
 
         if(!searchnameterm) {
-            const items = await bloggersRepositories.getBloggersPaginaton(page-1, pageSize)
+            const items = await bloggersRepositories.getBloggersPaginaton(pageSize,page )
             let blogger = {
                 pagesCount,
                 page,

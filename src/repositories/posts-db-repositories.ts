@@ -14,7 +14,7 @@ export const postsRepositories = {
         return postsCollection.find({}).project({_id:0}).toArray()
     },
     async getPostsPagination(number:number,size:number){
-        return postsCollection.find({}).skip(number).limit(size).project({_id:0}).toArray()
+        return postsCollection.find({}).skip( number > 0 ? ( ( number - 1 ) * size ) : 0 ).limit(size).project({_id:0}).toArray()
     },
 
     async findPostsById(id:number){
@@ -43,7 +43,7 @@ export const postsRepositories = {
        return posts
    },
    async findPostsByIdBloggerPagination(bloggerId:number,number:number,size:number) {
-       const posts = postsCollection.find({bloggerId:bloggerId}).skip(number).limit(size).project({_id:0}).toArray()
+       const posts = postsCollection.find({bloggerId:bloggerId}).skip( number > 0 ? ( ( number - 1 ) * size ) : 0 ).limit(size).project({_id:0}).toArray()
        return posts
 
    }

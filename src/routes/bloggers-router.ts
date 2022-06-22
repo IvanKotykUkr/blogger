@@ -45,7 +45,7 @@ bloggersRouter.get("/" ,
     const searchnameterm= req.query.SearchNameTerm ||  undefined;
     const pagenumber= req.query.PageNumber ||  1;
     const pagesize = req.query.PageSize ||  10;
-    const bloggers = await bloggersService.getBloggers(searchnameterm,+pagenumber,+pagesize)
+    const bloggers = await bloggersService.getBloggers(searchnameterm,+pagesize,+pagenumber)
 
     res.status(200).json(bloggers)
 
