@@ -8,7 +8,7 @@ export const postsService = {
 
         const posts = await  postsRepositories.getPosts()
         let totalCount = posts.length
-        let page = pagenumber
+        let page = pagenumber-1
         let pageSize = pagesize
         let pagesCount = Math.ceil(totalCount / pageSize)
         const items = await postsRepositories.getPostsPagination(page, pageSize)
@@ -40,8 +40,15 @@ export const postsService = {
                 bloggerId: bloggerId,
                 bloggerName: blogger.name,
             }
-            const generatedPost = postsRepositories.createPost(newpost)
-            return generatedPost
+            await postsRepositories.createPost(newpost)
+            return {
+                id:newpost.id,
+                title:newpost.title,
+                shortDescription:newpost.shortDescription,
+                content:newpost.content,
+                bloggerId:newpost.bloggerId,
+                bloggerName:newpost.bloggerName
+            }
         } else {
             newpost = null
         }
@@ -76,7 +83,7 @@ export const postsService = {
     async findPostsByIdBlogger(bloggerId:number,pagenumber:number ,pagesize:number){
         const posts = await  postsRepositories.findPostsByIdBlogger(bloggerId)
         let totalCount = posts.length
-        let page = pagenumber
+        let page = pagenumber-1
         let pageSize = pagesize
         let pagesCount = Math.ceil(totalCount / pageSize)
         const items = await postsRepositories.findPostsByIdBloggerPagination(bloggerId,page, pageSize)

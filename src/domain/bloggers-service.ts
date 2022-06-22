@@ -14,7 +14,7 @@ export const bloggersService = {
         const bloggers = await bloggersRepositories.getBloggers()
 
         let totalCount = bloggers.length
-        let page = pagenumber
+        let page = pagenumber-1
         let pageSize = pagesize
         let pagesCount = Math.ceil(totalCount / pageSize)
 
@@ -61,14 +61,18 @@ export const bloggersService = {
             name:name,
             youtubeUrl:youtubeUrl
         }
-        const generatedBlogger = bloggersRepositories.createBlogger(newBlogger)
-
-        return (generatedBlogger)
+        await bloggersRepositories.createBlogger(newBlogger)
+        return {
+            id:newBlogger.id,
+            name:newBlogger.name,
+            youtubeUrl:newBlogger.youtubeUrl
+        }
 
 
     },
     async updateBloggers(id:number,name:string,youtubeUrl:string){
         return await bloggersRepositories.updateBloggers(id,name,youtubeUrl)
+
 
     },
     async deleteBloggers(id:number) {
@@ -89,7 +93,14 @@ export const bloggersService = {
         let blogger: any = await this.findBloggersById(id)
         if (blogger) {
             let newPosts: any = await postsService.createPostByBloggerId(blogger.id, title, shortDescription, content,blogger.name)
-            return newPosts
+            return {
+                id:newPosts.id,
+                title:newPosts.title,
+                shortDescription:newPosts.shortDescription,
+                content:newPosts.content,
+                bloggerId:newPosts.bloggerId,
+                bloggerName:newPosts.bloggerName
+            }
         }else {
             return  null
         }

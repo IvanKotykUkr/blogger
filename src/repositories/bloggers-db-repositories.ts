@@ -31,16 +31,20 @@ export const bloggersRepositories = {
 
 
     async createBlogger(newBlogger:any){
-        
 
-      const result = await bloggerCollection.insertOne(newBlogger)
-        return (newBlogger)
 
+      const result = await  bloggerCollection.insertOne(newBlogger)
+
+      return newBlogger
 
     },
     async updateBloggers(id:number,name:string,youtubeUrl:string){
 
        const result = await  bloggerCollection.updateOne({id:id},{$set:{name:name,youtubeUrl:youtubeUrl}})
+
+
+
+
         return result.matchedCount === 1
 
     },

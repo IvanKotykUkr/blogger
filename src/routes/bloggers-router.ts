@@ -47,7 +47,6 @@ bloggersRouter.get("/" ,
     const pagesize = req.query.PageSize ||  10;
     const bloggers = await bloggersService.getBloggers(searchnameterm,+pagenumber,+pagesize)
 
-
     res.status(200).json(bloggers)
 
 
@@ -60,6 +59,7 @@ bloggersRouter.post("/",
 
 async (req:Request, res:Response) => {
  const newBlogger = await  bloggersService.createBlogger(req.body.name, req.body.youtubeUrl)
+
 
         res.status(201).json(newBlogger)
 });
