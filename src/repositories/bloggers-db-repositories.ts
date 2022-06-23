@@ -10,7 +10,7 @@ export const bloggersRepositories = {
 
     },
     async blooggersSeach(name:string){
-        return  await bloggerCollection.find({name}).project({_id:0}).toArray()
+        return   bloggerCollection.find({name:{$regex:name}}).project({_id:0}).toArray()
 
     },
     async getBloggersPaginaton(size:number,number:number){
@@ -18,7 +18,7 @@ export const bloggersRepositories = {
         return bloggers
     },
     async getBloggersSearchTerm(number:number,size:number,name:string){
-        const bloggers =  await bloggerCollection.find({name}).skip(  ( number - 1 ) * size ).limit(size).project({_id:0}).toArray()
+        const bloggers =  await bloggerCollection.find({name:{$regex:name}}).skip(  ( number - 1 ) * size ).limit(size).project({_id:0}).toArray()
         return bloggers
     },
 
