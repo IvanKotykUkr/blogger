@@ -12,13 +12,12 @@ export const bloggersService = {
 
 
         const bloggers = await bloggersRepositories.getBloggers()
-        const bloggersSearch=await bloggersRepositories.blooggersSeach(searchnameterm)
+
         let totalCount = bloggers.length
         let page = pagenumber
         let pageSize = pagesize
         let pagesCount = Math.ceil(totalCount / pageSize)
-        let totalCountSearch = bloggersSearch.length
-        let pagesCountSearch = Math.ceil(totalCountSearch / pageSize)
+
 
         if(!searchnameterm) {
             const items = await bloggersRepositories.getBloggersPaginaton(pageSize,page )
@@ -32,13 +31,16 @@ export const bloggersService = {
             }
             return blogger
         }else {
-            const items = await bloggersRepositories.getBloggersSearchTerm(page, pageSize,searchnameterm)
+            const bloggersSearch=await bloggersRepositories.blooggersSeach(searchnameterm)
+            let totalCountSearch = bloggersSearch.length
+            let pagesCountSearch = Math.ceil(totalCountSearch / pageSize)
+            const itemsSearch = await bloggersRepositories.getBloggersSearchTerm(page, pageSize,searchnameterm)
             let blogger = {
                 pagesCount:pagesCountSearch,
                 page,
                 pageSize,
                 totalCount:totalCountSearch,
-                items,
+                items:itemsSearch,
             }
             return  blogger
         }
