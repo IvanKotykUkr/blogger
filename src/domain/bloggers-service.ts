@@ -18,6 +18,8 @@ export const bloggersService = {
         let pageSize = pagesize
         let pagesCount = Math.ceil(totalCount / pageSize)
 
+
+
         if(!searchnameterm) {
             const items = await bloggersRepositories.getBloggersPaginaton(pageSize,page )
             let blogger = {
@@ -30,7 +32,7 @@ export const bloggersService = {
             }
             return blogger
         }else {
-            const items = await bloggersRepositories.getBloggersSearchTerm(page-1, pageSize,searchnameterm)
+            const items = await bloggersRepositories.getBloggersSearchTerm(page, pageSize,searchnameterm)
             let blogger = {
                 pagesCount,
                 page,

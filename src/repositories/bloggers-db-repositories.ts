@@ -14,7 +14,7 @@ export const bloggersRepositories = {
         return bloggers
     },
     async getBloggersSearchTerm(number:number,size:number,name:string){
-        const bloggers =  await bloggerCollection.find({name}).skip(number).limit(size).project({_id:0}).toArray()
+        const bloggers =  await bloggerCollection.find({name}).skip(  ( number - 1 ) * size ).limit(size).project({_id:0}).toArray()
         return bloggers
     },
 
