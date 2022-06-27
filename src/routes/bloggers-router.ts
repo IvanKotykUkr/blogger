@@ -1,11 +1,9 @@
 import {Request, Response, Router} from "express";
 import {bloggersService} from "../domain/bloggers-service";
 import {
-
     inputValidationBlogger,
     nameValidation,
     youtubeUrlValidation,
-
 } from "../midlewares/input-validation-midlewares-bloggers";
 import {basicAuthorization} from "../midlewares/basicAuth";
 import {
@@ -13,6 +11,7 @@ import {
     shortDescriptionValidation,
     titleValidation
 } from "../midlewares/input-validation-midlewares-posts";
+
 
 
 export const bloggersRouter = Router({})
@@ -69,8 +68,6 @@ bloggersRouter.put("/:id",
     nameValidation,
     youtubeUrlValidation,
     inputValidationBlogger,
-
-
     async (req:Request, res:Response) => {
     const isUpdated = await bloggersService.updateBloggers(+req.params.id,req.body.name,req.body.youtubeUrl)
     if(isUpdated){

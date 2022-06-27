@@ -1,12 +1,13 @@
 import {MongoClient}from'mongodb'
+import {settings} from "../settings";
 
 
-const mongoUrl = "mongodb+srv://admin:1234@cluster0.74ecla5.mongodb.net/?retryWrites=true&w=majority" ;
-
-export const client = new MongoClient(mongoUrl);
+export const client = new MongoClient(settings.MONGO_URL);
 const db=client.db("api")
 export const bloggerCollection = db.collection("bloggers");
-export const postsCollection = db.collection("posts")
+export const postsCollection = db.collection("posts");
+export const usersCollection= db.collection("users");
+export const commentsCollection = db.collection("comment");
 export async function runDb(){
     try{
         await client.connect();

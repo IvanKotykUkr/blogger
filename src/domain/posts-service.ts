@@ -6,8 +6,8 @@ import {bloggersService} from "./bloggers-service";
 export const postsService = {
     async getPosts(pagenumber:number ,pagesize:number){
 
-        const posts = await  postsRepositories.getPosts()
-        let totalCount = posts.length
+
+        let totalCount =  await  postsRepositories.getPostsCount()
         let page = pagenumber
         let pageSize = pagesize
         let pagesCount = Math.ceil(totalCount / pageSize)
@@ -81,8 +81,8 @@ export const postsService = {
 
     },
     async findPostsByIdBlogger(bloggerId:number,pagenumber:number ,pagesize:number){
-        const posts = await  postsRepositories.findPostsByIdBlogger(bloggerId)
-        let totalCount = posts.length
+
+        let totalCount = await  postsRepositories.findPostsByIdBloggerCount(bloggerId)
         let page = pagenumber
         let pageSize = pagesize
         let pagesCount = Math.ceil(totalCount / pageSize)

@@ -5,9 +5,10 @@ import {
     contentValidation, inputValidationPost,
     shortDescriptionValidation,
     titleValidation,
-
 } from "../midlewares/input-validation-midlewares-posts";
 import {basicAuthorization} from "../midlewares/basicAuth";
+import {authMidlewares} from "../midlewares/auth-midlewares";
+import {commentsService} from "../domain/comments-service";
 
 
 export const postsRouter = Router({})
@@ -109,6 +110,20 @@ postsRouter.delete("/:id", basicAuthorization,async (req:Request, res:Response) 
 
     }
 });
+postsRouter.post('/:id/comments',authMidlewares, async (req:Request,res:Response)=>{
+    const newComment = await commentsService.createCommentsByPost( +req.params.id,req.body.content,req.user!.id,req.user!.userName)
+    res.status(201).send(newComment)
+});
+postsRouter.get('/:id/comments', async (req:Request,res:Response)=>{
+    const allComment = await commentsService.sendAllCommentsByPostId( +req.params.id)
+   if(allComment.length===0){
+       res.send(404)
+   }else {
+       res.status(200).send(allComment)
+
+   }
+});
+
 
 
 

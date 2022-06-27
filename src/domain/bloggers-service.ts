@@ -1,7 +1,7 @@
 
 import {bloggersRepositories} from "../repositories/bloggers-db-repositories";
 import {postsService} from "./posts-service";
-import {match} from "assert";
+
 
 
 
@@ -11,9 +11,9 @@ export const bloggersService = {
     async getBloggers(searchnameterm: any,pagesize:number,pagenumber:number ){
 
 
-        const bloggers = await bloggersRepositories.getBloggers()
 
-        let totalCount = bloggers.length
+
+        let totalCount = await bloggersRepositories.getBloggersCount()
         let page = pagenumber
         let pageSize = pagesize
         let pagesCount = Math.ceil(totalCount / pageSize)
@@ -31,8 +31,8 @@ export const bloggersService = {
             }
             return blogger
         }else {
-            const bloggersSearch=await bloggersRepositories.blooggersSeach(searchnameterm)
-            let totalCountSearch = bloggersSearch.length
+
+            let totalCountSearch =  await bloggersRepositories.blooggersSeachCount(searchnameterm)
             let pagesCountSearch = Math.ceil(totalCountSearch / pageSize)
             const itemsSearch = await bloggersRepositories.getBloggersSearchTerm(page, pageSize,searchnameterm)
             let blogger = {

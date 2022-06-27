@@ -2,15 +2,16 @@ import {bloggerCollection} from "./db";
 
 
 
-export const bloggersRepositories = {
-    async getBloggers(){
 
-        const bloggers = await bloggerCollection.find({}).project({_id:0}).toArray()
+export const bloggersRepositories = {
+    async getBloggersCount(){
+
+        const bloggers = await bloggerCollection.countDocuments()
       return bloggers
 
     },
-    async blooggersSeach(name:string){
-        return   bloggerCollection.find({name:{$regex:name}}).project({_id:0}).toArray()
+    async blooggersSeachCount(name:string){
+        return   bloggerCollection.countDocuments({name:{$regex:name}})
 
     },
     async getBloggersPaginaton(size:number,number:number){

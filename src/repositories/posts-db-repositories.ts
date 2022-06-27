@@ -10,9 +10,9 @@ import {postsService} from "../domain/posts-service";
 
 
 export const postsRepositories = {
-   async getPosts(){
-        return postsCollection.find({}).project({_id:0}).toArray()
-    },
+   async getPostsCount() {
+       return postsCollection.countDocuments()
+   },
     async getPostsPagination(number:number,size:number){
         return postsCollection.find({}).skip( number > 0 ? ( ( number - 1 ) * size ) : 0 ).limit(size).project({_id:0}).toArray()
     },
@@ -38,8 +38,8 @@ export const postsRepositories = {
 
 
    },
-   async findPostsByIdBlogger(bloggerId:number){
-       const posts = postsCollection.find({bloggerId:bloggerId}).project({_id:0}).toArray()
+   async findPostsByIdBloggerCount(bloggerId:number){
+       const posts = postsCollection.countDocuments({bloggerId:bloggerId})
        return posts
    },
    async findPostsByIdBloggerPagination(bloggerId:number,number:number,size:number) {
