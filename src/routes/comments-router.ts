@@ -1,12 +1,18 @@
 import {Request, Response, Router} from "express";
 import {commentsService} from "../domain/comments-service";
 import {authMidlewares, authMidlewaresWithChekOwn} from "../midlewares/auth-midlewares";
-import {usersRouter} from "./users-router";
-import {usersService} from "../domain/users-service";
+
+import {contentValidation} from "../midlewares/input-validation-midlewares-posts";
+import {inputValidationComment} from "../midlewares/input-validation-comments";
 
 export const commentsRouter= Router({})
 
-commentsRouter.put('/:id',authMidlewaresWithChekOwn, async (req:Request, res:Response)=>{
+commentsRouter.put('/:id',
+    contentValidation,
+    inputValidationComment,
+    authMidlewares,
+    authMidlewaresWithChekOwn,
+    async (req:Request, res:Response)=>{
     const isUpdated = await commentsService.updateCommentById(req.params.id,req.body.content)
     if(isUpdated){
 
