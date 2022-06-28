@@ -8,15 +8,16 @@ usersRouter.get('/', async (req:Request, res:Response)=>{
    const pagenumber= req.query.PageNumber ||  1;
    const pagesize = req.query.PageSize ||  10;
    const users=await usersService.getAllUsers(+pagenumber,+pagesize)
-   res.status(201).send(users)
+   res.status(200).send(users)
 
 });
 
 usersRouter.post('/',
+    basicAuthorization,
     loginValidationUser,
     passwordValidationUser,
     inputValidationUser,
-    basicAuthorization,
+
     async (req:Request, res:Response)=>{
    const newProduct=await usersService.createUser(req.body.login,req.body.email,req.body.password)
    res.status(201).send(newProduct)

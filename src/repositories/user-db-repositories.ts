@@ -30,7 +30,7 @@ export const    userRepositories={
       }
     },
     async findLoginOrEmail(loginOrEmail:string){
-        const user = await usersCollection.findOne({userName:loginOrEmail})
+        const user = await usersCollection.findOne({login:loginOrEmail})
         return user
     },
     async deleteUserById(id:string){

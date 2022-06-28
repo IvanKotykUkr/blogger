@@ -12,7 +12,7 @@ authRouter.post('/login',
     inputValidationAuth
     ,async (req:Request, res:Response)=>{
     const user = await usersService.checkCredentials(req.body.login,req.body.password)
-    console.log(user)
+
     if(user){
         const token = await jwtService.createJWT(user)
         res.status(200).send(token)
