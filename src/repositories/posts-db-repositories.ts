@@ -21,8 +21,12 @@ export const postsRepositories = {
     },
 
     async findPostsById(id:string){
-        const post =  postsCollection.find({id:id} ,{projection:{_id:0}}).toArray()
-        return post;
+        const post =  postsCollection.findOne({id:id} ,{projection:{_id:0}})
+        if(post) {
+            return post;
+        }else {
+            return null;
+        }
     },
     async createPost(newpost:any){
 

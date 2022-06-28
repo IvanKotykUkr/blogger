@@ -16,14 +16,6 @@ export const postsRouter = Router({})
 
 
 
-
-
-postsRouter.get( "/", async ( req:Request, res:Response ) => {
-    const pagenumber= req.query.PageNumber ||  1;
-    const pagesize = req.query.PageSize ||  10;
-   const posts = await postsService.getPosts(+pagenumber,+pagesize)
-    res.status(200).send(posts)
-} );
 postsRouter.get("/:id", async (req:Request, res:Response) => {
     const post = await postsService.findPostsById(req.params.id)
     if(!post){
@@ -36,6 +28,14 @@ postsRouter.get("/:id", async (req:Request, res:Response) => {
 
 
 });
+
+postsRouter.get( "/", async ( req:Request, res:Response ) => {
+    const pagenumber= req.query.PageNumber ||  1;
+    const pagesize = req.query.PageSize ||  10;
+   const posts = await postsService.getPosts(+pagenumber,+pagesize)
+    res.status(200).send(posts)
+} );
+
 
 postsRouter.post("/",
 
