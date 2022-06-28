@@ -33,7 +33,8 @@ export const bloggersRepositories = {
 
 
     async findBloggersById(id: string) {
-        let blogger= await bloggerCollection.find({id:id} ,{projection:{_id:0}}).toArray()
+        let blogger= await bloggerCollection.findOne({id:id} ,{projection:{_id:0}})
+
        if(blogger) {
            return blogger;
        }else {
