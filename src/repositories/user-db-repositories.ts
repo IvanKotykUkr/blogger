@@ -2,7 +2,7 @@ import {usersCollection} from "./db";
 import {UserDBtype} from "./types";
 import {ObjectId, WithId} from "mongodb";
 
-export const userRepositories={
+export const    userRepositories={
     async getAllUsers(){
         const users= await usersCollection.find({}).toArray()
 
@@ -27,7 +27,7 @@ export const userRepositories={
         const user = await usersCollection.findOne({userName:loginOrEmail})
         return user
     },
-    async deleteUserById(id:number){
+    async deleteUserById(id:string){
         const result = await usersCollection.deleteOne({id:id})
         return result.deletedCount === 1
 

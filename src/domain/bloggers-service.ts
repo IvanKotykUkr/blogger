@@ -47,7 +47,7 @@ export const bloggersService = {
     },
 
 
-    async findBloggersById(id: number) {
+    async findBloggersById(id: string) {
         let blogger= await bloggersRepositories.findBloggersById(id)
         if(blogger) {
             return blogger;
@@ -59,9 +59,10 @@ export const bloggersService = {
 
 
     async createBlogger(name:string,youtubeUrl:string){
+        const id = +(new Date())
 
         const newBlogger={
-            id:+(new Date()),
+            id:""+id,
             name:name,
             youtubeUrl:youtubeUrl
         }
@@ -74,15 +75,15 @@ export const bloggersService = {
 
 
     },
-    async updateBloggers(id:number,name:string,youtubeUrl:string){
+    async updateBloggers(id:string,name:string,youtubeUrl:string){
         return await bloggersRepositories.updateBloggers(id,name,youtubeUrl)
 
 
     },
-    async deleteBloggers(id:number) {
+    async deleteBloggers(id:string) {
         return await bloggersRepositories.deleteBloggers(id)
     },
-    async getPostsbyIdBlogger(id:number,pagenumber:number ,pageesize:number) {
+    async getPostsbyIdBlogger(id:string,pagenumber:number ,pageesize:number) {
         let blogger: any = await this.findBloggersById(id)
         if (blogger){
             let findPosts:any= await postsService.findPostsByIdBlogger(blogger.id,pagenumber,pageesize)
@@ -93,7 +94,9 @@ export const bloggersService = {
 
 
     },
-    async createPostbyBloggerId(id:number,title:string,shortDescription:string,content:string){
+    async createPostbyBloggerId(id:string,title:string,shortDescription:string,content:string){
+       id
+
         let blogger: any = await this.findBloggersById(id)
         if (blogger) {
             let newPosts: any = await postsService.createPostByBloggerId(blogger.id, title, shortDescription, content,blogger.name)

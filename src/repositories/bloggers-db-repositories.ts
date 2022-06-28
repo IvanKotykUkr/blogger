@@ -24,7 +24,7 @@ export const bloggersRepositories = {
     },
 
 
-    async findBloggersById(id: number) {
+    async findBloggersById(id: string) {
         let blogger= await bloggerCollection.findOne({id:id} ,{projection:{_id:0}})
        if(blogger) {
            return blogger;
@@ -38,12 +38,13 @@ export const bloggersRepositories = {
     async createBlogger(newBlogger:any){
 
 
+
       const result = await  bloggerCollection.insertOne(newBlogger)
 
       return newBlogger
 
     },
-    async updateBloggers(id:number,name:string,youtubeUrl:string){
+    async updateBloggers(id:string,name:string,youtubeUrl:string){
 
        const result = await  bloggerCollection.updateOne({id:id},{$set:{name:name,youtubeUrl:youtubeUrl}})
 
@@ -53,7 +54,7 @@ export const bloggersRepositories = {
         return result.matchedCount === 1
 
     },
-    async deleteBloggers(id:number) {
+    async deleteBloggers(id:string) {
         const result = await bloggerCollection.deleteOne({id:id})
          return result.deletedCount === 1
         },

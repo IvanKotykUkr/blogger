@@ -22,18 +22,18 @@ export const postsService = {
         }
         return post
     },
-    async findPostsById(id:number){
+    async findPostsById(id:string){
         return   postsRepositories.findPostsById(id)
 
     },
-    async createPost(title: string, shortDescription: string, content: string, bloggerId: number){
+    async createPost(title: string, shortDescription: string, content: string, bloggerId: string){
 
         let blogger: any = await bloggersService.findBloggersById(bloggerId)
         let newpost;
-
+        const id=  +(new Date())
         if (blogger) {
             newpost= {
-                id: +(new Date()),
+                id:""+id,
                 title: title,
                 shortDescription: shortDescription,
                 content: content,
@@ -55,7 +55,7 @@ export const postsService = {
 
         return(newpost)
     },
-    async updatePost(id:number,title: string, shortDescription: string, content: string, bloggerId: number,){
+    async updatePost(id:string,title: string, shortDescription: string, content: string, bloggerId: string){
         let blogger:any = await bloggersService.findBloggersById(bloggerId)
 
         let upPost= await postsService.findPostsById(id)
@@ -75,12 +75,12 @@ export const postsService = {
     },
 
 
-    async deletePost(id:number) {
+    async deletePost(id:string) {
        return await postsRepositories.deletePost(id)
 
 
     },
-    async findPostsByIdBlogger(bloggerId:number,pagenumber:number ,pagesize:number){
+    async findPostsByIdBlogger(bloggerId:string,pagenumber:number ,pagesize:number){
 
         let totalCount = await  postsRepositories.findPostsByIdBloggerCount(bloggerId)
         let page = pagenumber
@@ -97,9 +97,10 @@ export const postsService = {
         }
         return post
     },
-    async createPostByBloggerId(bloggerId:number,title:string,shortDescription:string,content:string,bloggerName:string){
+    async createPostByBloggerId(bloggerId:string,title:string,shortDescription:string,content:string,bloggerName:string){
+        const id=  +(new Date())
        let newpost= {
-            id: +(new Date()),
+           id:""+id,
             title: title,
             shortDescription: shortDescription,
             content: content,

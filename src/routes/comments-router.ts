@@ -25,12 +25,12 @@ commentsRouter.put('/:id',
 
 });
 commentsRouter.delete('/:id', authMidlewaresWithChekOwn,async (req:Request, res:Response)=>{
-    const isDeleted = await commentsService.deleteCommentsById(+req.params.id)
+    const isDeleted = await commentsService.deleteCommentsById(req.params.id)
     if ( isDeleted) res.sendStatus(204)
 
 });
 commentsRouter.get('/:id', async (req:Request, res:Response)=>{
-    const comment = await commentsService.getCommentsById(+req.params.id)
+    const comment = await commentsService.getCommentsById(req.params.id)
 
         if(!comment){
         res.sendStatus(404)

@@ -4,13 +4,14 @@ import {ObjectId} from "mongodb";
 import {userRepositories} from "../repositories/user-db-repositories";
 
 
-export const usersService ={
+export const    usersService ={
     async createUser(login:string,email:string,password:string):Promise<{ id: any; login: string }>{
         const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await  this.generateHash(password,passwordSalt)
+        const id = +(new Date())
         const newUser:UserDBtype={
             _id:new ObjectId(),
-            id:+(new Date()),
+            id:""+id,
             userName:login,
             email,
             passwordHash,
@@ -49,7 +50,7 @@ export const usersService ={
        const users= await userRepositories.getAllUsers()
         return users
     },
-    async deleteUser(id:number){
+    async deleteUser(id:string){
     const isDeleted= await userRepositories.deleteUserById(id)
     return isDeleted
     }

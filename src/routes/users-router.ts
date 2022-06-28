@@ -20,7 +20,7 @@ usersRouter.post('/',
    res.status(201).send(newProduct)
 });
 usersRouter.delete('/:id', basicAuthorization,async (req:Request, res:Response)=>{
-   const isDeleted=await usersService.deleteUser(+req.params.id);
+   const isDeleted=await usersService.deleteUser(req.params.id);
    if (isDeleted){
       res.sendStatus(204)
    }else {

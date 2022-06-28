@@ -25,7 +25,7 @@ postsRouter.get( "/", async ( req:Request, res:Response ) => {
     res.status(200).send(posts)
 } );
 postsRouter.get("/:id", async (req:Request, res:Response) => {
-    const post = await postsService.findPostsById(+req.params.id)
+    const post = await postsService.findPostsById(req.params.id)
     if(!post){
         res.sendStatus(404)
     }else {
@@ -51,7 +51,7 @@ const newPost = await postsService.createPost(
     req.body.title,
     req.body.shortDescription,
     req.body.content,
-    +req.body.bloggerId)
+    req.body.bloggerId)
         if (newPost) {
             res.status(201).send(newPost)
         } else {
@@ -75,7 +75,7 @@ postsRouter.put("/:id",
     inputValidationPost,
 
     async (req:Request, res:Response) => {
-   const isUpdated = await postsService.updatePost(+req.params.id,req.body.title,req.body.shortDescription,req.body.content,+req.body.bloggerId)
+   const isUpdated = await postsService.updatePost(req.params.id,req.body.title,req.body.shortDescription,req.body.content,req.body.bloggerId)
 
 
 
@@ -101,7 +101,7 @@ postsRouter.put("/:id",
     });
 
 postsRouter.delete("/:id", basicAuthorization,async (req:Request, res:Response) => {
-    const isDeleted  = await postsService.deletePost(+req.params.id)
+    const isDeleted  = await postsService.deletePost(req.params.id)
 
     if ( isDeleted){
         res.sendStatus(204)
@@ -116,11 +116,11 @@ postsRouter.post('/:id/comments',
     inputValidationComment,
     authMidlewares,
     async (req:Request,res:Response)=>{
-    const newComment = await commentsService.createCommentsByPost( +req.params.id,req.body.content,req.user!.id,req.user!.userName)
+    const newComment = await commentsService.createCommentsByPost( req.params.id,req.body.content,req.user!.id,req.user!.userName)
     res.status(201).send(newComment)
 });
 postsRouter.get('/:id/comments', async (req:Request,res:Response)=>{
-    const allComment = await commentsService.sendAllCommentsByPostId( +req.params.id)
+    const allComment = await commentsService.sendAllCommentsByPostId(req.params.id)
    if(allComment.length===0){
        res.send(404)
    }else {

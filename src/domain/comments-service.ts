@@ -1,17 +1,18 @@
 import {commentsRepositories} from "../repositories/comments-db-repositories";
 
 export const commentsService = {
-    async sendAllCommentsByPostId(postId:number){
+    async sendAllCommentsByPostId(postId:string){
        return  await commentsRepositories.allCommentsByPostId(postId)
 
 
     },
-    async createCommentsByPost(postid:number,content:string,userid:string,userLogin:string){
+    async createCommentsByPost(postid:string,content:string,userid:string,userLogin:string){
+        const id=  +(new Date())
         let newComment={
-            id: +(new Date()),
+            id:""+id,
             postid,
             content,
-            userid,
+            userid:""+userid,
             userLogin,
             createdAt:new Date()
         }
@@ -24,16 +25,16 @@ export const commentsService = {
             addeAdt:newComment.createdAt
         }
     },
-    async updateCommentById(id:number|string,content:string){
+    async updateCommentById(id:string,content:string){
         return await commentsRepositories.updateCommentById(id,content)
 
 
     },
-    async deleteCommentsById(id:number){
+    async deleteCommentsById(id:string){
         return await commentsRepositories.deleteCommentsById(id)
 
     },
-    async getCommentsById(id:string|number){
+    async getCommentsById(id:string){
         const comment = await commentsRepositories.findCommentById(id)
         return comment
 
