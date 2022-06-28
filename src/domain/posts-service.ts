@@ -25,7 +25,8 @@ export const postsService = {
         return post
     },
     async findPostsById(id:string){
-        const post =  postsRepositories.findPostsById(id)
+        const post = await postsRepositories.findPostsById(id)
+
         if(post) {
             return post;
         }else {
@@ -128,6 +129,7 @@ export const postsService = {
     },
     async sendAllCommentsByPostId(postid:string,pagenumber:number ,pagesize:number){
         let post = await this.findPostsById(postid)
+
         if (post){
             let allComments = await commentsService.sendAllCommentsByPostId(postid,pagenumber,pagesize)
             return allComments
