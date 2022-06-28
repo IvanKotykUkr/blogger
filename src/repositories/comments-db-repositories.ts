@@ -20,7 +20,17 @@ export const commentsRepositories = {
     },
     async findCommentById(Request:string){
 
-        const comments = await commentsCollection.findOne({id:Request} )
+        const comments = await commentsCollection
+            .find({id:Request})
+            .project({_id:0,postid:0})
+            .toArray()
+
+       return comments
+    },async getCommentById(Request:string){
+
+        const comments = await commentsCollection
+            .findOne({id:Request})
+
 
        return comments
     },

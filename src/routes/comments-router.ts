@@ -10,7 +10,7 @@ export const commentsRouter= Router({})
 commentsRouter.put('/:id',
     contentValidation,
     inputValidationComment,
-    authMidlewares,
+
     authMidlewaresWithChekOwn,
     async (req:Request, res:Response)=>{
     const isUpdated = await commentsService.updateCommentById(req.params.id,req.body.content)
@@ -30,7 +30,7 @@ commentsRouter.delete('/:id', authMidlewaresWithChekOwn,async (req:Request, res:
 
 });
 commentsRouter.get('/:id', async (req:Request, res:Response)=>{
-    const comment = await commentsService.getCommentsById(req.params.id)
+    const comment = await commentsService.findCommentsById(req.params.id)
 
         if(!comment){
         res.sendStatus(404)

@@ -45,9 +45,11 @@ export const authMidlewaresWithChekOwn= async (req:Request,res:Response,next:Nex
         const userid = await user.userId
 
         const comment= await commentsService.getCommentsById(req.params.id)
+
+
         if(comment){
             // @ts-ignore
-            if (comment.userid !== userid) {
+            if (comment.userId !== userid) {
                 res.sendStatus(403)
 
             } else {

@@ -28,7 +28,7 @@ export const commentsService = {
             id:""+id,
             postid,
             content,
-            userid:""+userid,
+            userId:""+userid,
             userLogin,
             createdAt:new Date()
         }
@@ -36,7 +36,7 @@ export const commentsService = {
         return{
             id:newComment.id,
             content:newComment.content,
-            userId:newComment.userid,
+            userId:newComment.userId,
             userLogin:newComment.userLogin,
             addeAdt:newComment.createdAt
         }
@@ -51,8 +51,12 @@ export const commentsService = {
 
     },
     async getCommentsById(id:string){
-        const comment = await commentsRepositories.findCommentById(id)
+        const comment = await commentsRepositories.getCommentById(id)
         return comment
 
     },
+    async findCommentsById(id:string){
+        const comment = await commentsRepositories.findCommentById(id)
+        return comment
+    }
 }

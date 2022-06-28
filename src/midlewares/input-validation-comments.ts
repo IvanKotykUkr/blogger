@@ -1,7 +1,7 @@
 import {body, param, validationResult} from "express-validator";
 import {NextFunction,  Request, Response} from "express";
 
-export const commentValidation = body('login')
+export const commentValidation = body('content')
     .isString().withMessage("Should be String")
     .isLength({min:20,max:300}).withMessage("Should be a length between 20 and 300")
 

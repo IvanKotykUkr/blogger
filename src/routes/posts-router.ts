@@ -9,7 +9,7 @@ import {
 import {basicAuthorization} from "../midlewares/basicAuth";
 import {authMidlewares} from "../midlewares/auth-midlewares";
 import {commentsService} from "../domain/comments-service";
-import {inputValidationComment} from "../midlewares/input-validation-comments";
+import {commentValidation, inputValidationComment} from "../midlewares/input-validation-comments";
 
 
 export const postsRouter = Router({})
@@ -112,7 +112,7 @@ postsRouter.delete("/:id", basicAuthorization,async (req:Request, res:Response) 
     }
 });
 postsRouter.post('/:id/comments',
-    contentValidation,
+    commentValidation,
     inputValidationComment,
     authMidlewares,
     async (req:Request,res:Response)=>{
