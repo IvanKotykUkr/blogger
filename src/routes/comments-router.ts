@@ -3,12 +3,12 @@ import {commentsService} from "../domain/comments-service";
 import {authMidlewares, authMidlewaresWithChekOwn} from "../midlewares/auth-midlewares";
 
 import {contentValidation} from "../midlewares/input-validation-midlewares-posts";
-import {inputValidationComment} from "../midlewares/input-validation-comments";
+import {commentValidation, inputValidationComment} from "../midlewares/input-validation-comments";
 
 export const commentsRouter= Router({})
 
 commentsRouter.put('/:id',
-    contentValidation,
+    commentValidation,
     inputValidationComment,
 
     authMidlewaresWithChekOwn,
