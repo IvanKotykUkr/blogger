@@ -36,7 +36,7 @@ export const    usersService ={
         }
         return user
     },
-    async findUserById(userid:any){
+    async findUserById(userid:string){
 
 
 
