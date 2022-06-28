@@ -4,15 +4,16 @@ import {ObjectId} from "mongodb";
 import {userRepositories} from "../repositories/user-db-repositories";
 
 
+
 export const    usersService ={
-    async createUser(login:string,email:string,password:string):Promise<{ id: any; login: string }>{
+    async createUser(login:string,email:string,password:string):Promise<{ id: string; login: string }>{
         const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await  this.generateHash(password,passwordSalt)
         const id = +(new Date())
         const newUser:UserDBtype={
             _id:new ObjectId(),
             id:""+id,
-            userName:login,
+            login,
             email,
             passwordHash,
             passwordSalt,
@@ -21,11 +22,11 @@ export const    usersService ={
         await userRepositories.createUser(newUser)
         return{
             id:newUser.id,
-            login:newUser.userName
+            login:newUser.login
         }
     },
-    async chekCredentials(loginorEmail:string,password:string){
-        const user=await userRepositories.findLoginOrEmail(loginorEmail)
+    async checkCredentials(loginOrEmail:string, password:string){
+        const user=await userRepositories.findLoginOrEmail(loginOrEmail)
         if (!user)return false
 
         const passwordHash = await this.generateHash(password,user.passwordSalt)
@@ -46,8 +47,19 @@ export const    usersService ={
         const hash = await bcrypt.hash(password,salt)
         return hash
     },
-    async getAllUsers(){
-       const users= await userRepositories.getAllUsers()
+    async getAllUsers(pagenumber:number,pagesize:number){
+        let totalCount =  await userRepositories.countUsers()
+        let page = pagenumber
+        let pageSize = pagesize
+        let pagesCount = Math.ceil(totalCount / pageSize)
+        const items= await userRepositories.getAllUsersPagination(pagenumber,pagesize)
+        const users= {
+            pagesCount,
+            page,
+            pageSize,
+            totalCount,
+            items
+        }
         return users
     },
     async deleteUser(id:string){

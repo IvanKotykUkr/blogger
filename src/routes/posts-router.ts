@@ -116,12 +116,19 @@ postsRouter.post('/:id/comments',
     inputValidationComment,
     authMidlewares,
     async (req:Request,res:Response)=>{
-    const newComment = await commentsService.createCommentsByPost( req.params.id,req.body.content,req.user!.id,req.user!.userName)
-    res.status(201).send(newComment)
+    const newComment = await postsService.createCommentsByPost( req.params.id,req.body.content,req.user!.id,req.user!.userName)
+        if(!newComment){
+            res.send(404)
+        }else {
+            res.status(201).send(newComment)
+
+        }
 });
 postsRouter.get('/:id/comments', async (req:Request,res:Response)=>{
-    const allComment = await commentsService.sendAllCommentsByPostId(req.params.id)
-   if(allComment.length===0){
+    const pagenumber= req.query.PageNumber ||  1;
+    const pagesize = req.query.PageSize ||  10;
+    const allComment = await postsService.sendAllCommentsByPostId(req.params.id,+pagenumber,+pagesize)
+   if(!allComment){
        res.send(404)
    }else {
        res.status(200).send(allComment)

@@ -1,15 +1,21 @@
 import {commentsCollection} from "./db";
 
 export const commentsRepositories = {
+    async commentCount(){
+        return commentsCollection.countDocuments()
+    },
     async createComment(comment:any){
      const result = await commentsCollection.insertOne(comment)
         return comment
     },
-    async allCommentsByPostId(postId:string){
-        const commets= await commentsCollection.find({postid:postId}).toArray()
 
-            return commets
-
+    async allCommentByPostIdPagination(post:string,number:number,size:number){
+        const comments = commentsCollection.find({postid:post})
+            .skip( number > 0 ? ( ( number - 1 ) * size ) : 0 )
+            .limit(size)
+            .project({_id:0,postid:0})
+            .toArray()
+        return comments
 
     },
     async findCommentById(Request:string){

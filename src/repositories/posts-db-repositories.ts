@@ -1,6 +1,6 @@
-import { bloggersRepositories} from "./bloggers-db-repositories";
+
 import { postsCollection} from "./db";
-import {postsService} from "../domain/posts-service";
+
 
 
 
@@ -14,7 +14,10 @@ export const postsRepositories = {
        return postsCollection.countDocuments()
    },
     async getPostsPagination(number:number,size:number){
-        return postsCollection.find({}).skip( number > 0 ? ( ( number - 1 ) * size ) : 0 ).limit(size).project({_id:0}).toArray()
+        return postsCollection.find({})
+            .skip( number > 0 ? ( ( number - 1 ) * size ) : 0 )
+            .limit(size).project({_id:0})
+            .toArray()
     },
 
     async findPostsById(id:string){
@@ -27,7 +30,12 @@ export const postsRepositories = {
         return newpost
     },
    async updatePost(id:string,title:string,shortDescription:string,content:string,bloggerId:string,bloggerName:string){
-       const result = await  postsCollection.updateOne({id:id},{$set:{title:title,shortDescription:shortDescription,content:content,bloggerId:bloggerId,bloggerName:bloggerName}})
+       const result = await  postsCollection.updateOne({id:id},
+            {$set:{title:title,
+                    shortDescription:shortDescription,
+                    content:content,
+                    bloggerId:bloggerId,
+                    bloggerName:bloggerName}})
        return result.matchedCount === 1
     },
 
@@ -43,7 +51,11 @@ export const postsRepositories = {
        return posts
    },
    async findPostsByIdBloggerPagination(bloggerId:string,number:number,size:number) {
-       const posts = postsCollection.find({bloggerId:bloggerId}).skip( number > 0 ? ( ( number - 1 ) * size ) : 0 ).limit(size).project({_id:0}).toArray()
+       const posts = postsCollection.find({bloggerId:bloggerId})
+           .skip( number > 0 ? ( ( number - 1 ) * size ) : 0 )
+           .limit(size)
+           .project({_id:0})
+           .toArray()
        return posts
 
    }

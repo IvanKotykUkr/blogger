@@ -1,5 +1,5 @@
-import {body, validationResult} from "express-validator";
-import {NextFunction, Request, Response} from "express";
+import {body, param, validationResult} from "express-validator";
+import {NextFunction,  Request, Response} from "express";
 
 export const commentValidation = body('login')
     .isString().withMessage("Should be String")

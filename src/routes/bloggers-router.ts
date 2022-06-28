@@ -30,7 +30,7 @@ bloggersRouter.get("/:id",
         res.sendStatus(404)
     }else {
 
-        res.send(blogger)
+        res.status(200).json(blogger)
     }
 
 

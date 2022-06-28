@@ -5,7 +5,9 @@ import {inputValidationUser, loginValidationUser, passwordValidationUser} from "
 
 export const usersRouter = Router({})
 usersRouter.get('/', async (req:Request, res:Response)=>{
-   const users=await usersService.getAllUsers()
+   const pagenumber= req.query.PageNumber ||  1;
+   const pagesize = req.query.PageSize ||  10;
+   const users=await usersService.getAllUsers(+pagenumber,+pagesize)
    res.status(201).send(users)
 
 });

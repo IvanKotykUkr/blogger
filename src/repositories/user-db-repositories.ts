@@ -3,8 +3,14 @@ import {UserDBtype} from "./types";
 import {ObjectId, WithId} from "mongodb";
 
 export const    userRepositories={
-    async getAllUsers(){
-        const users= await usersCollection.find({}).toArray()
+    async countUsers(){
+        return usersCollection.countDocuments()
+    },
+    async getAllUsersPagination(pagenubmer:number,pagesize:number){
+        const users= await usersCollection.find({})
+            .skip( pagenubmer > 0 ? ( ( pagenubmer - 1 ) * pagesize ) : 0 )
+            .limit(pagesize).project({_id:0,email:0,passwordHash:0,passwordSalt:0,createdAt:0})
+            .toArray()
 
         return users
     },

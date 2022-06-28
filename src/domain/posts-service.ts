@@ -1,5 +1,6 @@
 import {postsRepositories} from "../repositories/posts-db-repositories";
 import {bloggersService} from "./bloggers-service";
+import {commentsService} from "./comments-service";
 
 
 
@@ -109,6 +110,25 @@ export const postsService = {
         }
         const generatedPost = postsRepositories.createPost(newpost)
         return generatedPost
-    }
+    },
+    async createCommentsByPost(postid:string,content:string,userid:string,userLogin:string){
+        let post = await this.findPostsById(postid)
+        if (post){
+            let newComment = await commentsService.createCommentsByPost(postid,content,userid,userLogin)
+            return newComment
+        }else {
+            return null
+        }
+    },
+    async sendAllCommentsByPostId(postid:string,pagenumber:number ,pagesize:number){
+        let post = await this.findPostsById(postid)
+        if (post){
+            let allComments = await commentsService.sendAllCommentsByPostId(postid,pagenumber,pagesize)
+            return allComments
+        }else {
+            return null
+        }
+
+    },
 
 }
