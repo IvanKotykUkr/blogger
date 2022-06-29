@@ -31,7 +31,7 @@ export const commentsService = {
             content,
             userId:""+userid,
             userLogin,
-            createdAt:new Date()
+            addedAt:new Date()
         }
         await commentsRepositories.createComment(newComment)
         return{
@@ -39,7 +39,7 @@ export const commentsService = {
             content:newComment.content,
             userId:newComment.userId,
             userLogin:newComment.userLogin,
-            addedAt:newComment.createdAt
+            addedAt:newComment.addedAt
         }
     },
     async updateCommentById(id:string,content:string){

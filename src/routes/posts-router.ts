@@ -112,9 +112,10 @@ postsRouter.delete("/:id", basicAuthorization,async (req:Request, res:Response) 
     }
 });
 postsRouter.post('/:id/comments',
+    authMidlewares,
     commentValidation,
     inputValidationComment,
-    authMidlewares,
+
     async (req:Request,res:Response)=>{
 
     const newComment = await postsService.createCommentsByPost( req.params.id,req.body.content,req.user!.id,req.user!.login)
