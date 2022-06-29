@@ -21,9 +21,8 @@ export const commentsRepositories = {
     async findCommentById(Request:string){
 
         const comments = await commentsCollection
-            .find({id:Request})
-            .project({_id:0,postid:0})
-            .toArray()
+            .findOne({id:Request},{projection:{_id:0,postid:0}})
+
 
        return comments
     },async getCommentById(Request:string){

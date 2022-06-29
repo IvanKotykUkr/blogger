@@ -116,7 +116,9 @@ postsRouter.post('/:id/comments',
     inputValidationComment,
     authMidlewares,
     async (req:Request,res:Response)=>{
-    const newComment = await postsService.createCommentsByPost( req.params.id,req.body.content,req.user!.id,req.user!.userName)
+
+    const newComment = await postsService.createCommentsByPost( req.params.id,req.body.content,req.user!.id,req.user!.login)
+
         if(!newComment){
             res.send(404)
         }else {
