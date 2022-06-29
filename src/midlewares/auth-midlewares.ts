@@ -5,7 +5,7 @@ import {commentsService} from "../domain/comments-service";
 
 export const authMidlewares = async (req:Request,res:Response,next:NextFunction)=>{
     if(!req.headers.authorization){
-        res.send(400)
+        res.send(401)
         return
     }
     const token = req.headers.authorization.split(' ')[1]
