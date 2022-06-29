@@ -2,7 +2,7 @@ import {commentsRepositories} from "../repositories/comments-db-repositories";
 
 export const commentsService = {
     async sendAllCommentsByPostId(postId:string,pagenumber:number,pagesize:number){
-        let totalCount =  await commentsRepositories.commentCount()
+        let totalCount =  await commentsRepositories.commentCount(postId)
         let page = pagenumber
         let pageSize = pagesize
         let pagesCount = Math.ceil(totalCount / pageSize)

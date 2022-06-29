@@ -1,8 +1,8 @@
 import {commentsCollection} from "./db";
 
 export const commentsRepositories = {
-    async commentCount(){
-        const result = await commentsCollection.countDocuments()
+    async commentCount(postId:string){
+        const result = await commentsCollection.countDocuments({postid:postId})
         return result
     },
     async createComment(comment:any){
