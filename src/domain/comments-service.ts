@@ -39,7 +39,7 @@ export const commentsService = {
             content:newComment.content,
             userId:newComment.userId,
             userLogin:newComment.userLogin,
-            addeAdt:newComment.createdAt
+            addedAt:newComment.createdAt
         }
     },
     async updateCommentById(id:string,content:string){

@@ -18,10 +18,10 @@ export const commentsRepositories = {
         return comments
 
     },
-    async findCommentById(Request:string){
+    async findCommentById(idCommnet:string){
 
         const comments = await commentsCollection
-            .findOne({id:Request},{projection:{_id:0,postid:0}})
+            .findOne({id:idCommnet},{projection:{_id:0,postid:0}})
 
 
        return comments

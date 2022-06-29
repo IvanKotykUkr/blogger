@@ -8,10 +8,11 @@ import {commentValidation, inputValidationComment} from "../midlewares/input-val
 export const commentsRouter= Router({})
 
 commentsRouter.put('/:id',
+    authMidlewaresWithChekOwn,
     commentValidation,
     inputValidationComment,
 
-    authMidlewaresWithChekOwn,
+
     async (req:Request, res:Response)=>{
     const isUpdated = await commentsService.updateCommentById(req.params.id,req.body.content)
     if(isUpdated){
