@@ -24,12 +24,12 @@ export const commentsService = {
     },
     async createCommentsByPost(postid:string,content:string,userid:string,userLogin:string){
 
-        const id=  +(new Date())
+
         let newComment={
-            id:""+id,
+            id:""+(+(new Date())),
             postid,
             content,
-            userId:""+userid,
+            userId:userid,
             userLogin,
             addedAt:new Date()
         }

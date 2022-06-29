@@ -106,9 +106,9 @@ export const postsService = {
         return post
     },
     async createPostByBloggerId(bloggerId:string,title:string,shortDescription:string,content:string,bloggerName:string){
-        const id=  +(new Date())
+
        let newpost= {
-           id:""+id,
+           id:""+(+(new Date())),
             title: title,
             shortDescription: shortDescription,
             content: content,

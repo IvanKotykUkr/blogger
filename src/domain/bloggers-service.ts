@@ -21,7 +21,7 @@ export const bloggersService = {
 
         if(!searchnameterm) {
             const items = await bloggersRepositories.getBloggersPaginaton(pageSize,page )
-            let blogger = {
+            return  {
                 pagesCount,
                 page,
                 pageSize,
@@ -29,20 +29,20 @@ export const bloggersService = {
                 items,
 
             }
-            return blogger
+
         }else {
 
             let totalCountSearch =  await bloggersRepositories.blooggersSeachCount(searchnameterm)
             let pagesCountSearch = Math.ceil(totalCountSearch / pageSize)
             const itemsSearch = await bloggersRepositories.getBloggersSearchTerm(page, pageSize,searchnameterm)
-            let blogger = {
+            return  {
                 pagesCount:pagesCountSearch,
                 page,
                 pageSize,
                 totalCount:totalCountSearch,
                 items:itemsSearch,
             }
-            return  blogger
+
         }
     },
 
@@ -57,12 +57,11 @@ export const bloggersService = {
 
     },
 
-
     async createBlogger(name:string,youtubeUrl:string){
-        const id = +(new Date())
+
 
         const newBlogger={
-            id:""+id,
+            id:""+(+(new Date())),
             name:name,
             youtubeUrl:youtubeUrl
         }
@@ -95,7 +94,7 @@ export const bloggersService = {
 
     },
     async createPostbyBloggerId(id:string,title:string,shortDescription:string,content:string){
-       id
+
 
         let blogger: any = await this.findBloggersById(id)
         if (blogger) {

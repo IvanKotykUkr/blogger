@@ -9,10 +9,10 @@ export const    usersService ={
     async createUser(login:string,email:string,password:string):Promise<{ id: string; login: string }>{
         const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await  this.generateHash(password,passwordSalt)
-        const id = +(new Date())
+
         const newUser:UserDBtype={
             _id:new ObjectId(),
-            id:""+id,
+            id:""+(+(new Date())),
             login,
             email,
             passwordHash,
