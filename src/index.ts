@@ -1,4 +1,4 @@
-import express, {Request,Response} from "express";
+import express, {Request, Response} from "express";
 import cors from 'cors'
 import bodyParser from "body-parser";
 import {bloggersRouter} from "./routes/bloggers-router";
@@ -9,8 +9,6 @@ import {commentsRouter} from "./routes/comments-router";
 import {usersRouter} from "./routes/users-router";
 
 
-
-
 const app = express();
 app.use(bodyParser.json())
 app.use(cors())
@@ -18,13 +16,13 @@ app.use(cors())
 const port = process.env.PORT || 5001
 
 
-app.use('/bloggers', bloggersRouter )
+app.use('/bloggers', bloggersRouter)
 app.use('/posts', postsRouter)
-app.use('/auth',authRouter)
-app.use('/comments',commentsRouter)
-app.use('/users',usersRouter)
+app.use('/auth', authRouter)
+app.use('/comments', commentsRouter)
+app.use('/users', usersRouter)
 
-const startApp = async ()=> {
+const startApp = async () => {
     await runDb()
 
     app.listen(port, () => {
