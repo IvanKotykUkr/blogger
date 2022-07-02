@@ -1,5 +1,6 @@
 import {bloggersRepositories} from "../repositories/bloggers-db-repositories";
 import {postsService} from "./posts-service";
+import {BloggerType} from "../repositories/db";
 
 
 export const bloggersService = {
@@ -18,19 +19,19 @@ export const bloggersService = {
                 totalCount,
                 items,
             }
-        } else {
-            let totalCountSearch = await bloggersRepositories.blooggersSeachCount(searchnameterm)
-            let pagesCountSearch = Math.ceil(totalCountSearch / pageSize)
-            const itemsSearch = await bloggersRepositories.getBloggersSearchTerm(page, pageSize, searchnameterm)
-            return {
-                pagesCount: pagesCountSearch,
-                page,
-                pageSize,
-                totalCount: totalCountSearch,
-                items: itemsSearch,
-            }
-
         }
+        let totalCountSearch = await bloggersRepositories.blooggersSeachCount(searchnameterm)
+        let pagesCountSearch = Math.ceil(totalCountSearch / pageSize)
+        const itemsSearch = await bloggersRepositories.getBloggersSearchTerm(page, pageSize, searchnameterm)
+        return {
+            pagesCount: pagesCountSearch,
+            page,
+            pageSize,
+            totalCount: totalCountSearch,
+            items: itemsSearch,
+        }
+
+
     },
 
 
@@ -38,14 +39,14 @@ export const bloggersService = {
         let blogger = await bloggersRepositories.findBloggersById(id)
         if (blogger) {
             return blogger;
-        } else {
-            return null;
         }
+        return null;
+
 
     },
 
     async createBlogger(name: string, youtubeUrl: string) {
-        const newBlogger = {
+        const newBlogger: BloggerType = {
             id: "" + (+(new Date())),
             name: name,
             youtubeUrl: youtubeUrl
@@ -57,8 +58,13 @@ export const bloggersService = {
             youtubeUrl: newBlogger.youtubeUrl
         }
     },
-    async updateBloggers(id: string, name: string, youtubeUrl: string) {
-        return await bloggersRepositories.updateBloggers(id, name, youtubeUrl)
+    async updateBloggers(id: string, name: string, youtubeUrl: string):Promise<boolean> {
+        const blogger: BloggerType = {
+            id,
+            name,
+            youtubeUrl
+        }
+        return await bloggersRepositories.updateBloggers(blogger)
     },
     async deleteBloggers(id: string) {
         return await bloggersRepositories.deleteBloggers(id)
@@ -68,9 +74,9 @@ export const bloggersService = {
         if (blogger) {
             let findPosts: any = await postsService.findPostsByIdBlogger(blogger.id, pagenumber, pageesize)
             return findPosts
-        } else {
-            return null
         }
+        return null
+
     },
     async createPostbyBloggerId(id: string, title: string, shortDescription: string, content: string) {
         let blogger: any = await this.findBloggersById(id)
@@ -84,9 +90,9 @@ export const bloggersService = {
                 bloggerId: newPosts.bloggerId,
                 bloggerName: newPosts.bloggerName
             }
-        } else {
-            return null
         }
+        return null
+
 
     }
 }

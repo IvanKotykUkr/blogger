@@ -26,10 +26,11 @@ usersRouter.delete('/:id', basicAuthorization, async (req: Request, res: Respons
     const isDeleted = await usersService.deleteUser(req.params.id);
     if (isDeleted) {
         res.sendStatus(204)
-    } else {
-
-        res.sendStatus(404)
-
+        return
     }
+
+    res.sendStatus(404)
+
+
 })
 

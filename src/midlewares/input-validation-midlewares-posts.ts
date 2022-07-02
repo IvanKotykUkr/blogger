@@ -16,6 +16,8 @@ export const contentValidation = body('content')
 export const bloggerIdtValidation = body('bloggerId')
     .trim(undefined)
     .isString().withMessage("Should be String")
+
+
 export const inputValidationPost = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -26,8 +28,9 @@ export const inputValidationPost = (req: Request, res: Response, next: NextFunct
                 field: er.param
             }))
         });
-    } else {
-        next()
+        return
     }
+    next()
+
 
 }

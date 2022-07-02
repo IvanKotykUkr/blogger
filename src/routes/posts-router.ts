@@ -18,10 +18,10 @@ postsRouter.get("/:id", async (req: Request, res: Response) => {
     const post = await postsService.findPostsById(req.params.id)
     if (!post) {
         res.sendStatus(404)
-    } else {
-
-        res.send(post)
+        return
     }
+
+    res.send(post)
 
 
 });
@@ -51,16 +51,17 @@ postsRouter.post("/",
             req.body.bloggerId)
         if (newPost) {
             res.status(201).send(newPost)
-        } else {
-            res.status(400).json({
-                errorsMessages:
-                    [{
-                        message: "Invalid value",
-                        field: "bloggerId"
-                    }]
-            })
-
+            return
         }
+        res.status(400).json({
+            errorsMessages:
+                [{
+                    message: "Invalid value",
+                    field: "bloggerId"
+                }]
+        })
+
+
     });
 
 postsRouter.put("/:id",
@@ -72,26 +73,30 @@ postsRouter.put("/:id",
     inputValidationPost,
 
     async (req: Request, res: Response) => {
-        const isUpdated = await postsService.updatePost(req.params.id, req.body.title, req.body.shortDescription, req.body.content, req.body.bloggerId)
+        const isUpdated = await postsService.updatePost(
+            req.params.id,
+            req.body.title,
+            req.body.shortDescription,
+            req.body.content,
+            req.body.bloggerId)
 
 
         if (isUpdated) {
             res.status(204).json(isUpdated)
-        } else {
-            if (isUpdated === null) {
-                res.status(400).json({
-                    errorsMessages:
-                        [{
-                            message: "Invalid value",
-                            field: "bloggerId"
-                        }]
-                })
-
-
-            } else {
-                res.send(404)
-            }
+            return
         }
+        if (isUpdated === null) {
+            res.status(400).json({
+                errorsMessages:
+                    [{
+                        message: "Invalid value",
+                        field: "bloggerId"
+                    }]
+            })
+            return
+        }
+        res.send(404)
+
 
     });
 
@@ -100,11 +105,12 @@ postsRouter.delete("/:id", basicAuthorization, async (req: Request, res: Respons
 
     if (isDeleted) {
         res.sendStatus(204)
-    } else {
-
-        res.sendStatus(404)
-
+        return
     }
+
+    res.sendStatus(404)
+
+
 });
 postsRouter.post('/:id/comments',
     authMidlewares,
@@ -117,10 +123,11 @@ postsRouter.post('/:id/comments',
 
         if (!newComment) {
             res.send(404)
-        } else {
-            res.status(201).send(newComment)
-
+            return
         }
+        res.status(201).send(newComment)
+
+
     });
 postsRouter.get('/:id/comments', async (req: Request, res: Response) => {
     const pagenumber = req.query.PageNumber || 1;
@@ -128,10 +135,11 @@ postsRouter.get('/:id/comments', async (req: Request, res: Response) => {
     const allComment = await postsService.sendAllCommentsByPostId(req.params.id, +pagenumber, +pagesize)
     if (!allComment) {
         res.send(404)
-    } else {
-        res.status(200).send(allComment)
-
+        return
     }
+    res.status(200).send(allComment)
+
+
 });
 
 

@@ -17,9 +17,9 @@ export const postsRepositories = {
 
         if (post) {
             return post;
-        } else {
-            return null;
         }
+        return null;
+
     },
     async createPost(newpost: any) {
 

@@ -10,7 +10,6 @@ export const usersService = {
         const passwordHash = await this.generateHash(password, passwordSalt)
 
         const newUser: UserDBtype = {
-            _id: new ObjectId(),
             id: "" + (+(new Date())),
             login,
             email,

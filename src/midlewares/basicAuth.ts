@@ -9,7 +9,8 @@ export const basicAuthorization = async (req: Request, res: Response, next: Next
         res.statusCode = 401
         res.setHeader('WWW-Authenticate', 'Basic realm="Node"')
         res.end('Unauthorized')
-    } else {
-        next()
+       return
     }
+    next()
+
 }

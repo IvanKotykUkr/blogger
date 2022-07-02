@@ -19,9 +19,9 @@ export const inputValidationAuth = (req: Request, res: Response, next: NextFunct
                 field: er.param
             }))
         });
-    } else {
-        next()
+        return
     }
+    next()
 
 
 }

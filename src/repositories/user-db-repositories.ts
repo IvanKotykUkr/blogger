@@ -25,9 +25,9 @@ export const userRepositories = {
         if (user) {
 
             return user
-        } else {
-            return null
         }
+        return null
+
     },
     async findLoginOrEmail(loginOrEmail: string) {
         const user = await usersCollection.findOne({login: loginOrEmail})

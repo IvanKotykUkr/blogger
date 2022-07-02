@@ -1,4 +1,4 @@
-import {bloggerCollection} from "./db";
+import {bloggerCollection, BloggerType} from "./db";
 
 
 export const bloggersRepositories = {
@@ -35,14 +35,14 @@ export const bloggersRepositories = {
 
         if (blogger) {
             return blogger;
-        } else {
-            return null;
         }
+        return null;
+
 
     },
 
 
-    async createBlogger(newBlogger: any) {
+    async createBlogger(newBlogger: BloggerType): Promise<BloggerType> {
 
 
         const result = await bloggerCollection.insertOne(newBlogger)
@@ -50,9 +50,14 @@ export const bloggersRepositories = {
         return newBlogger
 
     },
-    async updateBloggers(id: string, name: string, youtubeUrl: string) {
+    async updateBloggers(blogger: BloggerType): Promise<boolean> {
 
-        const result = await bloggerCollection.updateOne({id: id}, {$set: {name: name, youtubeUrl: youtubeUrl}})
+        const result = await bloggerCollection.updateOne({id: blogger.id}, {
+            $set: {
+                name: blogger.name,
+                youtubeUrl: blogger.youtubeUrl
+            }
+        })
 
 
         return result.matchedCount === 1

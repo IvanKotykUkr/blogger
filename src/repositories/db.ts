@@ -1,6 +1,11 @@
 import {MongoClient} from 'mongodb'
 import {settings} from "../settings";
 
+export type BloggerType ={
+    id:string,
+    name:String,
+    youtubeUrl:String,
+}
 
 export const client = new MongoClient(settings.MONGO_URL);
 const db = client.db("api")

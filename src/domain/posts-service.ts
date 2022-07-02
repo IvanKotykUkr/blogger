@@ -28,9 +28,9 @@ export const postsService = {
 
         if (post) {
             return post;
-        } else {
-            return null;
         }
+        return null;
+
 
     },
     async createPost(title: string, shortDescription: string, content: string, bloggerId: string) {
@@ -56,29 +56,24 @@ export const postsService = {
                 bloggerId: newpost.bloggerId,
                 bloggerName: newpost.bloggerName
             }
-        } else {
-            newpost = null
         }
+        return newpost = null
 
-        return (newpost)
+
     },
     async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string) {
         let blogger: any = await bloggersService.findBloggersById(bloggerId)
 
         let upPost = await postsService.findPostsById(id)
 
-        if (blogger) {
-            if (upPost) {
+        if (upPost) {
+            if (blogger) {
                 return await postsRepositories.updatePost(id, title, shortDescription, content, bloggerId, blogger.name)
-
-
-            } else {
-                return undefined
             }
-
-        } else {
             return null
         }
+        return
+
     },
 
 
@@ -122,9 +117,9 @@ export const postsService = {
         if (post) {
             let newComment = await commentsService.createCommentsByPost(postid, content, userid, userLogin)
             return newComment
-        } else {
-            return null
         }
+        return null
+
     },
     async sendAllCommentsByPostId(postid: string, pagenumber: number, pagesize: number) {
         let post = await this.findPostsById(postid)
@@ -132,9 +127,9 @@ export const postsService = {
         if (post) {
             let allComments = await commentsService.sendAllCommentsByPostId(postid, pagenumber, pagesize)
             return allComments
-        } else {
-            return null
         }
+        return null
+
 
     },
 

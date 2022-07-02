@@ -21,9 +21,10 @@ bloggersRouter.get("/:id",
         let blogger = await bloggersService.findBloggersById(req.params.id)
         if (!blogger) {
             res.sendStatus(404)
-        } else {
-            res.status(200).json(blogger)
+            return
         }
+        res.status(200).json(blogger)
+
     });
 
 bloggersRouter.get("/",
@@ -53,18 +54,20 @@ bloggersRouter.put("/:id",
         const isUpdated = await bloggersService.updateBloggers(req.params.id, req.body.name, req.body.youtubeUrl)
         if (isUpdated) {
             res.status(204).json(isUpdated)
-        } else {
-            res.sendStatus(404)
+            return
         }
+        res.sendStatus(404)
+
 
     });
 bloggersRouter.delete("/:id", basicAuthorization, async (req: Request, res: Response) => {
     const isDeleted = await bloggersService.deleteBloggers(req.params.id)
     if (isDeleted) {
         res.sendStatus(204)
-    } else {
-        res.sendStatus(404)
+        return
     }
+    res.sendStatus(404)
+
 
 });
 bloggersRouter.get('/:id/posts', async (req: Request, res: Response) => {
@@ -73,9 +76,9 @@ bloggersRouter.get('/:id/posts', async (req: Request, res: Response) => {
     let bloggerPosts: any = await bloggersService.getPostsbyIdBlogger(req.params.id, +pagenumber, +pagesize)
     if (bloggerPosts) {
         res.send(bloggerPosts)
-    } else {
-        res.sendStatus(404)
+        return
     }
+    res.sendStatus(404)
 
 
 });
@@ -93,10 +96,11 @@ bloggersRouter.post('/:id/posts',
             req.body.content)
         if (newPosts) {
             res.status(201).json(newPosts)
+            return
 
-        } else {
-            res.sendStatus(404)
         }
+        res.sendStatus(404)
+
     });
 
 

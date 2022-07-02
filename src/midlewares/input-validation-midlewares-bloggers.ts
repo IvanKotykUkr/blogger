@@ -21,9 +21,9 @@ export const inputValidationBlogger = (req: Request, res: Response, next: NextFu
                 field: er.param
             }))
         });
-    } else {
-        next()
+        return
     }
+    next()
 
 
 }
