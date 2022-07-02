@@ -1,10 +1,41 @@
-import {MongoClient} from 'mongodb'
+import {MongoClient, ObjectId, WithId, InsertOneResult} from 'mongodb'
 import {settings} from "../settings";
 
-export type BloggerType ={
-    id:string,
-    name:String,
-    youtubeUrl:String,
+
+export type BloggerType = {
+    id: string,
+    name: string,
+    youtubeUrl: string,
+}
+export type PostType = {
+    id: string,
+    title: string,
+    shortDescription: string,
+    content: string,
+    bloggerId: string,
+    bloggerName: string
+}
+export type CommentType = {
+    id: string,
+    postid?: string,
+    content: string,
+    userId: string,
+    userLogin: string,
+    addedAt: string
+}
+
+export type UserType = {
+    id: any,
+    login: string,
+    email?: string,
+    passwordHash: string,
+    passwordSalt: string,
+    createdAt?: Date
+}
+export type UserFromTokenType = {
+    userId: string,
+    iat: number,
+    exp: number
 }
 
 export const client = new MongoClient(settings.MONGO_URL);

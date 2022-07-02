@@ -1,15 +1,16 @@
 import {bloggerCollection, BloggerType} from "./db";
+import {WithId} from "mongodb";
 
 
 export const bloggersRepositories = {
-    async getBloggersCount() {
+    async getBloggersCount(): Promise<number> {
 
-        const bloggers = await bloggerCollection.countDocuments()
-        return bloggers
+        return await bloggerCollection.countDocuments()
+
 
     },
-    async blooggersSeachCount(name: string) {
-        return bloggerCollection.countDocuments({name: {$regex: name}})
+    async blooggersSeachCount(name: string): Promise<number> {
+        return await bloggerCollection.countDocuments({name: {$regex: name}})
 
     },
     async getBloggersPaginaton(size: number, number: number) {
@@ -30,10 +31,12 @@ export const bloggersRepositories = {
     },
 
 
-    async findBloggersById(id: string) {
-        let blogger = await bloggerCollection.findOne({id: id}, {projection: {_id: 0}})
+    async findBloggersById(id: string): Promise<BloggerType | null> {
+
+        const blogger = await bloggerCollection.findOne({id: id}, {projection: {_id: 0}})
 
         if (blogger) {
+            // @ts-ignore
             return blogger;
         }
         return null;
@@ -46,8 +49,8 @@ export const bloggersRepositories = {
 
 
         const result = await bloggerCollection.insertOne(newBlogger)
-
-        return newBlogger
+        // @ts-ignore
+        return result
 
     },
     async updateBloggers(blogger: BloggerType): Promise<boolean> {
@@ -63,7 +66,7 @@ export const bloggersRepositories = {
         return result.matchedCount === 1
 
     },
-    async deleteBloggers(id: string) {
+    async deleteBloggers(id: string): Promise<boolean> {
         const result = await bloggerCollection.deleteOne({id: id})
         return result.deletedCount === 1
     },

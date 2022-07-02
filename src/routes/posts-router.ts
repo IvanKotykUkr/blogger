@@ -9,13 +9,14 @@ import {
 import {basicAuthorization} from "../midlewares/basicAuth";
 import {authMidlewares, authMidlewaresWithChekOwn} from "../midlewares/auth-midlewares";
 import {commentValidation, inputValidationComment} from "../midlewares/input-validation-comments";
+import {CommentType, PostType} from "../repositories/db";
 
 
 export const postsRouter = Router({})
 
 
 postsRouter.get("/:id", async (req: Request, res: Response) => {
-    const post = await postsService.findPostsById(req.params.id)
+    const post: PostType | null = await postsService.findPostsById(req.params.id)
     if (!post) {
         res.sendStatus(404)
         return
@@ -44,7 +45,7 @@ postsRouter.post("/",
     inputValidationPost,
 
     async (req: Request, res: Response) => {
-        const newPost = await postsService.createPost(
+        const newPost: PostType | null = await postsService.createPost(
             req.body.title,
             req.body.shortDescription,
             req.body.content,
@@ -73,7 +74,7 @@ postsRouter.put("/:id",
     inputValidationPost,
 
     async (req: Request, res: Response) => {
-        const isUpdated = await postsService.updatePost(
+        const isUpdated: boolean | null = await postsService.updatePost(
             req.params.id,
             req.body.title,
             req.body.shortDescription,
@@ -101,7 +102,7 @@ postsRouter.put("/:id",
     });
 
 postsRouter.delete("/:id", basicAuthorization, async (req: Request, res: Response) => {
-    const isDeleted = await postsService.deletePost(req.params.id)
+    const isDeleted: boolean = await postsService.deletePost(req.params.id)
 
     if (isDeleted) {
         res.sendStatus(204)
@@ -119,7 +120,7 @@ postsRouter.post('/:id/comments',
 
     async (req: Request, res: Response) => {
 
-        const newComment = await postsService.createCommentsByPost(req.params.id, req.body.content, req.user!.id, req.user!.login)
+        const newComment: CommentType | null = await postsService.createCommentsByPost(req.params.id, req.body.content, req.user!.id, req.user!.login)
 
         if (!newComment) {
             res.send(404)

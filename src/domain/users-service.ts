@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcrypt';
-import {UserDBtype} from "../repositories/types";
-import {ObjectId} from "mongodb";
+
 import {userRepositories} from "../repositories/user-db-repositories";
+import {UserType} from "../repositories/db";
 
 
 export const usersService = {
@@ -9,7 +9,7 @@ export const usersService = {
         const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await this.generateHash(password, passwordSalt)
 
-        const newUser: UserDBtype = {
+        const newUser: UserType = {
             id: "" + (+(new Date())),
             login,
             email,
@@ -24,7 +24,7 @@ export const usersService = {
         }
     },
     async checkCredentials(loginOrEmail: string, password: string) {
-        const user = await userRepositories.findLoginOrEmail(loginOrEmail)
+        const user: UserType = await userRepositories.findLoginOrEmail(loginOrEmail)
         if (!user) return false
 
         const passwordHash = await this.generateHash(password, user.passwordSalt)
@@ -37,7 +37,7 @@ export const usersService = {
     async findUserById(userid: string) {
 
 
-        const foundUser = await userRepositories.findUserById(userid)
+        const foundUser: UserType | null = await userRepositories.findUserById(userid)
         return foundUser
     },
     async generateHash(password: string, salt: string) {
@@ -59,8 +59,8 @@ export const usersService = {
         }
         return users
     },
-    async deleteUser(id: string) {
-        const isDeleted = await userRepositories.deleteUserById(id)
+    async deleteUser(id: string): Promise<boolean> {
+        const isDeleted: boolean = await userRepositories.deleteUserById(id)
         return isDeleted
     }
 

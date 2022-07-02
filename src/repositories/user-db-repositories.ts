@@ -1,6 +1,5 @@
-import {usersCollection} from "./db";
-import {UserDBtype} from "./types";
-import {ObjectId, WithId} from "mongodb";
+import {usersCollection, UserType} from "./db";
+
 
 export const userRepositories = {
     async countUsers() {
@@ -14,13 +13,13 @@ export const userRepositories = {
 
         return users
     },
-    async createUser(newUser: UserDBtype) {
+    async createUser(newUser: UserType) {
         await usersCollection.insertOne(newUser)
         return newUser
     },
-    async findUserById(id: any) {
-
-        let user = await usersCollection.findOne({id: id})
+    async findUserById(id: string): Promise<UserType | null> {
+        // @ts-ignore
+        let user: UserType = await usersCollection.findOne({id: id})
 
         if (user) {
 
@@ -29,11 +28,13 @@ export const userRepositories = {
         return null
 
     },
-    async findLoginOrEmail(loginOrEmail: string) {
-        const user = await usersCollection.findOne({login: loginOrEmail})
+    async findLoginOrEmail(loginOrEmail: string): Promise<UserType> {
+
+        // @ts-ignore
+        const user: UserType = await usersCollection.findOne({login: loginOrEmail})
         return user
     },
-    async deleteUserById(id: string) {
+    async deleteUserById(id: string): Promise<boolean> {
         const result = await usersCollection.deleteOne({id: id})
         return result.deletedCount === 1
 

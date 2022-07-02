@@ -1,15 +1,16 @@
 import {bloggersRepositories} from "../repositories/bloggers-db-repositories";
 import {postsService} from "./posts-service";
-import {BloggerType} from "../repositories/db";
+import {BloggerType, PostType} from "../repositories/db";
+import {WithId} from "mongodb";
 
 
 export const bloggersService = {
 
     async getBloggers(searchnameterm: any, pagesize: number, pagenumber: number) {
-        let totalCount = await bloggersRepositories.getBloggersCount()
-        let page = pagenumber
-        let pageSize = pagesize
-        let pagesCount = Math.ceil(totalCount / pageSize)
+        let totalCount: number = await bloggersRepositories.getBloggersCount()
+        let page: number = pagenumber
+        let pageSize: number = pagesize
+        let pagesCount: number = Math.ceil(totalCount / pageSize)
         if (!searchnameterm) {
             const items = await bloggersRepositories.getBloggersPaginaton(pageSize, page)
             return {
@@ -20,8 +21,8 @@ export const bloggersService = {
                 items,
             }
         }
-        let totalCountSearch = await bloggersRepositories.blooggersSeachCount(searchnameterm)
-        let pagesCountSearch = Math.ceil(totalCountSearch / pageSize)
+        let totalCountSearch: number = await bloggersRepositories.blooggersSeachCount(searchnameterm)
+        let pagesCountSearch: number = Math.ceil(totalCountSearch / pageSize)
         const itemsSearch = await bloggersRepositories.getBloggersSearchTerm(page, pageSize, searchnameterm)
         return {
             pagesCount: pagesCountSearch,
@@ -35,8 +36,8 @@ export const bloggersService = {
     },
 
 
-    async findBloggersById(id: string) {
-        let blogger = await bloggersRepositories.findBloggersById(id)
+    async findBloggersById(id: string): Promise<BloggerType | null> {
+        let blogger: BloggerType | null = await bloggersRepositories.findBloggersById(id)
         if (blogger) {
             return blogger;
         }
@@ -45,7 +46,7 @@ export const bloggersService = {
 
     },
 
-    async createBlogger(name: string, youtubeUrl: string) {
+    async createBlogger(name: string, youtubeUrl: string): Promise<BloggerType> {
         const newBlogger: BloggerType = {
             id: "" + (+(new Date())),
             name: name,
@@ -58,7 +59,7 @@ export const bloggersService = {
             youtubeUrl: newBlogger.youtubeUrl
         }
     },
-    async updateBloggers(id: string, name: string, youtubeUrl: string):Promise<boolean> {
+    async updateBloggers(id: string, name: string, youtubeUrl: string): Promise<boolean> {
         const blogger: BloggerType = {
             id,
             name,
@@ -66,11 +67,11 @@ export const bloggersService = {
         }
         return await bloggersRepositories.updateBloggers(blogger)
     },
-    async deleteBloggers(id: string) {
+    async deleteBloggers(id: string): Promise<boolean> {
         return await bloggersRepositories.deleteBloggers(id)
     },
     async getPostsbyIdBlogger(id: string, pagenumber: number, pageesize: number) {
-        let blogger: any = await this.findBloggersById(id)
+        let blogger: BloggerType | null = await this.findBloggersById(id)
         if (blogger) {
             let findPosts: any = await postsService.findPostsByIdBlogger(blogger.id, pagenumber, pageesize)
             return findPosts
@@ -78,10 +79,10 @@ export const bloggersService = {
         return null
 
     },
-    async createPostbyBloggerId(id: string, title: string, shortDescription: string, content: string) {
-        let blogger: any = await this.findBloggersById(id)
+    async createPostbyBloggerId(id: string, title: string, shortDescription: string, content: string): Promise<PostType | null> {
+        let blogger: BloggerType | null = await this.findBloggersById(id)
         if (blogger) {
-            let newPosts: any = await postsService.createPostByBloggerId(blogger.id, title, shortDescription, content, blogger.name)
+            let newPosts: PostType = await postsService.createPostByBloggerId(blogger.id, title, shortDescription, content, blogger.name)
             return {
                 id: newPosts.id,
                 title: newPosts.title,

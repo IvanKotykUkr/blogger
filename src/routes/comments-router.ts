@@ -4,6 +4,7 @@ import {authMidlewares, authMidlewaresWithChekOwn} from "../midlewares/auth-midl
 
 
 import {commentValidation, inputValidationComment} from "../midlewares/input-validation-comments";
+import {CommentType} from "../repositories/db";
 
 export const commentsRouter = Router({})
 
@@ -15,7 +16,7 @@ commentsRouter.put('/:id',
 
 
     async (req: Request, res: Response) => {
-        const isUpdated = await commentsService.updateCommentById(req.params.id, req.body.content)
+        const isUpdated: boolean = await commentsService.updateCommentById(req.params.id, req.body.content)
         if (isUpdated) {
             res.status(204).json(isUpdated)
             return
@@ -26,12 +27,18 @@ commentsRouter.put('/:id',
 
     });
 commentsRouter.delete('/:id', authMidlewares, authMidlewaresWithChekOwn, async (req: Request, res: Response) => {
-    const isDeleted = await commentsService.deleteCommentsById(req.params.id)
-    if (isDeleted) res.sendStatus(204)
+    const isDeleted: boolean = await commentsService.deleteCommentsById(req.params.id)
+    if (isDeleted) {
+        res.sendStatus(204)
+        return
+    }
+
+    res.sendStatus(404)
+
 
 });
 commentsRouter.get('/:id', async (req: Request, res: Response) => {
-    const comment = await commentsService.findCommentsById(req.params.id)
+    const comment: CommentType | null = await commentsService.findCommentsById(req.params.id)
 
     if (!comment) {
         res.sendStatus(404)

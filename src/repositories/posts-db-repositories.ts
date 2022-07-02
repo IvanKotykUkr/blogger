@@ -1,8 +1,9 @@
-import {postsCollection} from "./db";
+import {postsCollection, PostType} from "./db";
+import {InsertOneResult} from "mongodb";
 
 
 export const postsRepositories = {
-    async getPostsCount() {
+    async getPostsCount(): Promise<number> {
         return postsCollection.countDocuments()
     },
     async getPostsPagination(number: number, size: number) {
@@ -12,8 +13,10 @@ export const postsRepositories = {
             .toArray()
     },
 
-    async findPostsById(postid: string) {
-        const post = await postsCollection.findOne({id: postid}, {projection: {_id: 0}})
+    async findPostsById(postid: string): Promise<PostType | null> {
+
+        // @ts-ignore
+        const post: PostType = await postsCollection.findOne({id: postid}, {projection: {_id: 0}})
 
         if (post) {
             return post;
@@ -21,12 +24,13 @@ export const postsRepositories = {
         return null;
 
     },
-    async createPost(newpost: any) {
+    async createPost(newpost: PostType): Promise<InsertOneResult<PostType>> {
 
-        const result = await postsCollection.insertOne(newpost)
-        return newpost
+
+        const result: InsertOneResult<PostType> = await postsCollection.insertOne(newpost)
+        return result
     },
-    async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string, bloggerName: string) {
+    async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string, bloggerName: string): Promise<boolean> {
         const result = await postsCollection.updateOne({id: id},
             {
                 $set: {
@@ -41,14 +45,14 @@ export const postsRepositories = {
     },
 
 
-    async deletePost(id: string) {
+    async deletePost(id: string): Promise<boolean> {
         const result = await postsCollection.deleteOne({id: id})
         return result.deletedCount === 1
 
 
     },
-    async findPostsByIdBloggerCount(bloggerId: string) {
-        const posts = postsCollection.countDocuments({bloggerId: bloggerId})
+    async findPostsByIdBloggerCount(bloggerId: string): Promise<number> {
+        const posts: number = await postsCollection.countDocuments({bloggerId: bloggerId})
         return posts
     },
     async findPostsByIdBloggerPagination(bloggerId: string, number: number, size: number) {

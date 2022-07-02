@@ -1,6 +1,7 @@
 import {postsRepositories} from "../repositories/posts-db-repositories";
 import {bloggersService} from "./bloggers-service";
 import {commentsService} from "./comments-service";
+import {BloggerType, CommentType, PostType} from "../repositories/db";
 
 
 export const postsService = {
@@ -23,8 +24,8 @@ export const postsService = {
         }
         return post
     },
-    async findPostsById(id: string) {
-        const post = await postsRepositories.findPostsById(id)
+    async findPostsById(id: string): Promise<PostType | null> {
+        const post: PostType | null = await postsRepositories.findPostsById(id)
 
         if (post) {
             return post;
@@ -33,10 +34,10 @@ export const postsService = {
 
 
     },
-    async createPost(title: string, shortDescription: string, content: string, bloggerId: string) {
+    async createPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostType | null> {
 
-        let blogger: any = await bloggersService.findBloggersById(bloggerId)
-        let newpost;
+        let blogger: BloggerType | null = await bloggersService.findBloggersById(bloggerId)
+        let newpost: PostType | null;
         const id = +(new Date())
         if (blogger) {
             newpost = {
@@ -61,10 +62,10 @@ export const postsService = {
 
 
     },
-    async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string) {
-        let blogger: any = await bloggersService.findBloggersById(bloggerId)
+    async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string): Promise<boolean | null> {
+        let blogger: BloggerType | null = await bloggersService.findBloggersById(bloggerId)
 
-        let upPost = await postsService.findPostsById(id)
+        let upPost: PostType | null = await postsService.findPostsById(id)
 
         if (upPost) {
             if (blogger) {
@@ -72,12 +73,12 @@ export const postsService = {
             }
             return null
         }
-        return
+        return false
 
     },
 
 
-    async deletePost(id: string) {
+    async deletePost(id: string): Promise<boolean> {
         return await postsRepositories.deletePost(id)
 
 
@@ -99,30 +100,31 @@ export const postsService = {
         }
         return post
     },
-    async createPostByBloggerId(bloggerId: string, title: string, shortDescription: string, content: string, bloggerName: string) {
+    async createPostByBloggerId(bloggerId: string, title: string, shortDescription: string, content: string, bloggerName: string): Promise<PostType> {
 
-        let newpost = {
+        let newpost: PostType = {
             id: "" + (+(new Date())),
-            title: title,
-            shortDescription: shortDescription,
-            content: content,
-            bloggerId: bloggerId,
-            bloggerName: bloggerName,
+            title,
+            shortDescription,
+            content,
+            bloggerId,
+            bloggerName,
         }
-        const generatedPost = postsRepositories.createPost(newpost)
+        // @ts-ignore
+        const generatedPost: PostType = await postsRepositories.createPost(newpost)
         return generatedPost
     },
-    async createCommentsByPost(postid: string, content: string, userid: string, userLogin: string) {
-        let post = await this.findPostsById(postid)
+    async createCommentsByPost(postid: string, content: string, userid: string, userLogin: string): Promise<CommentType | null> {
+        let post: PostType | null = await this.findPostsById(postid)
         if (post) {
-            let newComment = await commentsService.createCommentsByPost(postid, content, userid, userLogin)
+            let newComment: CommentType = await commentsService.createCommentsByPost(postid, content, userid, userLogin)
             return newComment
         }
         return null
 
     },
     async sendAllCommentsByPostId(postid: string, pagenumber: number, pagesize: number) {
-        let post = await this.findPostsById(postid)
+        let post: PostType | null = await this.findPostsById(postid)
 
         if (post) {
             let allComments = await commentsService.sendAllCommentsByPostId(postid, pagenumber, pagesize)
