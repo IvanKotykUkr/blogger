@@ -1,22 +1,55 @@
-import {postsCollection, PostType} from "./db";
-import {InsertOneResult} from "mongodb";
+import {postsCollection, PostType, PostTypeInsert} from "./db";
+import {InsertOneResult, ObjectId} from "mongodb";
 
 
 export const postsRepositories = {
-    async getPostsCount(): Promise<number> {
-        return postsCollection.countDocuments()
+    async paginationFilter(bloggerId: string | null) {
+        let filter = {}
+        if (bloggerId) {
+            return filter = {bloggerId: new ObjectId(bloggerId)}
+        }
+        return filter
     },
-    async getPostsPagination(number: number, size: number) {
-        return postsCollection.find({})
+    async findPostsByIdBloggerCount(bloggerId: null | string): Promise<number> {
+        const filter = await this.paginationFilter(bloggerId)
+        const posts: number = await postsCollection.countDocuments(filter)
+        return posts
+    },
+    async findPostsByIdBloggerPagination(bloggerId: string | null, number: number, size: number) {
+        const filter = await this.paginationFilter(bloggerId)
+        const posts = postsCollection.find(filter)
             .skip(number > 0 ? ((number - 1) * size) : 0)
-            .limit(size).project({_id: 0})
+            .limit(size)
+            .project({
+                _id: 0,
+                id: "$_id",
+                title: "$title",
+                shortDescription: "$shortDescription",
+                content: "$content",
+                bloggerId: "$bloggerId",
+                bloggerName: "$bloggerName",
+            })
             .toArray()
+        return posts
+
     },
 
     async findPostsById(postid: string): Promise<PostType | null> {
 
         // @ts-ignore
-        const post: PostType = await postsCollection.findOne({id: postid}, {projection: {_id: 0}})
+        const post: PostType = await postsCollection.findOne(
+            {_id: new ObjectId(postid)},
+            {
+                projection: {
+                    _id: 0,
+                    id: "$_id",
+                    title: "$title",
+                    shortDescription: "$shortDescription",
+                    content: "$content",
+                    bloggerId: "$bloggerId",
+                    bloggerName: "$bloggerName",
+                }
+            })
 
         if (post) {
             return post;
@@ -24,14 +57,16 @@ export const postsRepositories = {
         return null;
 
     },
-    async createPost(newpost: PostType): Promise<InsertOneResult<PostType>> {
+    async createPost(newpost: PostType): Promise<PostType> {
 
 
-        const result: InsertOneResult<PostType> = await postsCollection.insertOne(newpost)
+        const result = await postsCollection.insertOne(newpost)
+        // @ts-ignore
         return result
+
     },
     async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string, bloggerName: string): Promise<boolean> {
-        const result = await postsCollection.updateOne({id: id},
+        const result = await postsCollection.updateOne({_id: new ObjectId(id)},
             {
                 $set: {
                     title: title,
@@ -46,23 +81,11 @@ export const postsRepositories = {
 
 
     async deletePost(id: string): Promise<boolean> {
-        const result = await postsCollection.deleteOne({id: id})
+        const result = await postsCollection.deleteOne({_id: new ObjectId(id)})
         return result.deletedCount === 1
 
 
     },
-    async findPostsByIdBloggerCount(bloggerId: string): Promise<number> {
-        const posts: number = await postsCollection.countDocuments({bloggerId: bloggerId})
-        return posts
-    },
-    async findPostsByIdBloggerPagination(bloggerId: string, number: number, size: number) {
-        const posts = postsCollection.find({bloggerId: bloggerId})
-            .skip(number > 0 ? ((number - 1) * size) : 0)
-            .limit(size)
-            .project({_id: 0})
-            .toArray()
-        return posts
 
-    }
 
 }

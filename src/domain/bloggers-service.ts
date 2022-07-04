@@ -1,29 +1,21 @@
 import {bloggersRepositories} from "../repositories/bloggers-db-repositories";
 import {postsService} from "./posts-service";
 import {BloggerType, PostType} from "../repositories/db";
-import {WithId} from "mongodb";
+import {ObjectId, WithId} from "mongodb";
 
 
 export const bloggersService = {
+    async convertToHex(id: string) {
+        const hex = id.split("").reduce((hex, c) => hex += c.charCodeAt(0).toString(16).padStart(2, "0"), "")
 
-    async getBloggers(searchnameterm: any, pagesize: number, pagenumber: number) {
-        let totalCount: number = await bloggersRepositories.getBloggersCount()
+        return hex
+    },
+    getBloggers: async function (searchnameterm: string | null, pagesize: number, pagenumber: number) {
         let page: number = pagenumber
         let pageSize: number = pagesize
-        let pagesCount: number = Math.ceil(totalCount / pageSize)
-        if (!searchnameterm) {
-            const items = await bloggersRepositories.getBloggersPaginaton(pageSize, page)
-            return {
-                pagesCount,
-                page,
-                pageSize,
-                totalCount,
-                items,
-            }
-        }
         let totalCountSearch: number = await bloggersRepositories.blooggersSeachCount(searchnameterm)
         let pagesCountSearch: number = Math.ceil(totalCountSearch / pageSize)
-        const itemsSearch = await bloggersRepositories.getBloggersSearchTerm(page, pageSize, searchnameterm)
+        const itemsSearch = await bloggersRepositories.getBloggersSearchTerm(pageSize, page, searchnameterm)
         return {
             pagesCount: pagesCountSearch,
             page,
@@ -37,6 +29,10 @@ export const bloggersService = {
 
 
     async findBloggersById(id: string): Promise<BloggerType | null> {
+        const idHex = await this.convertToHex(id)
+        if (idHex.length !== 48) {
+            return null
+        }
         let blogger: BloggerType | null = await bloggersRepositories.findBloggersById(id)
         if (blogger) {
             return blogger;
@@ -48,49 +44,56 @@ export const bloggersService = {
 
     async createBlogger(name: string, youtubeUrl: string): Promise<BloggerType> {
         const newBlogger: BloggerType = {
-            id: "" + (+(new Date())),
+
             name: name,
             youtubeUrl: youtubeUrl
         }
         await bloggersRepositories.createBlogger(newBlogger)
         return {
-            id: newBlogger.id,
+            id: newBlogger._id,
             name: newBlogger.name,
             youtubeUrl: newBlogger.youtubeUrl
         }
     },
     async updateBloggers(id: string, name: string, youtubeUrl: string): Promise<boolean> {
+        const idHex = await this.convertToHex(id)
+        if (idHex.length !== 48) {
+            return false
+        }
         const blogger: BloggerType = {
-            id,
+            id: new ObjectId(id),
             name,
             youtubeUrl
         }
+
+
         return await bloggersRepositories.updateBloggers(blogger)
     },
     async deleteBloggers(id: string): Promise<boolean> {
+        const idHex = await this.convertToHex(id)
+        if (idHex.length !== 48) {
+            return false
+        }
         return await bloggersRepositories.deleteBloggers(id)
     },
     async getPostsbyIdBlogger(id: string, pagenumber: number, pageesize: number) {
+
         let blogger: BloggerType | null = await this.findBloggersById(id)
+
         if (blogger) {
-            let findPosts: any = await postsService.findPostsByIdBlogger(blogger.id, pagenumber, pageesize)
+            // @ts-ignore
+            let findPosts: any = await postsService.findPostsByIdBlogger(pagenumber, pageesize, blogger.id)
             return findPosts
         }
         return null
 
     },
     async createPostbyBloggerId(id: string, title: string, shortDescription: string, content: string): Promise<PostType | null> {
-        let blogger: BloggerType | null = await this.findBloggersById(id)
-        if (blogger) {
-            let newPosts: PostType = await postsService.createPostByBloggerId(blogger.id, title, shortDescription, content, blogger.name)
-            return {
-                id: newPosts.id,
-                title: newPosts.title,
-                shortDescription: newPosts.shortDescription,
-                content: newPosts.content,
-                bloggerId: newPosts.bloggerId,
-                bloggerName: newPosts.bloggerName
-            }
+
+        let newPosts: PostType | null = await postsService.createPost(title, shortDescription, content, id)
+        if (newPosts) {
+
+            return newPosts
         }
         return null
 

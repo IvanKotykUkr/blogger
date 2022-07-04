@@ -1,31 +1,27 @@
 import {bloggerCollection, BloggerType} from "./db";
-import {WithId} from "mongodb";
+import {ObjectId, WithId} from "mongodb";
 
 
 export const bloggersRepositories = {
-    async getBloggersCount(): Promise<number> {
-
-        return await bloggerCollection.countDocuments()
-
+    async paginationFilter(name: string | null) {
+        let filter = {}
+        if (name) {
+            return filter = {name: {$regex: name}}
+        }
+        return filter
+    },
+    async blooggersSeachCount(name: string|null): Promise<number> {
+        const filter = await this.paginationFilter(name)
+        return await bloggerCollection.countDocuments(filter)
 
     },
-    async blooggersSeachCount(name: string): Promise<number> {
-        return await bloggerCollection.countDocuments({name: {$regex: name}})
 
-    },
-    async getBloggersPaginaton(size: number, number: number) {
-        const bloggers = await bloggerCollection
-            .find({})
+    async getBloggersSearchTerm(size: number, number: number, name: string|null) {
+        const filter = await this.paginationFilter(name)
+        const bloggers = await bloggerCollection.find(filter)
             .skip((number - 1) * size)
             .limit(size)
-            .project({_id: 0})
-            .toArray()
-        return bloggers
-    },
-    async getBloggersSearchTerm(number: number, size: number, name: string) {
-        const bloggers = await bloggerCollection.find({name: {$regex: name}})
-            .skip((number - 1) * size)
-            .limit(size).project({_id: 0})
+            .project({_id: 0, id: "$_id", name: "$name", youtubeUrl: "$youtubeUrl"})
             .toArray()
         return bloggers
     },
@@ -33,7 +29,17 @@ export const bloggersRepositories = {
 
     async findBloggersById(id: string): Promise<BloggerType | null> {
 
-        const blogger = await bloggerCollection.findOne({id: id}, {projection: {_id: 0}})
+        const blogger = await bloggerCollection.findOne({_id: new ObjectId(id)},
+            {
+                projection:
+                    {
+                        _id: 0,
+                        id: "$_id",
+                        name: "$name",
+                        youtubeUrl: "$youtubeUrl"
+                    }
+            })
+
 
         if (blogger) {
             // @ts-ignore
@@ -47,7 +53,7 @@ export const bloggersRepositories = {
 
     async createBlogger(newBlogger: BloggerType): Promise<BloggerType> {
 
-
+        // @ts-ignore
         const result = await bloggerCollection.insertOne(newBlogger)
         // @ts-ignore
         return result
@@ -55,7 +61,7 @@ export const bloggersRepositories = {
     },
     async updateBloggers(blogger: BloggerType): Promise<boolean> {
 
-        const result = await bloggerCollection.updateOne({id: blogger.id}, {
+        const result = await bloggerCollection.updateOne({_id: new ObjectId(blogger.id)}, {
             $set: {
                 name: blogger.name,
                 youtubeUrl: blogger.youtubeUrl
@@ -67,7 +73,8 @@ export const bloggersRepositories = {
 
     },
     async deleteBloggers(id: string): Promise<boolean> {
-        const result = await bloggerCollection.deleteOne({id: id})
+
+        const result = await bloggerCollection.deleteOne({_id: new ObjectId(id)})
         return result.deletedCount === 1
     },
 

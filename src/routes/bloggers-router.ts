@@ -30,9 +30,10 @@ bloggersRouter.get("/:id",
 
 bloggersRouter.get("/",
     async (req: Request, res: Response) => {
-        const searchnameterm = req.query.SearchNameTerm || undefined;
+        const searchnameterm = req.query.SearchNameTerm || null;
         const pagenumber = req.query.PageNumber || 1;
         const pagesize = req.query.PageSize || 10;
+        // @ts-ignore
         const bloggers = await bloggersService.getBloggers(searchnameterm, +pagesize, +pagenumber)
         res.status(200).json(bloggers)
     });

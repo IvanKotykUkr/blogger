@@ -30,7 +30,7 @@ postsRouter.get("/:id", async (req: Request, res: Response) => {
 postsRouter.get("/", async (req: Request, res: Response) => {
     const pagenumber = req.query.PageNumber || 1;
     const pagesize = req.query.PageSize || 10;
-    const posts = await postsService.getPosts(+pagenumber, +pagesize)
+    const posts = await postsService.findPostsByIdBlogger(+pagenumber, +pagesize)
     res.status(200).send(posts)
 });
 
@@ -120,7 +120,7 @@ postsRouter.post('/:id/comments',
 
     async (req: Request, res: Response) => {
 
-        const newComment: CommentType | null = await postsService.createCommentsByPost(req.params.id, req.body.content, req.user!.id, req.user!.login)
+        const newComment: CommentType | null = await postsService.createCommentsByPost(req.params.id, req.body.content, "" + req.user!.id, req.user!.login)
 
         if (!newComment) {
             res.send(404)
