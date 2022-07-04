@@ -6,7 +6,7 @@ import {ObjectId} from "mongodb";
 
 
 export const usersService = {
-    async convertToHex(id:string) {
+    async convertToHex(id: string) {
         const hex = id.split("").reduce((hex, c) => hex += c.charCodeAt(0).toString(16).padStart(2, "0"), "")
 
         return hex
@@ -41,7 +41,7 @@ export const usersService = {
         return user
     },
     async findUserById(userid: string) {
-        const idHex=  await this.convertToHex(userid)
+        const idHex = await this.convertToHex(userid)
         if (idHex.length !== 48) {
             return null
         }
@@ -69,7 +69,7 @@ export const usersService = {
         return users
     },
     async deleteUser(id: string): Promise<boolean> {
-        const idHex=  await this.convertToHex(id)
+        const idHex = await this.convertToHex(id)
         if (idHex.length !== 48) {
             return false
         }

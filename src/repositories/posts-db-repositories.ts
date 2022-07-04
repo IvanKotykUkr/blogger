@@ -1,6 +1,16 @@
 import {postsCollection, PostType, PostTypeInsert} from "./db";
 import {InsertOneResult, ObjectId} from "mongodb";
 
+const projectionPost={
+    _id: 0,
+    id: "$_id",
+    title: "$title",
+    shortDescription: "$shortDescription",
+    content: "$content",
+    bloggerId: "$bloggerId",
+    bloggerName: "$bloggerName",
+
+}
 
 export const postsRepositories = {
     async paginationFilter(bloggerId: string | null) {
@@ -20,15 +30,7 @@ export const postsRepositories = {
         const posts = postsCollection.find(filter)
             .skip(number > 0 ? ((number - 1) * size) : 0)
             .limit(size)
-            .project({
-                _id: 0,
-                id: "$_id",
-                title: "$title",
-                shortDescription: "$shortDescription",
-                content: "$content",
-                bloggerId: "$bloggerId",
-                bloggerName: "$bloggerName",
-            })
+            .project(projectionPost)
             .toArray()
         return posts
 
@@ -39,16 +41,7 @@ export const postsRepositories = {
         // @ts-ignore
         const post: PostType = await postsCollection.findOne(
             {_id: new ObjectId(postid)},
-            {
-                projection: {
-                    _id: 0,
-                    id: "$_id",
-                    title: "$title",
-                    shortDescription: "$shortDescription",
-                    content: "$content",
-                    bloggerId: "$bloggerId",
-                    bloggerName: "$bloggerName",
-                }
+            {projection: projectionPost
             })
 
         if (post) {

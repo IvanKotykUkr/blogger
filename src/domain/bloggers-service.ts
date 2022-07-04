@@ -23,11 +23,7 @@ export const bloggersService = {
             totalCount: totalCountSearch,
             items: itemsSearch,
         }
-
-
     },
-
-
     async findBloggersById(id: string): Promise<BloggerType | null> {
         const idHex = await this.convertToHex(id)
         if (idHex.length !== 48) {
@@ -38,13 +34,10 @@ export const bloggersService = {
             return blogger;
         }
         return null;
-
-
     },
 
     async createBlogger(name: string, youtubeUrl: string): Promise<BloggerType> {
         const newBlogger: BloggerType = {
-
             name: name,
             youtubeUrl: youtubeUrl
         }
@@ -65,8 +58,6 @@ export const bloggersService = {
             name,
             youtubeUrl
         }
-
-
         return await bloggersRepositories.updateBloggers(blogger)
     },
     async deleteBloggers(id: string): Promise<boolean> {

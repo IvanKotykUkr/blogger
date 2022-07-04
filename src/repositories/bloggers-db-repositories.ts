@@ -1,6 +1,11 @@
 import {bloggerCollection, BloggerType} from "./db";
 import {ObjectId, WithId} from "mongodb";
-
+const projectionBlogger={
+    _id: 0,
+    id: "$_id",
+    name: "$name",
+    youtubeUrl: "$youtubeUrl"
+}
 
 export const bloggersRepositories = {
     async paginationFilter(name: string | null) {
@@ -21,7 +26,7 @@ export const bloggersRepositories = {
         const bloggers = await bloggerCollection.find(filter)
             .skip((number - 1) * size)
             .limit(size)
-            .project({_id: 0, id: "$_id", name: "$name", youtubeUrl: "$youtubeUrl"})
+            .project(projectionBlogger)
             .toArray()
         return bloggers
     },
@@ -31,13 +36,7 @@ export const bloggersRepositories = {
 
         const blogger = await bloggerCollection.findOne({_id: new ObjectId(id)},
             {
-                projection:
-                    {
-                        _id: 0,
-                        id: "$_id",
-                        name: "$name",
-                        youtubeUrl: "$youtubeUrl"
-                    }
+                projection:projectionBlogger
             })
 
 

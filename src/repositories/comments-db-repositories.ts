@@ -1,6 +1,14 @@
 import {commentsCollection, CommentType} from "./db";
 import {InsertOneResult, ObjectId, UpdateResult} from "mongodb";
 
+const projectionComment = {
+    _id: 0,
+    id: "$_id",
+    content: "$content",
+    userId: "$userId",
+    userLogin: "$userLogin",
+    addedAt: "$addedAt",
+}
 export const commentsRepositories = {
     async commentCount(postId: string) {
         const result: number = await commentsCollection.countDocuments({postid: new ObjectId(postId)})
@@ -16,14 +24,7 @@ export const commentsRepositories = {
         const comments = await commentsCollection.find({postid: new ObjectId(post)})
             .skip(number > 0 ? ((number - 1) * size) : 0)
             .limit(size)
-            .project({
-                _id: 0,
-                id: "$_id",
-                content: "$content",
-                userId: "$userId",
-                userLogin: "$userLogin",
-                addedAt: "$addedAt",
-            })
+            .project(projectionComment)
             .toArray()
         return comments
 
@@ -33,14 +34,7 @@ export const commentsRepositories = {
         // @ts-ignore
         const comments: CommentType = await commentsCollection
             .findOne({_id: new ObjectId(idComment)}, {
-                projection: {
-                    _id: 0,
-                    id: "$_id",
-                    content: "$content",
-                    userId: "$userId",
-                    userLogin: "$userLogin",
-                    addedAt: "$addedAt",
-                }
+                projection: projectionComment
             })
         return comments
 
