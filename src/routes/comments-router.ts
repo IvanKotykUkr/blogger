@@ -4,7 +4,7 @@ import {authMidlewares, authMidlewaresWithChekOwn} from "../midlewares/auth-midl
 
 
 import {commentValidation, inputValidationComment} from "../midlewares/input-validation-comments";
-import {CommentType} from "../repositories/db";
+import {CommentResponseType} from "../types/commnet-type";
 
 export const commentsRouter = Router({})
 
@@ -38,7 +38,7 @@ commentsRouter.delete('/:id', authMidlewares, authMidlewaresWithChekOwn, async (
 
 });
 commentsRouter.get('/:id', async (req: Request, res: Response) => {
-    const comment: CommentType | null = await commentsService.findCommentsById(req.params.id)
+    const comment: CommentResponseType | null = await commentsService.findCommentsById(req.params.id)
 
     if (!comment) {
         res.sendStatus(404)

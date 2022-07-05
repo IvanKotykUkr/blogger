@@ -2,8 +2,8 @@ import jwt, {JwtPayload} from 'jsonwebtoken'
 
 
 import {settings} from "../settings";
-import {UserFromTokenType, UserType} from "../repositories/db";
 import {ObjectId} from "mongodb";
+import {UserAuth, UserFromTokenType, UserType} from "../types/user-type";
 
 export const jwtService = {
     async createJWT(user: UserType): Promise<{ token: string }> {

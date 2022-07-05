@@ -1,20 +1,24 @@
 import {commentsRepositories} from "../repositories/comments-db-repositories";
-import {CommentType, PostType} from "../repositories/db";
 import {ObjectId} from "mongodb";
+import {CommentResponseType, CommentsResponseTypeWithPagination, CommentType} from "../types/commnet-type";
 
 
 export const commentsService = {
-    async convertToHex(id:string) {
-        const hex = id.split("").reduce((hex, c) => hex += c.charCodeAt(0).toString(16).padStart(2, "0"), "")
+    async convertToHex(id: string): Promise<string> {
+        const hex: string =
+            id.split("")
+                .reduce((hex, c) => hex += c
+                    .charCodeAt(0)
+                    .toString(16).padStart(2, "0"), "")
 
         return hex
     },
-    async sendAllCommentsByPostId(postId: string, pagenumber: number, pagesize: number) {
-        let totalCount = await commentsRepositories.commentCount(postId)
-        let page = pagenumber
-        let pageSize = pagesize
-        let pagesCount = Math.ceil(totalCount / pageSize)
-        const items = await commentsRepositories.allCommentByPostIdPagination(postId, page, pageSize)
+    async sendAllCommentsByPostId(postId: string, pagenumber: number, pagesize: number): Promise<CommentsResponseTypeWithPagination> {
+        let totalCount: number = await commentsRepositories.commentCount(postId)
+        let page: number = pagenumber
+        let pageSize: number = pagesize
+        let pagesCount: number = Math.ceil(totalCount / pageSize)
+        const items: CommentResponseType[] = await commentsRepositories.allCommentByPostIdPagination(postId, page, pageSize)
         let comment = {
             pagesCount,
             page,
@@ -24,7 +28,7 @@ export const commentsService = {
         }
         return comment
     },
-    async createCommentsByPost(postid: string, content: string, userid: string, userLogin: string): Promise<CommentType> {
+    async createCommentsByPost(postid: string, content: string, userid: string, userLogin: string): Promise<CommentResponseType> {
         let newComment: CommentType = {
 
             postid: new ObjectId(postid),
@@ -48,18 +52,21 @@ export const commentsService = {
 
     },
     async deleteCommentsById(id: string): Promise<boolean> {
-
+        const idHex: string = await this.convertToHex(id)
+        if (idHex.length !== 48) {
+            return false
+        }
         return await commentsRepositories.deleteCommentsById(id)
 
     },
 
-    async findCommentsById(id: string): Promise<CommentType | null> {
-       const idHex=  await this.convertToHex(id)
+    async findCommentsById(id: string): Promise<CommentResponseType | null> {
+        const idHex: string = await this.convertToHex(id)
         if (idHex.length !== 48) {
             return null
         }
 
-        const comment: CommentType | null = await commentsRepositories.findCommentById(id)
+        const comment: CommentResponseType | null = await commentsRepositories.findCommentById(id)
         return comment
     }
 }

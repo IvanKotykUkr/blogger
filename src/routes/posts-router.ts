@@ -9,14 +9,15 @@ import {
 import {basicAuthorization} from "../midlewares/basicAuth";
 import {authMidlewares, authMidlewaresWithChekOwn} from "../midlewares/auth-midlewares";
 import {commentValidation, inputValidationComment} from "../midlewares/input-validation-comments";
-import {CommentType, PostType} from "../repositories/db";
+import {PostsResponseType, PostsResponseTypeWithPagination} from "../types/posts-type";
+import {CommentResponseType, CommentsResponseTypeWithPagination} from "../types/commnet-type";
 
 
 export const postsRouter = Router({})
 
 
 postsRouter.get("/:id", async (req: Request, res: Response) => {
-    const post: PostType | null = await postsService.findPostsById(req.params.id)
+    const post: PostsResponseType | null = await postsService.findPostsById(req.params.id)
     if (!post) {
         res.sendStatus(404)
         return
@@ -30,7 +31,7 @@ postsRouter.get("/:id", async (req: Request, res: Response) => {
 postsRouter.get("/", async (req: Request, res: Response) => {
     const pagenumber = req.query.PageNumber || 1;
     const pagesize = req.query.PageSize || 10;
-    const posts = await postsService.findPostsByIdBlogger(+pagenumber, +pagesize)
+    const posts: PostsResponseTypeWithPagination = await postsService.findPostsByIdBlogger(+pagenumber, +pagesize)
     res.status(200).send(posts)
 });
 
@@ -45,7 +46,7 @@ postsRouter.post("/",
     inputValidationPost,
 
     async (req: Request, res: Response) => {
-        const newPost: PostType | null = await postsService.createPost(
+        const newPost: PostsResponseType | null = await postsService.createPost(
             req.body.title,
             req.body.shortDescription,
             req.body.content,
@@ -120,7 +121,7 @@ postsRouter.post('/:id/comments',
 
     async (req: Request, res: Response) => {
 
-        const newComment: CommentType | null = await postsService.createCommentsByPost(req.params.id, req.body.content, "" + req.user!.id, req.user!.login)
+        const newComment: CommentResponseType | null = await postsService.createCommentsByPost(req.params.id, req.body.content, "" + req.user!.id, req.user!.login)
 
         if (!newComment) {
             res.send(404)
@@ -133,7 +134,7 @@ postsRouter.post('/:id/comments',
 postsRouter.get('/:id/comments', async (req: Request, res: Response) => {
     const pagenumber = req.query.PageNumber || 1;
     const pagesize = req.query.PageSize || 10;
-    const allComment = await postsService.sendAllCommentsByPostId(req.params.id, +pagenumber, +pagesize)
+    const allComment: CommentsResponseTypeWithPagination | null = await postsService.sendAllCommentsByPostId(req.params.id, +pagenumber, +pagesize)
     if (!allComment) {
         res.send(404)
         return

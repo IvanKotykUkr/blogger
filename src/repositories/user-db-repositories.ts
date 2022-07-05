@@ -1,13 +1,15 @@
-import {usersCollection, UserType} from "./db";
-import {ObjectId} from "mongodb";
+import {usersCollection} from "./db";
+import {InsertOneResult, ObjectId} from "mongodb";
+import {UserResponseType, UserRoutType, UserType} from "../types/user-type";
 
 
 export const userRepositories = {
-    async countUsers() {
+    async countUsers(): Promise<number> {
         return usersCollection.countDocuments()
     },
-    async getAllUsersPagination(pagenubmer: number, pagesize: number) {
-        const users = await usersCollection.find({})
+    async getAllUsersPagination(pagenubmer: number, pagesize: number): Promise<UserRoutType[]> {
+        // @ts-ignore
+        const users: UserRoutType[] = await usersCollection.find({})
             .skip(pagenubmer > 0 ? ((pagenubmer - 1) * pagesize) : 0)
             .limit(pagesize)
             .project({
@@ -19,14 +21,15 @@ export const userRepositories = {
 
         return users
     },
-    async createUser(newUser: UserType) {
+    async createUser(newUser: UserType): Promise<InsertOneResult<UserType>> {
+
         // @ts-ignore
-        await usersCollection.insertOne(newUser)
-        return newUser
+        const user: InsertOneResult<UserType> = await usersCollection.insertOne(newUser)
+        return user
     },
-    async findUserById(id: string): Promise<UserType | null> {
+    async findUserById(id: string): Promise<UserResponseType | null> {
         // @ts-ignore
-        let user: UserType = await usersCollection.findOne({_id: new ObjectId(id)}, {
+        let user: UserResponseType = await usersCollection.findOne({_id: new ObjectId(id)}, {
             projection: {
                 _id: 0,
                 id: "$_id",
@@ -45,10 +48,11 @@ export const userRepositories = {
         return null
 
     },
-    async findLoginOrEmail(loginOrEmail: string): Promise<UserType> {
+    async findLoginOrEmail(loginOrEmail: string): Promise<UserType | null> {
+
 
         // @ts-ignore
-        const user: UserType = await usersCollection.findOne({login: loginOrEmail})
+        const user: UserType | null = await usersCollection.findOne({login: loginOrEmail})
         return user
     },
     async deleteUserById(id: string): Promise<boolean> {

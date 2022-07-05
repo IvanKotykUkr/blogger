@@ -1,0 +1,638 @@
+{
+	"info": {
+		"_postman_id": "62130048-f5b3-45df-a383-28eec663e1a5",
+		"name": "blogger",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Авторизація",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"login\":\"Vasya\",\n  \"password\":\"111111\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Вивести список блогерів",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/bloggers/62c350efcea20f1982b4c04c",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"bloggers",
+						"62c350efcea20f1982b4c04c"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Додати до списку блогерів",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "qwerty",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"name\":\"Olya\",\n  \"youtubeUrl\":\"https://music.youtube.com/playlist?list=PLhV-Pj5DWabzVPaARbKAkodrVBl2M6Ult\"\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/bloggers/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"bloggers",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Поміняти блогера",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "qwerty",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \n  \"name\":\"Olya\",\n  \"youtubeUrl\":\"https://music.youtube.com/playlist?list=PLhV-Pj5DWabzVPaARbKAkodrVBl2M6Ult\"\n   \n\n  \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/bloggers/62c3502483b0b8d29fd6fe78",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"bloggers",
+						"62c3502483b0b8d29fd6fe78"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Видалити зі спсику блогерів",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "qwerty",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/bloggers/62c3540bc352a97a8611db8c",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"bloggers",
+						"62c3540bc352a97a8611db8c"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Вивести список  постів по блогер ід",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/bloggers/62c365e968d2863f3a9a43dd/posts/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"bloggers",
+						"62c365e968d2863f3a9a43dd",
+						"posts",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Додати пост по блогер",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "qwerty",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"ddfddfdfdfs\",\n  \"shortDescription\": \"Post from add post by blogger\",\n  \"content\": \"cвісавvxvx\"\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/bloggers/62c365e968d2863f3a9a43dd/posts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"bloggers",
+						"62c365e968d2863f3a9a43dd",
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Вивести список постів",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/posts/62c35475c352a97a8611db8e",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"posts",
+						"62c35475c352a97a8611db8e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Додати до списку постів",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "qwerty",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \n  \"title\": \"post\",\n  \"shortDescription\": \"Post from add post\",\n  \"content\": \"cвісавvxvx\",\n  \"bloggerId\": \"62c365e968d2863f3a9a43dd\"\n}\n\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/posts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Поміняти постів",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "qwerty",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\"content\":\"new post content\",\n \"shortDescription\":\"description\",\n \"title\":\"post\",\n \"bloggerId\":\"1655915158129\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/posts/1655846121401",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"posts",
+						"1655846121401"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Додати до списку коментів",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxNjU2NjIxNTAzMzA0IiwiaWF0IjoxNjU2Nzc4NjM0LCJleHAiOjE2NTY3ODIyMzR9.5Hf3aHJNbtzJec893PqBmb1Itv4SRTco9NOcA6jCFkY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \n  \n  \"content\": \"comenthgfdfghjhgfghjhgfcghgv\"\n  \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/posts/1656770264199/comments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"posts",
+						"1656770264199",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Вивести список коментів по посту",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/posts/1656521367779/comments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"posts",
+						"1656521367779",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Видалити зі спсикупостів",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "qwerty",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/comments/1656444554750",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"comments",
+						"1656444554750"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Вивести список USER",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Додати до списку user",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "qwerty",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"login\":\"Vasya\",\n  \"password\":\"111111\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/users/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"users",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Видалити зі спсику юзерів",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "qwerty",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/users/62c3505f83b0b8d29fd6fe79",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"users",
+						"62c3505f83b0b8d29fd6fe79"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Поміняти комент",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxNjU2NTI4ODkwMjE4IiwiaWF0IjoxNjU2NjE1NDA0LCJleHAiOjE2NTY2MTkwMDR9.eH2iVWlJxO9Ig4hC6A4MUq7oG_Grpa57SrGgbFX2tss",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\"content\":\"new post con,m,l.m,,mtent\"\n }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/comments/1656616608561",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"comments",
+						"1656616608561"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Видалити зі спсику  коментів",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmMyMDIyMDg2Y2JmOWQ5ZWQxZDkzYzIiLCJpYXQiOjE2NTY4ODI1NjgsImV4cCI6MTY1Njg4NjE2OH0.024dLubyiIPs8k3FUz7hWqiaWXzmeBfqw2aI2b04ZRU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/comments/62c207eb35589dde8abafa2b",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"comments",
+						"62c207eb35589dde8abafa2b"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Вивести комент",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/comments/1656446865865",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"comments",
+						"1656446865865"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,26 +1,28 @@
 import {postsRepositories} from "../repositories/posts-db-repositories";
 import {bloggersService} from "./bloggers-service";
 import {commentsService} from "./comments-service";
-import {BloggerType, CommentType, PostType, PostTypeInsert} from "../repositories/db";
-import {ObjectId} from "mongodb";
 
+import {ObjectId} from "mongodb";
+import {PostsResponseType, PostsResponseTypeWithPagination, PostsType} from "../types/posts-type";
+import {BloggerResponseType} from "../types/blogger-type";
+import {CommentResponseType, CommentsResponseTypeWithPagination} from "../types/commnet-type";
 
 export const postsService = {
-    async convertToHex(id: string) {
-        const hex = id.split("").reduce((hex, c) => hex += c.charCodeAt(0).toString(16).padStart(2, "0"), "")
+    async convertToHex(id: string): Promise<string> {
+        const hex: string = id.split("").reduce((hex, c) => hex += c.charCodeAt(0).toString(16).padStart(2, "0"), "")
 
         return hex
     },
 
-    async findPostsByIdBlogger(pagenumber: number, pagesize: number, bloggerId?: string | null) {
+    async findPostsByIdBlogger(pagenumber: number, pagesize: number, bloggerId?: ObjectId | undefined | string): Promise<PostsResponseTypeWithPagination> {
 
-        // @ts-ignore
-        let totalCount = await postsRepositories.findPostsByIdBloggerCount(bloggerId)
-        let page = pagenumber
-        let pageSize = pagesize
-        let pagesCount = Math.ceil(totalCount / pageSize)
-        // @ts-ignore
-        const items = await postsRepositories.findPostsByIdBloggerPagination(bloggerId, page, pageSize)
+
+        let totalCount: number = await postsRepositories.findPostsByIdBloggerCount(bloggerId)
+        let page: number = pagenumber
+        let pageSize: number = pagesize
+        let pagesCount: number = Math.ceil(totalCount / pageSize)
+
+        const items: PostsResponseType[] = await postsRepositories.findPostsByIdBloggerPagination(bloggerId, page, pageSize)
         let post = {
             pagesCount,
             page,
@@ -31,12 +33,12 @@ export const postsService = {
         }
         return post
     },
-    async findPostsById(id: string): Promise<PostType | null> {
-        const idHex = await this.convertToHex(id)
+    async findPostsById(id: string): Promise<PostsResponseType | null> {
+        const idHex: string = await this.convertToHex(id)
         if (idHex.length !== 48) {
             return null
         }
-        const post: PostType | null = await postsRepositories.findPostsById(id)
+        const post: PostsResponseType | null = await postsRepositories.findPostsById(id)
 
         if (post) {
             return post;
@@ -45,10 +47,10 @@ export const postsService = {
 
 
     },
-    async createPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostType | null> {
-        const blogger: BloggerType | null = await bloggersService.findBloggersById(bloggerId)
+    async createPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostsResponseType | null> {
+        const blogger: BloggerResponseType | null = await bloggersService.findBloggersById(bloggerId)
         if (blogger) {
-            const newpost: PostType | null = {
+            const newpost: PostsType | null = {
                 title: title,
                 shortDescription: shortDescription,
                 content: content,
@@ -68,15 +70,19 @@ export const postsService = {
         return null
     },
 
-    async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string): Promise<boolean | null> {
+    async updatePost(id: string,
+                     title: string,
+                     shortDescription: string,
+                     content: string,
+                     bloggerId: string): Promise<boolean | null> {
         const idHex = await this.convertToHex(id)
         if (idHex.length !== 48) {
             return false
         }
 
-        let blogger: BloggerType | null = await bloggersService.findBloggersById(bloggerId)
+        let blogger: BloggerResponseType | null = await bloggersService.findBloggersById(bloggerId)
 
-        let upPost: PostType | null = await postsService.findPostsById(id)
+        let upPost: PostsResponseType | null = await postsService.findPostsById(id)
 
         if (upPost) {
             if (blogger) {
@@ -90,26 +96,30 @@ export const postsService = {
 
 
     async deletePost(id: string): Promise<boolean> {
+        const idHex = await this.convertToHex(id)
+        if (idHex.length !== 48) {
+            return false
+        }
         return await postsRepositories.deletePost(id)
 
 
     },
 
 
-    async createCommentsByPost(postid: string, content: string, userid: string, userLogin: string): Promise<CommentType | null> {
-        let post: PostType | null = await this.findPostsById(postid)
+    async createCommentsByPost(postid: string, content: string, userid: string, userLogin: string): Promise<CommentResponseType | null> {
+        let post: PostsType | null = await this.findPostsById(postid)
         if (post) {
-            let newComment: CommentType = await commentsService.createCommentsByPost(postid, content, userid, userLogin)
+            let newComment: CommentResponseType = await commentsService.createCommentsByPost(postid, content, userid, userLogin)
             return newComment
         }
         return null
 
     },
-    async sendAllCommentsByPostId(postid: string, pagenumber: number, pagesize: number) {
-        let post: PostType | null = await this.findPostsById(postid)
+    async sendAllCommentsByPostId(postid: string, pagenumber: number, pagesize: number): Promise<CommentsResponseTypeWithPagination | null> {
+        let post: PostsResponseType | null = await this.findPostsById(postid)
 
         if (post) {
-            let allComments = await commentsService.sendAllCommentsByPostId(postid, pagenumber, pagesize)
+            let allComments: CommentsResponseTypeWithPagination = await commentsService.sendAllCommentsByPostId(postid, pagenumber, pagesize)
             return allComments
         }
         return null

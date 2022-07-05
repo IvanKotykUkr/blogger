@@ -1,6 +1,8 @@
-import {bloggerCollection, BloggerType} from "./db";
-import {ObjectId, WithId} from "mongodb";
-const projectionBlogger={
+import {bloggerCollection} from "./db";
+import {InsertOneResult, ObjectId, WithId} from "mongodb";
+import {BloggerResponseType, BloggerType} from "../types/blogger-type";
+
+const projectionBlogger = {
     _id: 0,
     id: "$_id",
     name: "$name",
@@ -10,38 +12,38 @@ const projectionBlogger={
 export const bloggersRepositories = {
     async paginationFilter(name: string | null) {
         let filter = {}
+
         if (name) {
             return filter = {name: {$regex: name}}
         }
         return filter
     },
-    async blooggersSeachCount(name: string|null): Promise<number> {
+    async blooggersSeachCount(name: string | null): Promise<number> {
         const filter = await this.paginationFilter(name)
         return await bloggerCollection.countDocuments(filter)
 
     },
 
-    async getBloggersSearchTerm(size: number, number: number, name: string|null) {
+    async getBloggersSearchTerm(size: number, number: number, name: string | null): Promise<BloggerResponseType[]> {
         const filter = await this.paginationFilter(name)
-        const bloggers = await bloggerCollection.find(filter)
+        // @ts-ignore
+        const bloggers: BloggerResponseType[] = await bloggerCollection.find(filter)
             .skip((number - 1) * size)
             .limit(size)
             .project(projectionBlogger)
             .toArray()
+
         return bloggers
     },
 
 
-    async findBloggersById(id: string): Promise<BloggerType | null> {
-
-        const blogger = await bloggerCollection.findOne({_id: new ObjectId(id)},
+    async findBloggersById(id: string): Promise<BloggerResponseType | null> {
+        // @ts-ignore
+        const blogger: BloggerResponseType = await bloggerCollection.findOne({_id: new ObjectId(id)},
             {
-                projection:projectionBlogger
+                projection: projectionBlogger
             })
-
-
         if (blogger) {
-            // @ts-ignore
             return blogger;
         }
         return null;
@@ -50,17 +52,17 @@ export const bloggersRepositories = {
     },
 
 
-    async createBlogger(newBlogger: BloggerType): Promise<BloggerType> {
+    async createBlogger(newBlogger: BloggerType): Promise<InsertOneResult<BloggerType>> {
 
-        // @ts-ignore
-        const result = await bloggerCollection.insertOne(newBlogger)
-        // @ts-ignore
+
+        const result: InsertOneResult<BloggerType> = await bloggerCollection.insertOne(newBlogger)
+
         return result
 
     },
     async updateBloggers(blogger: BloggerType): Promise<boolean> {
 
-        const result = await bloggerCollection.updateOne({_id: new ObjectId(blogger.id)}, {
+        const result = await bloggerCollection.updateOne({_id: new ObjectId(blogger._id)}, {
             $set: {
                 name: blogger.name,
                 youtubeUrl: blogger.youtubeUrl

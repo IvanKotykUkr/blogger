@@ -2,6 +2,7 @@ import {Request, Response, Router} from "express";
 import {usersService} from "../domain/users-service";
 import {basicAuthorization} from "../midlewares/basicAuth";
 import {inputValidationUser, loginValidationUser, passwordValidationUser} from "../midlewares/input-validation-users";
+import {UserRoutType} from "../types/user-type";
 
 export const usersRouter = Router({})
 usersRouter.get('/', async (req: Request, res: Response) => {
@@ -19,11 +20,11 @@ usersRouter.post('/',
     inputValidationUser,
 
     async (req: Request, res: Response) => {
-        const newProduct = await usersService.createUser(req.body.login, req.body.email, req.body.password)
-        res.status(201).send(newProduct)
+        const newUser: UserRoutType = await usersService.createUser(req.body.login, req.body.email, req.body.password)
+        res.status(201).send(newUser)
     });
 usersRouter.delete('/:id', basicAuthorization, async (req: Request, res: Response) => {
-    const isDeleted = await usersService.deleteUser(req.params.id);
+    const isDeleted: boolean = await usersService.deleteUser(req.params.id);
     if (isDeleted) {
         res.sendStatus(204)
         return

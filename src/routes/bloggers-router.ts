@@ -11,7 +11,9 @@ import {
     shortDescriptionValidation,
     titleValidation
 } from "../midlewares/input-validation-midlewares-posts";
-import {BloggerType, PostType} from "../repositories/db";
+
+import {BloggerResponseType, BloggerResponseTypeWithPagination, BloggerType} from "../types/blogger-type";
+import {PostsResponseType, PostsResponseTypeWithPagination} from "../types/posts-type";
 
 
 export const bloggersRouter = Router({})
@@ -19,7 +21,7 @@ export const bloggersRouter = Router({})
 
 bloggersRouter.get("/:id",
     async (req: Request, res: Response) => {
-        let blogger: BloggerType | null = await bloggersService.findBloggersById(req.params.id)
+        let blogger: BloggerResponseType | null = await bloggersService.findBloggersById(req.params.id)
         if (!blogger) {
             res.sendStatus(404)
             return
@@ -30,11 +32,11 @@ bloggersRouter.get("/:id",
 
 bloggersRouter.get("/",
     async (req: Request, res: Response) => {
-        const searchnameterm = req.query.SearchNameTerm || null;
+        const searchnameterm = req.query.SearchNameTerm?.toString() || null;
         const pagenumber = req.query.PageNumber || 1;
         const pagesize = req.query.PageSize || 10;
-        // @ts-ignore
-        const bloggers = await bloggersService.getBloggers(searchnameterm, +pagesize, +pagenumber)
+
+        const bloggers: BloggerResponseTypeWithPagination = await bloggersService.getBloggers(searchnameterm, +pagesize, +pagenumber)
         res.status(200).json(bloggers)
     });
 bloggersRouter.post("/",
@@ -43,7 +45,7 @@ bloggersRouter.post("/",
     youtubeUrlValidation,
     inputValidationBlogger,
     async (req: Request, res: Response) => {
-        const newBlogger: BloggerType = await bloggersService.createBlogger(req.body.name, req.body.youtubeUrl)
+        const newBlogger: BloggerResponseType = await bloggersService.createBlogger(req.body.name, req.body.youtubeUrl)
         res.status(201).json(newBlogger)
     });
 
@@ -75,7 +77,7 @@ bloggersRouter.delete("/:id", basicAuthorization, async (req: Request, res: Resp
 bloggersRouter.get('/:id/posts', async (req: Request, res: Response) => {
     const pagenumber = req.query.PageNumber || 1;
     const pagesize = req.query.PageSize || 10;
-    let bloggerPosts: any = await bloggersService.getPostsbyIdBlogger(req.params.id, +pagenumber, +pagesize)
+    let bloggerPosts: PostsResponseTypeWithPagination | null = await bloggersService.getPostsbyIdBlogger(req.params.id, +pagenumber, +pagesize)
     if (bloggerPosts) {
         res.send(bloggerPosts)
         return
@@ -91,7 +93,7 @@ bloggersRouter.post('/:id/posts',
     contentValidation,
     inputValidationPost,
     async (req: Request, res: Response) => {
-        let newPosts: PostType | null = await bloggersService.createPostbyBloggerId
+        let newPosts: PostsResponseType | null = await bloggersService.createPostbyBloggerId
         (req.params.id,
             req.body.title,
             req.body.shortDescription,

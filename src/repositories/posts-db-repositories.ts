@@ -1,7 +1,8 @@
-import {postsCollection, PostType, PostTypeInsert} from "./db";
+import {postsCollection} from "./db";
 import {InsertOneResult, ObjectId} from "mongodb";
+import {PostsResponseType, PostsType} from "../types/posts-type";
 
-const projectionPost={
+const projectionPost = {
     _id: 0,
     id: "$_id",
     title: "$title",
@@ -13,48 +14,54 @@ const projectionPost={
 }
 
 export const postsRepositories = {
-    async paginationFilter(bloggerId: string | null) {
+    async paginationFilter(bloggerId: undefined | string | ObjectId) {
         let filter = {}
         if (bloggerId) {
             return filter = {bloggerId: new ObjectId(bloggerId)}
         }
         return filter
     },
-    async findPostsByIdBloggerCount(bloggerId: null | string): Promise<number> {
+    async findPostsByIdBloggerCount(bloggerId: undefined | string | ObjectId): Promise<number> {
         const filter = await this.paginationFilter(bloggerId)
         const posts: number = await postsCollection.countDocuments(filter)
         return posts
     },
-    async findPostsByIdBloggerPagination(bloggerId: string | null, number: number, size: number) {
+    async findPostsByIdBloggerPagination(bloggerId: undefined | string | ObjectId, number: number, size: number): Promise<PostsResponseType[]> {
         const filter = await this.paginationFilter(bloggerId)
-        const posts = postsCollection.find(filter)
+        // @ts-ignore
+        const posts: PostsResponseType[] = postsCollection.find(filter)
             .skip(number > 0 ? ((number - 1) * size) : 0)
             .limit(size)
             .project(projectionPost)
             .toArray()
+
         return posts
 
     },
 
-    async findPostsById(postid: string): Promise<PostType | null> {
+    async findPostsById(postid: string): Promise<PostsResponseType | null> {
+
 
         // @ts-ignore
-        const post: PostType = await postsCollection.findOne(
+        const post: PostsResponseType = await postsCollection.findOne(
             {_id: new ObjectId(postid)},
-            {projection: projectionPost
+            {
+                projection: projectionPost
             })
 
         if (post) {
+
+
             return post;
         }
         return null;
 
     },
-    async createPost(newpost: PostType): Promise<PostType> {
+    async createPost(newpost: PostsType): Promise<InsertOneResult<PostsType>> {
 
 
-        const result = await postsCollection.insertOne(newpost)
-        // @ts-ignore
+        const result: InsertOneResult<PostsType> = await postsCollection.insertOne(newpost)
+
         return result
 
     },
