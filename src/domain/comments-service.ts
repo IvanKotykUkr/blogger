@@ -1,5 +1,4 @@
 import {commentsRepositories} from "../repositories/comments-db-repositories";
-import {ObjectId} from "mongodb";
 import {CommentResponseType, CommentsResponseTypeWithPagination, CommentType} from "../types/commnet-type";
 
 
@@ -28,23 +27,19 @@ export const commentsService = {
         }
         return comment
     },
-    async createCommentsByPost(postid: string, content: string, userid: string, userLogin: string): Promise<CommentResponseType> {
-        let newComment: CommentType = {
-
-            postid: new ObjectId(postid),
+    async createCommentsByPost(postid: string, content: string, userid: string, userLogin: string): Promise<CommentResponseType | null> {
+        const newComment: CommentType = {
+            postid: postid,
             content,
-            userId: new ObjectId(userid),
+            userId: userid,
             userLogin,
             addedAt: "" + (new Date())
         }
-        await commentsRepositories.createComment(newComment)
-        return {
-            id: newComment._id,
-            content: newComment.content,
-            userId: newComment.userId,
-            userLogin: newComment.userLogin,
-            addedAt: newComment.addedAt
+        const generatedComment: CommentResponseType | null = await commentsRepositories.createComment(newComment)
+        if (generatedComment) {
+            return generatedComment
         }
+        return null
     },
     async updateCommentById(id: string, content: string): Promise<boolean> {
         return await commentsRepositories.updateCommentById(id, content)

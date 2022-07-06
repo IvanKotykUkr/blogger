@@ -8,8 +8,8 @@ export const userRepositories = {
         return usersCollection.countDocuments()
     },
     async getAllUsersPagination(pagenubmer: number, pagesize: number): Promise<UserRoutType[]> {
-        // @ts-ignore
-        const users: UserRoutType[] = await usersCollection.find({})
+
+        const users = await usersCollection.find({})
             .skip(pagenubmer > 0 ? ((pagenubmer - 1) * pagesize) : 0)
             .limit(pagesize)
             .project({
@@ -19,17 +19,21 @@ export const userRepositories = {
             })
             .toArray()
 
-        return users
+        return users.map(u => ({id: u.id, login: u.login}))
     },
-    async createUser(newUser: UserType): Promise<InsertOneResult<UserType>> {
-
-        // @ts-ignore
-        const user: InsertOneResult<UserType> = await usersCollection.insertOne(newUser)
-        return user
+    async createUser(newUser: UserType): Promise<UserRoutType | null> {
+        const user = await usersCollection.insertOne(newUser)
+        if (user) {
+            return {
+                id: newUser._id,
+                login: newUser.login
+            }
+        }
+        return null
     },
     async findUserById(id: string): Promise<UserResponseType | null> {
-        // @ts-ignore
-        let user: UserResponseType = await usersCollection.findOne({_id: new ObjectId(id)}, {
+
+        let user = await usersCollection.findOne({_id: new ObjectId(id)}, {
             projection: {
                 _id: 0,
                 id: "$_id",
@@ -42,8 +46,13 @@ export const userRepositories = {
         })
 
         if (user) {
-
-            return user
+            return {
+                id: user.id,
+                login: user.login,
+                passwordHash: user.passwordHash,
+                passwordSalt: user.passwordSalt,
+                createdAt: user.createdAt
+            }
         }
         return null
 
@@ -51,9 +60,17 @@ export const userRepositories = {
     async findLoginOrEmail(loginOrEmail: string): Promise<UserType | null> {
 
 
-        // @ts-ignore
-        const user: UserType | null = await usersCollection.findOne({login: loginOrEmail})
-        return user
+        const user = await usersCollection.findOne({login: loginOrEmail})
+        if (user) {
+            return {
+                _id: user._id,
+                login: user.login,
+                passwordHash: user.passwordHash,
+                passwordSalt: user.passwordSalt,
+                createdAt: user.createdAt
+            }
+        }
+        return null
     },
     async deleteUserById(id: string): Promise<boolean> {
         const result = await usersCollection.deleteOne({_id: new ObjectId(id)})

@@ -6,7 +6,7 @@ const projectionBlogger = {
     _id: 0,
     id: "$_id",
     name: "$name",
-    youtubeUrl: "$youtubeUrl"
+    youtubeUrl: "$youtubeUrl",
 }
 
 export const bloggersRepositories = {
@@ -26,29 +26,27 @@ export const bloggersRepositories = {
 
     async getBloggersSearchTerm(size: number, number: number, name: string | null): Promise<BloggerResponseType[]> {
         const filter = await this.paginationFilter(name)
-        // @ts-ignore
-        const bloggers: BloggerResponseType[] = await bloggerCollection.find(filter)
+
+        const bloggers = await bloggerCollection.find(filter)
             .skip((number - 1) * size)
             .limit(size)
             .project(projectionBlogger)
             .toArray()
 
-        return bloggers
+        return bloggers.map(d => ({id: d.id, name: d.name, youtubeUrl: d.youtubeUrl}))
     },
 
 
     async findBloggersById(id: string): Promise<BloggerResponseType | null> {
-        // @ts-ignore
-        const blogger: BloggerResponseType = await bloggerCollection.findOne({_id: new ObjectId(id)},
+
+        const blogger = await bloggerCollection.findOne({_id: new ObjectId(id)},
             {
                 projection: projectionBlogger
             })
         if (blogger) {
-            return blogger;
+            return {id: blogger.id, name: blogger.name, youtubeUrl: blogger.youtubeUrl}
         }
         return null;
-
-
     },
 
 

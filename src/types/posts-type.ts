@@ -1,4 +1,4 @@
-import { PaginationType} from "./blogger-type";
+import {PaginationType} from "./blogger-type";
 import {ObjectId} from "mongodb";
 
 export type PostsType = {
@@ -10,7 +10,7 @@ export type PostsType = {
     bloggerId: ObjectId | string,
     bloggerName: string
 }
-export type PostsResponseType={
+export type PostsResponseType = {
     id?: ObjectId,
     title: string,
     shortDescription: string,
@@ -18,4 +18,4 @@ export type PostsResponseType={
     bloggerId: ObjectId | string,
     bloggerName: string
 }
-export type PostsResponseTypeWithPagination= PaginationType<PostsResponseType>;
+export type PostsResponseTypeWithPagination = PaginationType<PostsResponseType>;

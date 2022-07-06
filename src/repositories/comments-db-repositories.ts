@@ -1,6 +1,8 @@
 import {commentsCollection} from "./db";
 import {InsertOneResult, ObjectId, UpdateResult} from "mongodb";
 import {CommentResponseType, CommentType} from "../types/commnet-type";
+import {BloggerType} from "../types/blogger-type";
+import {commentsService} from "../domain/comments-service";
 
 const projectionComment = {
     _id: 0,
@@ -15,34 +17,57 @@ export const commentsRepositories = {
         const result: number = await commentsCollection.countDocuments({postid: new ObjectId(postId)})
         return result
     },
-    async createComment(comment: CommentType): Promise<InsertOneResult<CommentType>> {
+    async createComment(comment: CommentType): Promise<CommentResponseType | null> {
+        const newComment = await commentsCollection.insertOne(comment)
+        if (newComment) {
+            return {
+                id: comment._id,
+                content: comment.content,
+                userId: comment.userId,
+                userLogin: comment.userLogin,
+                addedAt: comment.addedAt
+            }
+        }
+        return null
 
-        // @ts-ignore
-        const result: InsertOneResult<CommentType> = await commentsCollection.insertOne(comment)
-        return result
+
     },
 
     async allCommentByPostIdPagination(post: string, number: number, size: number): Promise<CommentResponseType[]> {
-        // @ts-ignore
-        const comments: CommentResponseType[] = await commentsCollection.find({postid: new ObjectId(post)})
+
+        const comments = await commentsCollection.find({postid: new ObjectId(post)})
             .skip(number > 0 ? ((number - 1) * size) : 0)
             .limit(size)
             .project(projectionComment)
             .toArray()
 
 
-        return comments
+        return comments.map(d => ({
+            id: d.id,
+            content: d.content,
+            userId: d.userId,
+            userLogin: d.userLogin,
+            addedAt: d.addedAt
+        }))
+
 
     },
     async findCommentById(idComment: string): Promise<CommentResponseType | null> {
 
-
-        // @ts-ignore
-        const comments: CommentResponseType | null = await commentsCollection
+        const comments = await commentsCollection
             .findOne({_id: new ObjectId(idComment)}, {
                 projection: projectionComment
             })
-        return comments
+        if (comments) {
+            return {
+                id: comments.id,
+                content: comments.content,
+                userId: comments.userId,
+                userLogin: comments.userLogin,
+                addedAt: comments.addedAt
+            }
+        }
+        return null
 
 
     },

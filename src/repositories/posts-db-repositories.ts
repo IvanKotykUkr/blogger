@@ -28,22 +28,29 @@ export const postsRepositories = {
     },
     async findPostsByIdBloggerPagination(bloggerId: undefined | string | ObjectId, number: number, size: number): Promise<PostsResponseType[]> {
         const filter = await this.paginationFilter(bloggerId)
-        // @ts-ignore
-        const posts: PostsResponseType[] = postsCollection.find(filter)
+
+        const posts = await postsCollection.find(filter)
             .skip(number > 0 ? ((number - 1) * size) : 0)
             .limit(size)
             .project(projectionPost)
             .toArray()
 
-        return posts
+        return posts.map(p => ({
+            id: p.id,
+            title: p.title,
+            shortDescription: p.shortDescription,
+            content: p.content,
+            bloggerId: p.bloggerId,
+            bloggerName: p.bloggerName
+        }))
 
     },
 
     async findPostsById(postid: string): Promise<PostsResponseType | null> {
 
 
-        // @ts-ignore
-        const post: PostsResponseType = await postsCollection.findOne(
+
+        const post = await postsCollection.findOne(
             {_id: new ObjectId(postid)},
             {
                 projection: projectionPost
@@ -52,7 +59,14 @@ export const postsRepositories = {
         if (post) {
 
 
-            return post;
+            return {
+                id: post.id,
+                title: post.title,
+                shortDescription: post.shortDescription,
+                content: post.content,
+                bloggerId: post.bloggerId,
+                bloggerName:post.bloggerName
+            }
         }
         return null;
 

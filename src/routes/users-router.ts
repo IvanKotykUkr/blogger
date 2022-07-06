@@ -20,7 +20,7 @@ usersRouter.post('/',
     inputValidationUser,
 
     async (req: Request, res: Response) => {
-        const newUser: UserRoutType = await usersService.createUser(req.body.login, req.body.email, req.body.password)
+        const newUser: UserRoutType | null = await usersService.createUser(req.body.login, req.body.email, req.body.password)
         res.status(201).send(newUser)
     });
 usersRouter.delete('/:id', basicAuthorization, async (req: Request, res: Response) => {

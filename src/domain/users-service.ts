@@ -11,23 +11,22 @@ export const usersService = {
 
         return hex
     },
-    async createUser(login: string, email: string, password: string): Promise<UserRoutType> {
+    async createUser(login: string, email: string, password: string): Promise<UserRoutType|null> {
         const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await this.generateHash(password, passwordSalt)
 
         const newUser: UserType = {
-
             login,
             email,
             passwordHash,
             passwordSalt,
             createdAt: new Date()
         }
-        await userRepositories.createUser(newUser)
-        return {
-            id: newUser._id,
-            login: newUser.login
+        const generatedUser:UserRoutType|null = await userRepositories.createUser(newUser)
+        if (generatedUser) {
+            return generatedUser
         }
+        return null
     },
     async checkCredentials(loginOrEmail: string, password: string): Promise<UserType | boolean> {
         const user: UserType | null = await userRepositories.findLoginOrEmail(loginOrEmail)

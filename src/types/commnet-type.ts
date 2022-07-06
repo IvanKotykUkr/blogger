@@ -2,10 +2,10 @@ import {ObjectId} from "mongodb";
 import {BloggerResponseType, PaginationType} from "./blogger-type";
 
 export type CommentType = {
-    _id?: ObjectId | string,
-    postid?: ObjectId | string,
+    _id?: ObjectId,
+    postid?: string,
     content: string,
-    userId: ObjectId | string | undefined,
+    userId: string,
     userLogin: string,
     addedAt: string
 }
