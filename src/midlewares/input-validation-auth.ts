@@ -2,9 +2,11 @@ import {body, validationResult} from "express-validator";
 import {NextFunction, Request, Response} from "express";
 
 
-export const loginValidation = body('login')
+export const loginValidation = body('login',)
     .isString().withMessage("Should be String")
-
+/*export const emailValidation= body("email")
+    .isEmail().withMessage("Should be eMAIL")
+*/
 export const passwordValidation = body("password")
     .isString().withMessage("Should be String")
 

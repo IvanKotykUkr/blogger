@@ -1,56 +1,23 @@
-import * as bcrypt from 'bcrypt';
-
 import {userRepositories} from "../repositories/user-db-repositories";
-import {ObjectId} from "mongodb";
-import {UserResponseType, UserResponseTypeWithPagination, UserRoutType, UserType} from "../types/user-type";
+import {UserResponseType, UserResponseTypeWithPagination, UserRoutType} from "../types/user-type";
 
 
 export const usersService = {
     async convertToHex(id: string): Promise<string> {
-        const hex: string = id.split("").reduce((hex, c) => hex += c.charCodeAt(0).toString(16).padStart(2, "0"), "")
+        return id.split("").reduce((hex, c) => c.charCodeAt(0).toString(16).padStart(2, "0"), "")
 
-        return hex
+
     },
-    async createUser(login: string, email: string, password: string): Promise<UserRoutType|null> {
-        const passwordSalt = await bcrypt.genSalt(10)
-        const passwordHash = await this.generateHash(password, passwordSalt)
 
-        const newUser: UserType = {
-            login,
-            email,
-            passwordHash,
-            passwordSalt,
-            createdAt: new Date()
-        }
-        const generatedUser:UserRoutType|null = await userRepositories.createUser(newUser)
-        if (generatedUser) {
-            return generatedUser
-        }
-        return null
-    },
-    async checkCredentials(loginOrEmail: string, password: string): Promise<UserType | boolean> {
-        const user: UserType | null = await userRepositories.findLoginOrEmail(loginOrEmail)
-        if (!user) return false
-
-        const passwordHash = await this.generateHash(password, user.passwordSalt)
-
-        if (user.passwordHash !== passwordHash) {
-            return false
-        }
-        return user
-    },
+    /////
     async findUserById(userid: string): Promise<UserResponseType | null> {
         const idHex: string = await this.convertToHex(userid)
         if (idHex.length !== 48) {
             return null
         }
 
-        const foundUser: UserResponseType | null = await userRepositories.findUserById(userid)
-        return foundUser
-    },
-    async generateHash(password: string, salt: string): Promise<string> {
-        const hash: string = await bcrypt.hash(password, salt)
-        return hash
+        return await userRepositories.findUserById(userid)
+
     },
     async getAllUsers(pagenumber: number, pagesize: number): Promise<UserResponseTypeWithPagination> {
         let totalCount: number = await userRepositories.countUsers()
@@ -72,8 +39,8 @@ export const usersService = {
         if (idHex.length !== 48) {
             return false
         }
-        const isDeleted: boolean = await userRepositories.deleteUserById(id)
-        return isDeleted
+        return  await userRepositories.deleteUserById(id)
+
     }
 
 }

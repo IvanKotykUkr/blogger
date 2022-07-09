@@ -1,9 +1,9 @@
-import jwt, {JwtPayload} from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 
 
 import {settings} from "../settings";
 import {ObjectId} from "mongodb";
-import {UserAuth, UserFromTokenType, UserType} from "../types/user-type";
+import { UserFromTokenType, UserType} from "../types/user-type";
 
 export const jwtService = {
     async createJWT(user: UserType): Promise<{ token: string }> {
@@ -18,10 +18,11 @@ export const jwtService = {
         try {
 
 
-            // @ts-ignore
-            const result: UserFromTokenType = jwt.verify(token, settings.JWT_SECRET)
 
-            return result
+            // @ts-ignore
+            return await jwt.verify(token, settings.JWT_SECRET)
+
+
         } catch (error) {
             return null
         }

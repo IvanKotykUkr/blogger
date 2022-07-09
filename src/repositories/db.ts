@@ -19,3 +19,22 @@ export async function runDb() {
     }
 }
 
+export const testing = {
+
+
+    async deleteAllData(): Promise<void> {
+        try {
+            await bloggerCollection.drop()
+            await postsCollection.drop()
+            await usersCollection.drop()
+            await commentsCollection.drop()
+
+        } catch {
+            await client.close()
+            runDb()
+        }
+
+
+    }
+}
+
