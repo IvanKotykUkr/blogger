@@ -10,7 +10,7 @@ export const emailAdapter = {
             service: "gmail",
             auth: {
                 user: "backendkotyk@gmail.com", // generated ethereal user
-                pass: "hvvqigrcnnrrifly", // generated ethereal password
+                pass: "", // generated ethereal password
             },
         });
 
