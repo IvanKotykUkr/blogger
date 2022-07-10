@@ -24,9 +24,10 @@ export const userRepositories = {
     async createUser(newUser: UserType): Promise<UserRoutType | null> {
         const user = await usersCollection.insertOne(newUser)
         if (user) {
+
             return {
-                id: newUser._id,
-                login: newUser.login
+                id: user.insertedId,
+                login: newUser.accountData.login
             }
         }
         return null
@@ -57,24 +58,18 @@ export const userRepositories = {
         return null
 
     },
-    async findLoginOrEmail(loginOrEmail: string): Promise<UserType | null> {
+    async findLoginOrEmail(loginOrEmail: string) {
 
 
         const user = await usersCollection.findOne({
             $or: [
-                {"login": loginOrEmail},
-                {"email": loginOrEmail}
+                {"accountData.login": loginOrEmail},
+                {"accountData.email": loginOrEmail}
             ]
         })
 
         if (user) {
-            return {
-                _id: user._id,
-                login: user.login,
-                passwordHash: user.passwordHash,
-                passwordSalt: user.passwordSalt,
-                createdAt: user.createdAt
-            }
+            return user
         }
         return null
     },
@@ -82,6 +77,20 @@ export const userRepositories = {
         const result = await usersCollection.deleteOne({_id: new ObjectId(id)})
         return result.deletedCount === 1
 
-    }
+    },
 
+    async findUserByCode(code: string) {
+        const user = await usersCollection.findOne({"emailConfirmation.confirmationCode":code})
+        if (user){
+            return user
+
+        }
+        return null
+    },
+   async updateConfirmation(_id:ObjectId) {
+        const result = await usersCollection.updateOne({_id},{$set:{"emailConfirmation.isConfirmed":true}})
+       return result.modifiedCount===1
+
+
+    }
 }

@@ -13,7 +13,7 @@ import {testingRouter} from "./routes/testing-router";
 const app = express();
 app.use(bodyParser.json())
 app.use(cors())
-
+app.enable('trust proxy')
 const port = process.env.PORT || 5001
 
 

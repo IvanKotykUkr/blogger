@@ -24,10 +24,8 @@ export const testing = {
 
     async deleteAllData(): Promise<void> {
         try {
-            await bloggerCollection.drop()
-            await postsCollection.drop()
-            await usersCollection.drop()
-            await commentsCollection.drop()
+            await db.dropDatabase()
+
 
         } catch {
             await client.close()

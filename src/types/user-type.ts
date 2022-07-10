@@ -3,12 +3,9 @@ import {PaginationType} from "./blogger-type";
 import {PostsResponseType} from "./posts-type";
 
 export type UserType = {
-    _id?: ObjectId,
-    login: string,
-    email?: string,
-    passwordHash: string,
-    passwordSalt: string,
-    createdAt?: Date
+    accountData:AccountData,
+    registrationData:RegistrationDataType,
+    emailConfirmation:EmailConfirmationType,
 }
 export type UserResponseType = {
     id?: ObjectId | string
@@ -32,4 +29,21 @@ export type UserResponseTypeWithPagination = PaginationType<UserRoutType>
 export type UserAuth = {
     login: string,
     password: string
+}
+
+export type AccountData={
+    _id?: ObjectId,
+    login: string,
+    email: string,
+    passwordHash: string,
+    passwordSalt: string,
+    createdAt?: Date
+}
+export type EmailConfirmationType= {
+    confirmationCode:string,
+    expirationDate:Date,
+    isConfirmed:boolean,
+}
+export type RegistrationDataType={
+    ip:string
 }

@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import nodemailer from "nodemailer";
+
 
 import {jwtService} from "../aplication/jwt-service";
 import {
@@ -31,45 +31,22 @@ authRouter.post('/login',
 
     });
 authRouter.post('/registration-confirmation', async (req: Request, res: Response) => {
-
-
-});
-authRouter.post('/send', async (req: Request, res: Response) => {
-    const nodemailer = require("nodemailer");
-
-    // create reusable transporter object using the default SMTP transport
-    let transport = nodemailer.createTransport({
-        service:'gmail',
-        auth: {
-            user: "", // generated ethereal user
-            pass: "", // generated ethereal password
-        },
-    });
-
-    // send mail with defined transport object
-    let info = await transport .sendMail({
-        from: '"Kotyk" <backendkotyk@gmail.com>', // sender address
-        to: req.body.email, // list of receivers
-        subject: req.body.subject, // Subject line
-        html: "<b>Hello world?</b>", // html body
-    });
-    console.log(info)
-
-    res.send({
-        "email": req.body.email,
-        "message":req.body.message,
-        "subject":req.body.subject
-
-    } )
+    const result = await authService.confirmEmail(req.body.code)
+    if(result){
+        res.sendStatus(201)
+        return
+    }
+    res.sendStatus(400)
 
 });
 
 authRouter.post('/registration', async (req: Request, res: Response) => {
-    const user = await authService.createUser(req.body.login, req.body.email, req.body.password)
-
-
-
-    res.sendStatus(204)
+    const user = await authService.createUser(req.body.login, req.body.email, req.body.password,req.ip)
+    if (user){
+        res.sendStatus(204)
+        return
+    }
+    res.sendStatus(400)
 });
 authRouter.post('/registration-confirmation-email-resending', async (req: Request, res: Response) => {
 
