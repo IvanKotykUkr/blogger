@@ -9,7 +9,7 @@ export const usersService = {
 
     },
 
-    /////
+
     async findUserById(userid: string): Promise<UserResponseType | null> {
         const idHex: string = await this.convertToHex(userid)
         if (idHex.length !== 48) {

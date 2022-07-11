@@ -5,21 +5,21 @@ export const emailAdapter = {
     async sendEmail(email: string, subject: string, text: string) {
 
 
-        // create reusable transporter object using the default SMTP transport
+
         let transport = nodemailer.createTransport({
             service: "gmail",
             auth: {
-                user: "backendkotyk@gmail.com", // generated ethereal user
-                pass: "", // generated ethereal password
+                user: "backendkotyk@gmail.com",
+                pass: "hvvqigrcnnrrifly",
             },
         });
 
-        // send mail with defined transport object
+
         let info = await transport.sendMail({
-            from: '"Kotyk" <backendkotyk@gmail.com>', // sender address
-            to: email, // list of receivers
-            subject: subject, // Subject line
-            html: text, // html body
+            from: '"Kotyk" <backendkotyk@gmail.com>',
+            to: email,
+            subject: subject,
+            html: text,
         });
         return
 

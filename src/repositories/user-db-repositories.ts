@@ -58,7 +58,7 @@ export const userRepositories = {
         return null
 
     },
-    async findLoginOrEmail(loginOrEmail: string) {
+    async findLoginOrEmail(loginOrEmail: string):Promise<UserType|null> {
 
 
         const user = await usersCollection.findOne({
@@ -69,6 +69,7 @@ export const userRepositories = {
         })
 
         if (user) {
+            // @ts-ignore
             return user
         }
         return null
@@ -90,6 +91,10 @@ export const userRepositories = {
    async updateConfirmation(_id:ObjectId) {
         const result = await usersCollection.updateOne({_id},{$set:{"emailConfirmation.isConfirmed":true}})
        return result.modifiedCount===1
+
+
+    },
+    findNumberOfIp(ip: string) {
 
 
     }

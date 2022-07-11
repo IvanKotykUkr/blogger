@@ -8,14 +8,15 @@ import {emailManager} from "../managers/email-manager";
 import {usersService} from "./users-service";
 
 export const authService = {
-    async createUser(login: string, email: string, password: string, ip: string): Promise<UserRoutType | null> {
+    async createUser(login: string, email: string, password: string, ip: string): Promise<UserRoutType | null | boolean> {
         const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await this.generateHash(password, passwordSalt)
         const chekEmail = await userRepositories.findLoginOrEmail(email)
-
+        const checkIp = await userRepositories.findNumberOfIp(ip)
         if (chekEmail !== null) {
             return null
         }
+
 
         const newUser: UserType = {
             accountData: {
@@ -43,17 +44,29 @@ export const authService = {
         }
 
         const generatedUser: UserRoutType | null = await userRepositories.createUser(newUser)
-        await emailManager.sendEmailConfirmationMessage(newUser)
+        try {
+            await emailManager.sendEmailConfirmationMessage(newUser)
+        } catch (error) {
+            console.error(error)
+            // @ts-ignore
+            await userRepositories.deleteUserById(generatedUser.id)
+            return null;
 
+        }
         if (generatedUser) {
+
             return generatedUser
         }
+
         return null
     },
     async checkCredentials(loginOrEmail: string, password: string): Promise<UserType | boolean> {
         const user: UserType | null = await userRepositories.findLoginOrEmail(loginOrEmail)
 
         if (!user) return false
+        if (!user.emailConfirmation.isConfirmed) {
+            return false
+        }
 
         const passwordHash = await this.generateHash(password, user.accountData.passwordSalt)
 
@@ -83,5 +96,18 @@ export const authService = {
         return result
 
 
+    },
+    async resentComfirmationCode(email: string, ip: string) {
+        const user = await userRepositories.findLoginOrEmail(email)
+        if (!user) return false
+        if (!user.emailConfirmation.isConfirmed) {
+            return false
+        }
+        try {
+            await emailManager.resentEmailConfirmationMessage(user)
+            return true
+        } catch (error) {
+            console.error(error)
+        }
     }
 }

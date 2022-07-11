@@ -3,9 +3,9 @@ import {PaginationType} from "./blogger-type";
 import {PostsResponseType} from "./posts-type";
 
 export type UserType = {
-    accountData:AccountData,
-    registrationData:RegistrationDataType,
-    emailConfirmation:EmailConfirmationType,
+    accountData: AccountData,
+    registrationData: RegistrationDataType,
+    emailConfirmation: EmailConfirmationType,
 }
 export type UserResponseType = {
     id?: ObjectId | string
@@ -31,7 +31,7 @@ export type UserAuth = {
     password: string
 }
 
-export type AccountData={
+export type AccountData = {
     _id?: ObjectId,
     login: string,
     email: string,
@@ -39,11 +39,11 @@ export type AccountData={
     passwordSalt: string,
     createdAt?: Date
 }
-export type EmailConfirmationType= {
-    confirmationCode:string,
-    expirationDate:Date,
-    isConfirmed:boolean,
+export type EmailConfirmationType = {
+    confirmationCode: string,
+    expirationDate: Date,
+    isConfirmed: boolean,
 }
-export type RegistrationDataType={
-    ip:string
+export type RegistrationDataType = {
+    ip: string
 }
