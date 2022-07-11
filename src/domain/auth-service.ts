@@ -8,7 +8,7 @@ import {emailManager} from "../managers/email-manager";
 import {usersService} from "./users-service";
 
 export const authService = {
-    async createUserByAuth(login: string, email: string, password: string, ip: string): Promise<UserType | null | boolean> {
+    async createUserByAuth(login: string, email: string, password: string, ip: string,url:any): Promise<UserType | null | boolean> {
         const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await this.generateHash(password, passwordSalt)
         const chekEmail = await userRepositories.findLoginOrEmail(email)
@@ -45,7 +45,7 @@ export const authService = {
 
         const generatedUser: UserType | null = await userRepositories.createUser(newUser)
         try {
-            await emailManager.sendEmailConfirmationMessage(newUser)
+            await emailManager.sendEmailConfirmationMessage(newUser,url)
         } catch (error) {
             console.error(error)
             // @ts-ignore
@@ -97,14 +97,15 @@ export const authService = {
 
 
     },
-    async resentComfirmationCode(email: string, ip: string) {
+    async resentComfirmationCode(email: string, ip: string,url:any) {
         const user = await userRepositories.findLoginOrEmail(email)
+
         if (!user) return false
-        if (!user.emailConfirmation.isConfirmed) {
+        if (user.emailConfirmation.isConfirmed===true) {
             return false
         }
         try {
-            await emailManager.resentEmailConfirmationMessage(user)
+            await emailManager.resentEmailConfirmationMessage(user,url)
             return true
         } catch (error) {
             console.error(error)

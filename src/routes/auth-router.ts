@@ -10,6 +10,7 @@ import {
 } from "../midlewares/input-validation-auth";
 import {UserType} from "../types/user-type";
 import {authService} from "../domain/auth-service";
+import {emailManager} from "../managers/email-manager";
 
 export const authRouter = Router({})
 
@@ -41,7 +42,8 @@ authRouter.post('/registration-confirmation', async (req: Request, res: Response
 });
 
 authRouter.post('/registration', async (req: Request, res: Response) => {
-    const user = await authService.createUserByAuth(req.body.login, req.body.email, req.body.password,req.ip)
+    const urlRegistrationCode = req.protocol + '://' + req.get('host') + req.originalUrl ;
+    const user = await authService.createUserByAuth(req.body.login, req.body.email, req.body.password,req.ip,urlRegistrationCode)
     if(user===false){
         res.sendStatus(429)
     }
@@ -53,10 +55,12 @@ authRouter.post('/registration', async (req: Request, res: Response) => {
     res.sendStatus(400)
 });
 authRouter.post('/registration-confirmation-email-resending', async (req: Request, res: Response) => {
-    const user = await authService.resentComfirmationCode( req.body.email,req.ip)
-    if(user===false){
+     const urlResendingCode = req.protocol + '://' + req.get('host') + req.originalUrl ;
+    const user = await authService.resentComfirmationCode( req.body.email,req.ip,urlResendingCode)
+
+    /*if(user===false){
         res.sendStatus(429)
-    }
+    }*/
     if (user){
         res.sendStatus(204)
         return

@@ -35,7 +35,6 @@ bloggersRouter.get("/",
         const searchnameterm = req.query.SearchNameTerm?.toString() || null;
         const pagenumber = req.query.PageNumber || 1;
         const pagesize = req.query.PageSize || 10;
-
         const bloggers: BloggerResponseTypeWithPagination = await bloggersService.getBloggers(searchnameterm, +pagesize, +pagenumber)
         res.status(200).json(bloggers)
     });
@@ -106,6 +105,3 @@ bloggersRouter.post('/:id/posts',
         res.sendStatus(404)
 
     });
-
-
-
