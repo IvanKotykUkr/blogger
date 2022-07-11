@@ -4,13 +4,15 @@ import {Request, Response, Router} from "express";
 import {jwtService} from "../aplication/jwt-service";
 import {
 
-    inputValidationAuth,
+
     loginValidation,
-    passwordValidation
+    passwordValidation,
+    inputValidationAuth, codeValidation, emailValidation,
 } from "../midlewares/input-validation-auth";
 import {UserType} from "../types/user-type";
 import {authService} from "../domain/auth-service";
 import {emailManager} from "../managers/email-manager";
+import {inputValidationUser, loginValidationUser, passwordValidationUser} from "../midlewares/input-validation-users";
 
 export const authRouter = Router({})
 
@@ -31,7 +33,10 @@ authRouter.post('/login',
 
 
     });
-authRouter.post('/registration-confirmation', async (req: Request, res: Response) => {
+authRouter.post('/registration-confirmation',
+    codeValidation
+    ,inputValidationAuth,
+    async (req: Request, res: Response) => {
     const result = await authService.confirmEmail(req.body.code)
     if(result){
         res.sendStatus(201)
@@ -41,9 +46,14 @@ authRouter.post('/registration-confirmation', async (req: Request, res: Response
 
 });
 
-authRouter.post('/registration', async (req: Request, res: Response) => {
-    const urlRegistrationCode = req.protocol + '://' + req.get('host') + req.originalUrl ;
-    const user = await authService.createUserByAuth(req.body.login, req.body.email, req.body.password,req.ip,urlRegistrationCode)
+authRouter.post('/registration',
+    loginValidationUser,
+    emailValidation,
+    passwordValidationUser,
+    inputValidationUser,
+    async (req: Request, res: Response) => {
+
+    const user = await authService.createUserByAuth(req.body.login, req.body.email, req.body.password,req.ip)
     if(user===false){
         res.sendStatus(429)
     }
@@ -54,9 +64,12 @@ authRouter.post('/registration', async (req: Request, res: Response) => {
 
     res.sendStatus(400)
 });
-authRouter.post('/registration-confirmation-email-resending', async (req: Request, res: Response) => {
-     const urlResendingCode = req.protocol + '://' + req.get('host') + req.originalUrl ;
-    const user = await authService.resentComfirmationCode( req.body.email,req.ip,urlResendingCode)
+authRouter.post('/registration-confirmation-email-resending',
+    emailValidation,
+    inputValidationUser,
+    async (req: Request, res: Response) => {
+
+    const user = await authService.resentComfirmationCode( req.body.email,req.ip)
 
     /*if(user===false){
         res.sendStatus(429)

@@ -4,6 +4,7 @@ import {basicAuthorization} from "../midlewares/basicAuth";
 import {inputValidationUser, loginValidationUser, passwordValidationUser} from "../midlewares/input-validation-users";
 import {UserRoutType} from "../types/user-type";
 import {authService} from "../domain/auth-service";
+import {emailValidation} from "../midlewares/input-validation-auth";
 
 export const usersRouter = Router({})
 usersRouter.get('/', async (req: Request, res: Response) => {
@@ -17,6 +18,7 @@ usersRouter.get('/', async (req: Request, res: Response) => {
 usersRouter.post('/',
     basicAuthorization,
     loginValidationUser,
+    emailValidation,
     passwordValidationUser,
     inputValidationUser,
 
