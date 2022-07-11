@@ -8,7 +8,7 @@ import {emailManager} from "../managers/email-manager";
 import {usersService} from "./users-service";
 
 export const authService = {
-    async createUser(login: string, email: string, password: string, ip: string): Promise<UserRoutType | null | boolean> {
+    async createUserByAuth(login: string, email: string, password: string, ip: string): Promise<UserType | null | boolean> {
         const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await this.generateHash(password, passwordSalt)
         const chekEmail = await userRepositories.findLoginOrEmail(email)
@@ -43,7 +43,7 @@ export const authService = {
 
         }
 
-        const generatedUser: UserRoutType | null = await userRepositories.createUser(newUser)
+        const generatedUser: UserType | null = await userRepositories.createUser(newUser)
         try {
             await emailManager.sendEmailConfirmationMessage(newUser)
         } catch (error) {

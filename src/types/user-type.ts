@@ -3,7 +3,8 @@ import {PaginationType} from "./blogger-type";
 import {PostsResponseType} from "./posts-type";
 
 export type UserType = {
-    accountData: AccountData,
+    _id?: ObjectId,
+    accountData: AccountDataType,
     registrationData: RegistrationDataType,
     emailConfirmation: EmailConfirmationType,
 }
@@ -31,8 +32,8 @@ export type UserAuth = {
     password: string
 }
 
-export type AccountData = {
-    _id?: ObjectId,
+export type AccountDataType = {
+
     login: string,
     email: string,
     passwordHash: string,

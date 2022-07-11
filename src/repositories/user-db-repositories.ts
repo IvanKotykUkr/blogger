@@ -15,44 +15,33 @@ export const userRepositories = {
             .project({
                 _id: 0,
                 id: "$_id",
-                login: "$login",
+                login: "$accountData.login",
             })
             .toArray()
 
         return users.map(u => ({id: u.id, login: u.login}))
     },
-    async createUser(newUser: UserType): Promise<UserRoutType | null> {
+    async createUser(newUser: UserType): Promise<UserType | null> {
         const user = await usersCollection.insertOne(newUser)
         if (user) {
 
-            return {
-                id: user.insertedId,
-                login: newUser.accountData.login
-            }
+            // @ts-ignore
+            return user
+
         }
         return null
     },
     async findUserById(id: string): Promise<UserResponseType | null> {
 
-        let user = await usersCollection.findOne({_id: new ObjectId(id)}, {
-            projection: {
-                _id: 0,
-                id: "$_id",
-                login: "$login",
-                email: "$email",
-                passwordHash: "$passwordHash",
-                passwordSalt: "$passwordSalt",
-                createdAt: "$createdAt",
-            }
-        })
+        let user= await usersCollection.findOne({_id: new ObjectId(id)})
 
         if (user) {
             return {
-                id: user.id,
-                login: user.login,
-                passwordHash: user.passwordHash,
-                passwordSalt: user.passwordSalt,
-                createdAt: user.createdAt
+                id: user._id,
+                login: user.accountData.login,
+                passwordHash: user.accountData.passwordHash,
+                passwordSalt: user.accountData.passwordSalt,
+                createdAt: user.accountData.createdAt
             }
         }
         return null
