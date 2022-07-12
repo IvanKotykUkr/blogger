@@ -83,8 +83,5 @@ export const userRepositories = {
 
 
     },
-    findNumberOfIp(ip: string) {
 
-
-    }
 }

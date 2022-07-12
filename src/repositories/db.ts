@@ -8,6 +8,7 @@ export const bloggerCollection = db.collection("bloggers");
 export const postsCollection = db.collection("posts");
 export const usersCollection = db.collection("users");
 export const commentsCollection = db.collection("comment");
+export const trafficCollection= db.collection("traffic");
 
 export async function runDb() {
     try {

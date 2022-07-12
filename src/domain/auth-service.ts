@@ -6,13 +6,19 @@ import {userRepositories} from "../repositories/user-db-repositories";
 
 import {emailManager} from "../managers/email-manager";
 import {usersService} from "./users-service";
+import {accessAttemptsService} from "./access-attempts-service";
 
 export const authService = {
-    async createUserByAuth(login: string, email: string, password: string, ip: string): Promise<UserType | null | boolean> {
+
+    async createUserByAuth(login: string, email: string, password: string, ip: string): Promise<UserType | null | boolean|string> {
         const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await this.generateHash(password, passwordSalt)
         const chekEmail = await userRepositories.findLoginOrEmail(email)
-        const checkIp = await userRepositories.findNumberOfIp(ip)
+        const checkIp = await accessAttemptsService.registrationAttempts(ip,new Date())
+        const more="too mach"
+        if (checkIp=="too mach"){
+            return more
+        }
         if (chekEmail !== null) {
             return null
         }
@@ -44,7 +50,7 @@ export const authService = {
         }
 
         const generatedUser: UserType | null = await userRepositories.createUser(newUser)
-        try {
+       /* try {
             await emailManager.sendEmailConfirmationMessage(newUser)
         } catch (error) {
             console.error(error)
@@ -52,7 +58,7 @@ export const authService = {
             await userRepositories.deleteUserById(generatedUser.id)
             return null;
 
-        }
+        }*/
         if (generatedUser) {
 
             return generatedUser
