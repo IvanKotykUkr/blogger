@@ -4,9 +4,9 @@ import {NextFunction, Request, Response} from "express";
 
 export const loginValidation = body('login',)
     .isString().withMessage("Should be String")
-    .isLength({min: 2, max: 15}).withMessage("Should be a length from2 to 15")
 export const passwordValidation = body("password")
     .isString().withMessage("Should be String")
+    .isLength({min: 6, max: 20}).withMessage("Should be a length from2 to 15")
 export const codeValidation=body('code')
     .isUUID(4).withMessage("Should be valide code ")
 export const emailValidation = body("email")

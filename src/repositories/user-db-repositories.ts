@@ -84,4 +84,16 @@ export const userRepositories = {
 
     },
 
+    async renewConfirmationCode(code:string, confirmationCode: string, expirationDate: Date ) {
+        const result = await usersCollection.findOneAndUpdate({"emailConfirmation.confirmationCode":code},{
+            $set: {
+                "emailConfirmation.confirmationCode": confirmationCode,
+                "emailConfirmation.expirationDate": expirationDate
+            }
+
+
+    })
+        return confirmationCode
+
+    }
 }

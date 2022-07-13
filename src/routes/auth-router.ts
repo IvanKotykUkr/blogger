@@ -22,7 +22,11 @@ authRouter.post('/login',
     passwordValidation,
     inputValidationAuth,
     async (req: Request, res: Response) => {
-        const user: UserType | boolean = await authService.checkCredentials(req.body.login, req.body.password)
+        const user: UserType | boolean | string = await authService.checkCredentials(req.body.login, req.body.password, req.ip)
+        if (user === "too mach") {
+            res.status(429).json("too mach")
+            return
+        }
 
         if (user) {
             const token = await jwtService.createJWT(<UserType>user)
@@ -34,17 +38,21 @@ authRouter.post('/login',
 
     });
 authRouter.post('/registration-confirmation',
-    codeValidation
-    ,inputValidationAuth,
+    codeValidation,
+    inputValidationAuth,
     async (req: Request, res: Response) => {
-    const result = await authService.confirmEmail(req.body.code)
-    if(result){
-        res.sendStatus(201)
-        return
-    }
-    res.sendStatus(400)
+        const result = await authService.confirmEmail(req.body.code, req.ip)
+        if (result === "too mach") {
+            res.status(429).json("too mach")
+            return
+        }
+        if (result) {
+            res.sendStatus(201)
+            return
+        }
+        res.sendStatus(400)
 
-});
+    });
 
 authRouter.post('/registration',
     loginValidationUser,
@@ -53,33 +61,33 @@ authRouter.post('/registration',
     inputValidationUser,
     async (req: Request, res: Response) => {
 
-    const user = await authService.createUserByAuth(req.body.login, req.body.email, req.body.password,req.ip)
-    if(user==="too mach"){
-        res.status(429).json("too mach")
-        return
-    }
-    if (user){
-        res.sendStatus(204)
-        return
-    }
+        const user = await authService.createUserByAuth(req.body.login, req.body.email, req.body.password, req.ip)
+        if (user === "too mach") {
+            res.status(429).json("too mach")
+            return
+        }
+        if (user) {
+            res.sendStatus(204)
+            return
+        }
 
-    res.sendStatus(400)
-});
+        res.sendStatus(400)
+    });
 authRouter.post('/registration-confirmation-email-resending',
     emailValidation,
     inputValidationUser,
     async (req: Request, res: Response) => {
 
-    const user = await authService.resentComfirmationCode( req.body.email,req.ip)
+        const user = await authService.resentComfirmationCode(req.body.email, req.ip)
+        if(user==="too mach"){
+            res.status(429).json("too mach")
+            return
+        }
+        if (user) {
+            res.sendStatus(204)
+            return
+        }
 
-    /*if(user===false){
-        res.sendStatus(429)
-    }*/
-    if (user){
-        res.sendStatus(204)
-        return
-    }
+        res.sendStatus(400)
 
-    res.sendStatus(400)
-
-});
+    });

@@ -5,22 +5,26 @@ import add from 'date-fns/add'
 import {userRepositories} from "../repositories/user-db-repositories";
 
 import {emailManager} from "../managers/email-manager";
-import {usersService} from "./users-service";
+
 import {accessAttemptsService} from "./access-attempts-service";
+
+const more = "too mach"
+const usedEmail = "email is already used"
+const badly = "Som-sing wrong"
 
 export const authService = {
 
-    async createUserByAuth(login: string, email: string, password: string, ip: string): Promise<UserType | null | boolean|string> {
+    async createUserByAuth(login: string, email: string, password: string, ip: string): Promise<UserType | null | boolean | string> {
         const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await this.generateHash(password, passwordSalt)
         const chekEmail = await userRepositories.findLoginOrEmail(email)
-        const checkIp = await accessAttemptsService.registrationAttempts(ip,new Date())
-        const more="too mach"
-        if (checkIp=="too mach"){
+        const checkIp = await accessAttemptsService.countAttempts(ip, new Date(), "registration")
+
+        if (checkIp == "too mach") {
             return more
         }
         if (chekEmail !== null) {
-            return null
+            return usedEmail
         }
 
 
@@ -50,15 +54,15 @@ export const authService = {
         }
 
         const generatedUser: UserType | null = await userRepositories.createUser(newUser)
-       /* try {
-            await emailManager.sendEmailConfirmationMessage(newUser)
-        } catch (error) {
-            console.error(error)
-            // @ts-ignore
-            await userRepositories.deleteUserById(generatedUser.id)
-            return null;
+         try {
+             await emailManager.sendEmailConfirmationMessage(newUser.accountData.email,newUser.emailConfirmation.confirmationCode)
+         } catch (error) {
+             console.error(error)
+             // @ts-ignore
+             await userRepositories.deleteUserById(generatedUser.id)
+             return null;
 
-        }*/
+         }
         if (generatedUser) {
 
             return generatedUser
@@ -66,9 +70,13 @@ export const authService = {
 
         return null
     },
-    async checkCredentials(loginOrEmail: string, password: string): Promise<UserType | boolean> {
+    async checkCredentials(loginOrEmail: string, password: string, ip: string): Promise<UserType | boolean | string> {
         const user: UserType | null = await userRepositories.findLoginOrEmail(loginOrEmail)
+        const checkIp = await accessAttemptsService.countAttempts(ip, new Date(), "login")
 
+        if (checkIp == "too mach") {
+            return more
+        }
         if (!user) return false
         if (!user.emailConfirmation.isConfirmed) {
             return false
@@ -85,7 +93,13 @@ export const authService = {
         return await bcrypt.hash(password, salt)
 
     },
-    async confirmEmail(code: string) {
+    async confirmEmail(code: string, ip: string) {
+        const checkIp = await accessAttemptsService.countAttempts(ip, new Date(), "confirmation")
+
+        if (checkIp == "too mach") {
+            return more
+        }
+
         let user = await userRepositories.findUserByCode(code)
 
         if (!user) return false
@@ -104,14 +118,31 @@ export const authService = {
 
     },
     async resentComfirmationCode(email: string, ip: string,) {
+        const checkIp = await accessAttemptsService.countAttempts(ip, new Date(), "resent")
+
+        if (checkIp == "too mach") {
+            return more
+        }
         const user = await userRepositories.findLoginOrEmail(email)
 
         if (!user) return false
-        if (user.emailConfirmation.isConfirmed===true) {
+        if (user.emailConfirmation.isConfirmed === true) {
             return false
         }
+
+        const confirmationCode = uuidv4()
+        const expirationDate = add(new Date(),
+            {
+                hours: 1,
+                minutes: 2
+
+            }
+        )
+
+        const code = await userRepositories.renewConfirmationCode(user.emailConfirmation.confirmationCode, confirmationCode,expirationDate)
         try {
-            await emailManager.resentEmailConfirmationMessage(user,)
+
+            await emailManager.resentEmailConfirmationMessage(user.accountData.email, code)
             return true
         } catch (error) {
             console.error(error)

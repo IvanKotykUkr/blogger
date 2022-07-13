@@ -3,20 +3,21 @@ import {emailAdapter} from "../adapters/email-adapter";
 
 export const emailManager={
 
-    async conFirmaTionCode(user:UserType){
-        const code= await user.emailConfirmation.confirmationCode
+    async message(code:string){
+
         return `https://some-front.com/confirm-registration?${code}=youtcodehere`
     },
-    async sendEmailConfirmationMessage(user:UserType){
-        const code=await this.conFirmaTionCode(user)
-       await emailAdapter.sendEmail(user.accountData.email,"registration",code)
+    async sendEmailConfirmationMessage(email:string,code:string){
+        const message=await this.message(code)
+
+        await emailAdapter.sendEmail(email,"registration",message)
        return
     },
-    async resentEmailConfirmationMessage(user: UserType) {
+    async resentEmailConfirmationMessage(email:string,code:string) {
 
-        const code=await this.conFirmaTionCode(user)
+        const message=await this.message(code)
 
-        await emailAdapter.sendEmail(user.accountData.email,"resent registration code",code)
+        await emailAdapter.sendEmail(email,"resent registration code",message)
         return
     }
 
