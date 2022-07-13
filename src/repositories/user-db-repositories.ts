@@ -58,9 +58,11 @@ export const userRepositories = {
         })
 
         if (user) {
+
             // @ts-ignore
             return user
         }
+
         return null
     },
     async deleteUserById(id: string): Promise<boolean> {

@@ -11,7 +11,7 @@ export type RecordType = {
 export const accessAttemptsDbRepositories = {
     async countDate(record:RecordType){
         const ipFound = await trafficCollection.find({"ip": record.ip,"process":record.process}).toArray()
-        console.log(ipFound)
+
 
         return ipFound.map(val => (val.date)).slice(Math.max(ipFound.length - 6, 0))
 

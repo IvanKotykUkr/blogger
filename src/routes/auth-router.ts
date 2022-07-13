@@ -66,12 +66,20 @@ authRouter.post('/registration',
             res.status(429).json("too mach")
             return
         }
-        if (user) {
-            res.sendStatus(204)
+        if (user==="All ok") {
+            res.status(204).json(`Code send to ${req.body.email}`)
+            return
+        }
+        if(user==="login already exist"){
+            res.status(400).json({ errorsMessages: [{ message: "login already exist", field: "login" }] })
+            return
+        }if(user==="email is already used"){
+            res.status(400).json({ errorsMessages: [{ message: "email is already used", field: "email" }] })
             return
         }
 
-        res.sendStatus(400)
+
+
     });
 authRouter.post('/registration-confirmation-email-resending',
     emailValidation,

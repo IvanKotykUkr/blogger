@@ -10,22 +10,36 @@ import {accessAttemptsService} from "./access-attempts-service";
 
 const more = "too mach"
 const usedEmail = "email is already used"
+const loginExist = "login already exist"
 const badly = "Som-sing wrong"
+const allOk ="All ok"
 
 export const authService = {
 
     async createUserByAuth(login: string, email: string, password: string, ip: string): Promise<UserType | null | boolean | string> {
         const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await this.generateHash(password, passwordSalt)
-        const chekEmail = await userRepositories.findLoginOrEmail(email)
         const checkIp = await accessAttemptsService.countAttempts(ip, new Date(), "registration")
 
         if (checkIp == "too mach") {
+            console.log("3")
             return more
         }
+        const chekEmail = await userRepositories.findLoginOrEmail(email)
         if (chekEmail !== null) {
+
             return usedEmail
         }
+
+        const checkLogin= await userRepositories.findLoginOrEmail(login)
+        if (checkLogin!=null){
+
+            return loginExist
+        }
+
+
+
+
 
 
         const newUser: UserType = {
@@ -53,8 +67,9 @@ export const authService = {
 
         }
 
+
         const generatedUser: UserType | null = await userRepositories.createUser(newUser)
-         try {
+        /* try {
              await emailManager.sendEmailConfirmationMessage(newUser.accountData.email,newUser.emailConfirmation.confirmationCode)
          } catch (error) {
              console.error(error)
@@ -62,10 +77,10 @@ export const authService = {
              await userRepositories.deleteUserById(generatedUser.id)
              return null;
 
-         }
+         }*/
         if (generatedUser) {
 
-            return generatedUser
+            return allOk
         }
 
         return null
