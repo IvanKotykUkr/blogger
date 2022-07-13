@@ -69,7 +69,7 @@ export const authService = {
 
 
         const generatedUser: UserType | null = await userRepositories.createUser(newUser)
-        /* try {
+        try {
              await emailManager.sendEmailConfirmationMessage(newUser.accountData.email,newUser.emailConfirmation.confirmationCode)
          } catch (error) {
              console.error(error)
@@ -77,7 +77,7 @@ export const authService = {
              await userRepositories.deleteUserById(generatedUser.id)
              return null;
 
-         }*/
+         }
         if (generatedUser) {
 
             return allOk
