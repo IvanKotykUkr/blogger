@@ -1,47 +1,44 @@
-import {UserRoutType, UserType} from "../types/user-type";
+import {UserType} from "../types/user-type";
 import * as bcrypt from "bcrypt";
 import {v4 as uuidv4} from 'uuid';
 import add from 'date-fns/add'
 import {userRepositories} from "../repositories/user-db-repositories";
 
-import {emailManager} from "../managers/email-manager";
 
 import {accessAttemptsService} from "./access-attempts-service";
+import {emailManager} from "../managers/email-manager";
+import {ObjectId} from "mongodb";
 
 const more = "too mach"
 const usedEmail = "email is already used"
 const loginExist = "login already exist"
-const confirmed= "email already confirmed"
-const  doesntExist="user email doesnt exist"
+const confirmed = "email already confirmed"
+const doesntExist = "user email doesnt exist"
 const badly = "Som-sing wrong"
-const allOk ="All ok"
+const allOk = "All ok"
 
 export const authService = {
 
     async createUserByAuth(login: string, email: string, password: string, ip: string): Promise<UserType | null | boolean | string> {
-        const passwordSalt = await bcrypt.genSalt(10)
-        const passwordHash = await this.generateHash(password, passwordSalt)
-        const checkIp = await accessAttemptsService.countAttempts(ip, new Date(), "registration")
+        const passwordSalt:string = await bcrypt.genSalt(10)
+        const passwordHash:string = await this.generateHash(password, passwordSalt)
+        const checkIp: string = await accessAttemptsService.countAttempts(ip, new Date(), "registration")
 
         if (checkIp == "too mach") {
-            console.log("3")
+
             return more
         }
-        const chekEmail = await userRepositories.findLoginOrEmail(email)
-        if (chekEmail !== null) {
+        const checkEmail: UserType | null = await userRepositories.findLoginOrEmail(email)
+        if (checkEmail !== null) {
 
             return usedEmail
         }
 
-        const checkLogin= await userRepositories.findLoginOrEmail(login)
-        if (checkLogin!=null){
+        const checkLogin: UserType | null = await userRepositories.findLoginOrEmail(login)
+        if (checkLogin != null) {
 
             return loginExist
         }
-
-
-
-
 
 
         const newUser: UserType = {
@@ -70,16 +67,23 @@ export const authService = {
         }
 
 
-        const generatedUser: UserType | null = await userRepositories.createUser(newUser)
-        try {
-             await emailManager.sendEmailConfirmationMessage(newUser.accountData.email,newUser.emailConfirmation.confirmationCode)
-         } catch (error) {
-             console.error(error)
-             // @ts-ignore
-             await userRepositories.deleteUserById(generatedUser.id)
-             return null;
+        const generatedUser = await userRepositories.createUser(newUser)
 
-         }
+         try {
+              await emailManager.sendEmailConfirmationMessage(newUser.accountData.email,newUser.emailConfirmation.confirmationCode)
+          } catch (error) {
+              console.error(error)
+             if(generatedUser) {
+                 //@ts-ignore
+                 await userRepositories.deleteUserById(generatedUser._id+"")
+                 return null;
+             }
+
+          }
+
+
+
+
         if (generatedUser) {
 
             return allOk
@@ -110,7 +114,7 @@ export const authService = {
         return await bcrypt.hash(password, salt)
 
     },
-    async confirmEmail(code: string, ip: string) {
+    async confirmEmail(code: string, ip: string):Promise<string|boolean> {
         const checkIp = await accessAttemptsService.countAttempts(ip, new Date(), "confirmation")
 
         if (checkIp == "too mach") {
@@ -129,12 +133,12 @@ export const authService = {
             return false
         }
         let result = await userRepositories.updateConfirmation(user._id)
-
-        return result
+        if (result) return allOk
+        return false
 
 
     },
-    async resentComfirmationCode(email: string, ip: string,) {
+    async resentConfirmationCode(email: string, ip: string,) {
         const checkIp = await accessAttemptsService.countAttempts(ip, new Date(), "resent")
 
         if (checkIp == "too mach") {
@@ -158,15 +162,17 @@ export const authService = {
 
         const code = await userRepositories.renewConfirmationCode(user.emailConfirmation.confirmationCode, confirmationCode, expirationDate)
 
-        try {
+                try {
 
-            await emailManager.resentEmailConfirmationMessage(user.accountData.email, code)
-            return allOk
-        } catch (error) {
-            console.error(error)
+                    await emailManager.resentEmailConfirmationMessage(user.accountData.email, code)
+                    return allOk
+                } catch (error) {
+                    console.error(error)
 
-            return true
-        }
+                    return true
+                }
+
+
         return allOk
     }
 }

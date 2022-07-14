@@ -41,12 +41,12 @@ authRouter.post('/registration-confirmation',
     codeValidation,
     inputValidationAuth,
     async (req: Request, res: Response) => {
-        const result = await authService.confirmEmail(req.body.code, req.ip)
+        const result:string|boolean = await authService.confirmEmail(req.body.code, req.ip)
         if (result === "too mach") {
             res.status(429).json("too mach")
             return
         }
-        if (result) {
+        if (result==="All ok") {
             res.sendStatus(204)
             return
         }
@@ -68,18 +68,18 @@ authRouter.post('/registration',
             res.status(429).json("too mach")
             return
         }
-        if (user==="All ok") {
+        if (user === "All ok") {
             res.status(204).json({message: "Successfully Registered", status: 204})
             return
         }
-        if(user==="login already exist"){
-            res.status(400).json({ errorsMessages: [{ message: "login already exist", field: "login" }] })
-            return
-        }if(user==="email is already used"){
-            res.status(400).json({ errorsMessages: [{ message: "email is already used", field: "email" }] })
+        if (user === "login already exist") {
+            res.status(400).json({errorsMessages: [{message: "login already exist", field: "login"}]})
             return
         }
-
+        if (user === "email is already used") {
+            res.status(400).json({errorsMessages: [{message: "email is already used", field: "email"}]})
+            return
+        }
 
 
     });
@@ -88,20 +88,21 @@ authRouter.post('/registration-email-resending',
     inputValidationUser,
     async (req: Request, res: Response) => {
 
-        const user = await authService.resentComfirmationCode(req.body.email, req.ip)
-        if(user==="too mach"){
+        const user = await authService.resentConfirmationCode(req.body.email, req.ip)
+        if (user === "too mach") {
             res.status(429).json("too mach")
             return
         }
-        if (user==="All ok") {
+        if (user === "All ok") {
             res.sendStatus(204)
             return
         }
-        if(user==="email already confirmed") {
-            res.status(400).json({ errorsMessages: [{ message: "email already confirmed", field: "email" }] })
+        if (user === "email already confirmed") {
+            res.status(400).json({errorsMessages: [{message: "email already confirmed", field: "email"}]})
             return
-        }if(user==="user email doesnt exist") {
-            res.status(400).json({ errorsMessages: [{ message: "user email doesnt exist", field: "email" }] })
+        }
+        if (user === "user email doesnt exist") {
+            res.status(400).json({errorsMessages: [{message: "user email doesnt exist", field: "email"}]})
             return
         }
     });

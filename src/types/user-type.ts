@@ -3,7 +3,7 @@ import {PaginationType} from "./blogger-type";
 import {PostsResponseType} from "./posts-type";
 
 export type UserType = {
-    _id?: ObjectId,
+    _id?: ObjectId|string,
     accountData: AccountDataType,
     registrationData: RegistrationDataType,
     emailConfirmation: EmailConfirmationType,

@@ -1,5 +1,5 @@
 import {trafficCollection} from "./db";
-import {ObjectId} from "mongodb";
+import {ObjectId, WithId} from "mongodb";
 
 
 export type RecordType = {
@@ -9,7 +9,7 @@ export type RecordType = {
 }
 
 export const accessAttemptsDbRepositories = {
-    async countDate(record:RecordType){
+    async countDate(record:RecordType):Promise< WithId<Document>[]>{
         const ipFound = await trafficCollection.find({"ip": record.ip,"process":record.process}).toArray()
 
 
@@ -19,7 +19,7 @@ export const accessAttemptsDbRepositories = {
 
 
 
-    async createRecord(record: RecordType) {
+    async createRecord(record: RecordType):Promise<WithId<Document>[]> {
         await trafficCollection.insertOne(record)
         return await this.countDate(record)
 

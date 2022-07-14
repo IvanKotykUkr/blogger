@@ -21,19 +21,14 @@ export const userRepositories = {
 
         return users.map(u => ({id: u.id, login: u.login}))
     },
-    async createUser(newUser: UserType): Promise<UserType | null> {
-        const user = await usersCollection.insertOne(newUser)
-        if (user) {
+    async createUser(newUser: UserType): Promise<InsertOneResult<UserType>> {
+        // @ts-ignore
+        return await usersCollection.insertOne(newUser)
 
-            // @ts-ignore
-            return user
-
-        }
-        return null
     },
     async findUserById(id: string): Promise<UserResponseType | null> {
 
-        let user= await usersCollection.findOne({_id: new ObjectId(id)})
+        let user = await usersCollection.findOne({_id: new ObjectId(id)})
 
         if (user) {
             return {
@@ -47,7 +42,7 @@ export const userRepositories = {
         return null
 
     },
-    async findLoginOrEmail(loginOrEmail: string):Promise<UserType|null> {
+    async findLoginOrEmail(loginOrEmail: string): Promise<UserType | null> {
 
 
         const user = await usersCollection.findOne({
@@ -59,8 +54,14 @@ export const userRepositories = {
 
         if (user) {
 
-            // @ts-ignore
-            return user
+            return {
+                _id: user._id,
+                accountData: user.accountData,
+                registrationData:user.registrationData,
+                emailConfirmation: user.emailConfirmation,
+
+
+            }
         }
 
         return null
@@ -71,30 +72,37 @@ export const userRepositories = {
 
     },
 
-    async findUserByCode(code: string) {
-        const user = await usersCollection.findOne({"emailConfirmation.confirmationCode":code})
-        if (user){
-            return user
+    async findUserByCode(code: string): Promise<UserType | null> {
+        const user = await usersCollection.findOne({"emailConfirmation.confirmationCode": code})
+        if (user) {
+            return {
+                _id: user._id,
+                accountData: user.accountData,
+                registrationData:user.registrationData,
+                emailConfirmation: user.emailConfirmation,
+
+
+            }
 
         }
         return null
     },
-   async updateConfirmation(_id:ObjectId) {
-        const result = await usersCollection.updateOne({_id},{$set:{"emailConfirmation.isConfirmed":true}})
-       return result.modifiedCount===1
+    async updateConfirmation(_id:ObjectId | string|undefined):Promise<boolean> {
+        const result = await usersCollection.updateOne({_id}, {$set: {"emailConfirmation.isConfirmed": true}})
+        return result.modifiedCount === 1
 
 
     },
 
-    async renewConfirmationCode(code:string, confirmationCode: string, expirationDate: Date ) {
-        const result = await usersCollection.findOneAndUpdate({"emailConfirmation.confirmationCode":code},{
+    async renewConfirmationCode(code: string, confirmationCode: string, expirationDate: Date):Promise<string> {
+        const result = await usersCollection.findOneAndUpdate({"emailConfirmation.confirmationCode": code}, {
             $set: {
                 "emailConfirmation.confirmationCode": confirmationCode,
                 "emailConfirmation.expirationDate": expirationDate
             }
 
 
-    })
+        })
         return confirmationCode
 
     }
