@@ -47,7 +47,7 @@ authRouter.post('/registration-confirmation',
             return
         }
         if (result) {
-            res.sendStatus(201)
+            res.sendStatus(204)
             return
         }
         res.sendStatus(400)
@@ -67,7 +67,7 @@ authRouter.post('/registration',
             return
         }
         if (user==="All ok") {
-            res.status(204).json(`Code send to ${req.body.email}`)
+            res.sendStatus(204)
             return
         }
         if(user==="login already exist"){
@@ -81,7 +81,7 @@ authRouter.post('/registration',
 
 
     });
-authRouter.post('/registration-confirmation-email-resending',
+authRouter.post('/registration-email-resending',
     emailValidation,
     inputValidationUser,
     async (req: Request, res: Response) => {

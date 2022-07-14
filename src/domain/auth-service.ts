@@ -154,13 +154,16 @@ export const authService = {
             }
         )
 
-        const code = await userRepositories.renewConfirmationCode(user.emailConfirmation.confirmationCode, confirmationCode,expirationDate)
+        const code = await userRepositories.renewConfirmationCode(user.emailConfirmation.confirmationCode, confirmationCode, expirationDate)
+
         try {
 
             await emailManager.resentEmailConfirmationMessage(user.accountData.email, code)
             return true
         } catch (error) {
             console.error(error)
+
+            return true
         }
     }
 }
