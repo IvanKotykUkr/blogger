@@ -13,7 +13,9 @@ export const commentsService = {
         return hex
     },
     async sendAllCommentsByPostId(postId: string, pagenumber: number, pagesize: number): Promise<CommentsResponseTypeWithPagination> {
+
         let totalCount: number = await commentsRepositories.commentCount(postId)
+
         let page: number = pagenumber
         let pageSize: number = pagesize
         let pagesCount: number = Math.ceil(totalCount / pageSize)

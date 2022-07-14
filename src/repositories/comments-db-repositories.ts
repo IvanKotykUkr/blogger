@@ -13,8 +13,8 @@ const projectionComment = {
     addedAt: "$addedAt",
 }
 export const commentsRepositories = {
-    async commentCount(postId: string): Promise<number> {
-        const result: number = await commentsCollection.countDocuments({postid: new ObjectId(postId)})
+    async commentCount(post: string): Promise<number> {
+        const result: number = await commentsCollection.countDocuments({postid: post})
         return result
     },
     async createComment(comment: CommentType): Promise<CommentResponseType | null> {
@@ -35,7 +35,7 @@ export const commentsRepositories = {
 
     async allCommentByPostIdPagination(post: string, number: number, size: number): Promise<CommentResponseType[]> {
 
-        const comments = await commentsCollection.find({postid: new ObjectId(post)})
+        const comments = await commentsCollection.find({postid: post})
             .skip(number > 0 ? ((number - 1) * size) : 0)
             .limit(size)
             .project(projectionComment)

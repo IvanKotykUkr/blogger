@@ -1,4 +1,4 @@
-import {UserType} from "../types/user-type";
+
 import {emailAdapter} from "../adapters/email-adapter";
 
 export const emailManager={

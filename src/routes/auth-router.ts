@@ -50,7 +50,11 @@ authRouter.post('/registration-confirmation',
             res.sendStatus(204)
             return
         }
-        res.sendStatus(400)
+        if(result==="code already confirmed"){
+            res.status(400).json({errorsMessages: [{message: "code already confirmed", field: "code"}]})
+            return
+        }
+
 
     });
 

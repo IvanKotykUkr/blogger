@@ -7,7 +7,7 @@ import {userRepositories} from "../repositories/user-db-repositories";
 
 import {accessAttemptsService} from "./access-attempts-service";
 import {emailManager} from "../managers/email-manager";
-import {ObjectId} from "mongodb";
+
 
 const more = "too mach"
 const usedEmail = "email is already used"
@@ -16,6 +16,7 @@ const confirmed = "email already confirmed"
 const doesntExist = "user email doesnt exist"
 const badly = "Som-sing wrong"
 const allOk = "All ok"
+const codeExist="code already confirmed"
 
 export const authService = {
 
@@ -121,12 +122,14 @@ export const authService = {
             return more
         }
 
-        let user = await userRepositories.findUserByCode(code)
+        let user:UserType|null = await userRepositories.findUserByCode(code)
 
         if (!user) return false
 
-        if (user.emailConfirmation.confirmationCode !== code) {
-            return false
+
+
+        if (false !== user.emailConfirmation.isConfirmed) {
+            return codeExist
         }
 
         if (user.emailConfirmation.expirationDate < new Date()) {
