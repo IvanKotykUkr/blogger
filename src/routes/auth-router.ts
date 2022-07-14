@@ -55,8 +55,10 @@ authRouter.post('/registration-confirmation',
     });
 
 authRouter.post('/registration',
-    loginValidationUser,
     emailValidation,
+    inputValidationAuth,
+    loginValidationUser,
+
     passwordValidationUser,
     inputValidationUser,
     async (req: Request, res: Response) => {
@@ -67,7 +69,7 @@ authRouter.post('/registration',
             return
         }
         if (user==="All ok") {
-            res.sendStatus(204)
+            res.status(204).json({message: "Successfully Registered", status: 204})
             return
         }
         if(user==="login already exist"){
@@ -91,11 +93,15 @@ authRouter.post('/registration-email-resending',
             res.status(429).json("too mach")
             return
         }
-        if (user) {
+        if (user==="All ok") {
             res.sendStatus(204)
             return
         }
-
-        res.sendStatus(400)
-
+        if(user==="email already confirmed") {
+            res.status(400).json({ errorsMessages: [{ message: "email already confirmed", field: "email" }] })
+            return
+        }if(user==="user email doesnt exist") {
+            res.status(400).json({ errorsMessages: [{ message: "user email doesnt exist", field: "email" }] })
+            return
+        }
     });

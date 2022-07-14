@@ -11,6 +11,8 @@ import {accessAttemptsService} from "./access-attempts-service";
 const more = "too mach"
 const usedEmail = "email is already used"
 const loginExist = "login already exist"
+const confirmed= "email already confirmed"
+const  doesntExist="user email doesnt exist"
 const badly = "Som-sing wrong"
 const allOk ="All ok"
 
@@ -140,9 +142,9 @@ export const authService = {
         }
         const user = await userRepositories.findLoginOrEmail(email)
 
-        if (!user) return false
+        if (!user) return doesntExist
         if (user.emailConfirmation.isConfirmed === true) {
-            return false
+            return confirmed
         }
 
         const confirmationCode = uuidv4()
@@ -159,11 +161,12 @@ export const authService = {
         try {
 
             await emailManager.resentEmailConfirmationMessage(user.accountData.email, code)
-            return true
+            return allOk
         } catch (error) {
             console.error(error)
 
             return true
         }
+        return allOk
     }
 }
