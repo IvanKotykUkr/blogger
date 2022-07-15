@@ -4,17 +4,11 @@ import {usersService} from "../domain/users-service";
 import {commentsService} from "../domain/comments-service";
 import {UserFromTokenType, UserType} from "../types/user-type";
 import {CommentResponseType, CommentType} from "../types/commnet-type";
-import {accessAttemptsService} from "../domain/access-attempts-service";
-import {userRepositories} from "../repositories/user-db-repositories";
 
-const more = "too mach"
-const usedEmail = "email is already used"
-const loginExist = "login already exist"
-const confirmed = "email already confirmed"
-const doesntExist = "user email doesnt exist"
-const badly = "Som-sing wrong"
-const allOk = "All ok"
-const codeExist = "code already confirmed"
+import {userRepositories} from "../repositories/user-db-repositories";
+import {accessAttemptsDbRepositories, RecordType} from "../repositories/access-attempts-db-repositories";
+
+
 
 export const registrationMiddlewares = async (req: Request, res: Response, next: NextFunction) => {
     const checkEmail: UserType | null = await userRepositories.findLoginOrEmail(req.body.email)
@@ -84,7 +78,34 @@ export const registrationConfirmMiddlewares = async (req: Request, res: Response
 }
 
 export const antiDosMiddlewares = async (req: Request, res: Response, next: NextFunction) => {
-    const checkIp: string = await accessAttemptsService.countAttempts(req.ip, new Date(), req.url)
+
+    const countAttempts = async (ip: string, date: Date, process: string): Promise<string> => {
+
+        const createRecord: RecordType = {
+            ip,
+            date,
+            process
+        }
+        const timeRequest = await accessAttemptsDbRepositories.createRecord(createRecord)
+        return await countNumber(timeRequest)
+
+    }
+
+
+    const countNumber = async (timeRequest: any): Promise<string> => {
+        const tooMach = "too mach"
+        const allOk = "all ok"
+        const countTimeRequest = timeRequest[5] - (timeRequest[0])
+
+        if (countTimeRequest <= 10000) {
+            return tooMach
+        }
+        return allOk
+
+
+    }
+    const checkIp: string = await countAttempts(req.ip, new Date(), req.url)
+
 
     if (checkIp == "too mach") {
         res.status(429).json({errorsMessages: [{message: "too mach request", field: "request"}]})
@@ -96,7 +117,7 @@ export const antiDosMiddlewares = async (req: Request, res: Response, next: Next
 
 }
 
-export const authMidlewares = async (req: Request, res: Response, next: NextFunction) => {
+export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.headers.authorization) {
         res.sendStatus(401)
         return
@@ -121,7 +142,7 @@ export const authMidlewares = async (req: Request, res: Response, next: NextFunc
 
 
 }
-export const authMidlewaresWithChekOwn = async (req: Request, res: Response, next: NextFunction) => {
+export const authMiddlewaresWithCheckOwn = async (req: Request, res: Response, next: NextFunction) => {
     const comment: CommentResponseType | null = await commentsService.findCommentsById(req.params.id)
 
     if (!comment) {

@@ -7,7 +7,7 @@ import {
     titleValidation,
 } from "../midlewares/input-validation-midlewares-posts";
 import {basicAuthorization} from "../midlewares/basicAuth";
-import {authMidlewares, authMidlewaresWithChekOwn} from "../midlewares/auth-midlewares";
+import {authMiddleware, authMiddlewaresWithCheckOwn} from "../midlewares/auth-middleware";
 import {commentValidation, inputValidationComment} from "../midlewares/input-validation-comments";
 import {PostsResponseType, PostsResponseTypeWithPagination} from "../types/posts-type";
 import {CommentResponseType, CommentsResponseTypeWithPagination} from "../types/commnet-type";
@@ -115,7 +115,7 @@ postsRouter.delete("/:id", basicAuthorization, async (req: Request, res: Respons
 
 });
 postsRouter.post('/:id/comments',
-    authMidlewares,
+    authMiddleware,
     commentValidation,
     inputValidationComment,
 

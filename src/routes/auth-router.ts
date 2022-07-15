@@ -17,7 +17,7 @@ import {
     antiDosMiddlewares, loginAuthMiddlewares,
     registrationConfirmMiddlewares,
     registrationMiddlewares, registrationResendingMiddlewares
-} from "../midlewares/auth-midlewares";
+} from "../midlewares/auth-middleware";
 
 export const authRouter = Router({})
 
