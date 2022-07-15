@@ -5,41 +5,17 @@ import add from 'date-fns/add'
 import {userRepositories} from "../repositories/user-db-repositories";
 
 
-import {accessAttemptsService} from "./access-attempts-service";
 import {emailManager} from "../managers/email-manager";
 
-
-const more = "too mach"
-const usedEmail = "email is already used"
-const loginExist = "login already exist"
-const confirmed = "email already confirmed"
-const doesntExist = "user email doesnt exist"
-const badly = "Som-sing wrong"
 const allOk = "All ok"
-const codeExist="code already confirmed"
+const wrongPassword= "wrong password"
+
 
 export const authService = {
 
-    async createUserByAuth(login: string, email: string, password: string, ip: string): Promise<UserType | null | boolean | string> {
-        const passwordSalt:string = await bcrypt.genSalt(10)
-        const passwordHash:string = await this.generateHash(password, passwordSalt)
-        const checkIp: string = await accessAttemptsService.countAttempts(ip, new Date(), "registration")
-
-        if (checkIp == "too mach") {
-
-            return more
-        }
-        const checkEmail: UserType | null = await userRepositories.findLoginOrEmail(email)
-        if (checkEmail !== null) {
-
-            return usedEmail
-        }
-
-        const checkLogin: UserType | null = await userRepositories.findLoginOrEmail(login)
-        if (checkLogin != null) {
-
-            return loginExist
-        }
+    async createUserByAuth(login: string, email: string, password: string): Promise<UserType | null | string> {
+        const passwordSalt: string = await bcrypt.genSalt(10)
+        const passwordHash: string = await this.generateHash(password, passwordSalt)
 
 
         const newUser: UserType = {
@@ -49,9 +25,6 @@ export const authService = {
                 passwordHash,
                 passwordSalt,
                 createdAt: new Date()
-            },
-            registrationData: {
-                ip
             },
             emailConfirmation: {
                 confirmationCode: uuidv4(),
@@ -70,17 +43,17 @@ export const authService = {
 
         const generatedUser = await userRepositories.createUser(newUser)
 
-         try {
-              await emailManager.sendEmailConfirmationMessage(newUser.accountData.email,newUser.emailConfirmation.confirmationCode)
-          } catch (error) {
-              console.error(error)
-             if(generatedUser) {
-                 //@ts-ignore
-                 await userRepositories.deleteUserById(generatedUser._id+"")
-                 return null;
-             }
+                try {
+                    await emailManager.sendEmailConfirmationMessage(newUser.accountData.email, newUser.emailConfirmation.confirmationCode)
+                } catch (error) {
+                    console.error(error)
+                    if (generatedUser) {
+                        //@ts-ignore
+                        await userRepositories.deleteUserById(generatedUser._id + "")
+                        return null;
+                    }
 
-          }
+                }
 
 
 
@@ -92,67 +65,36 @@ export const authService = {
 
         return null
     },
-    async checkCredentials(loginOrEmail: string, password: string, ip: string): Promise<UserType | boolean | string> {
-        const user: UserType | null = await userRepositories.findLoginOrEmail(loginOrEmail)
-        const checkIp = await accessAttemptsService.countAttempts(ip, new Date(), "login")
+    async checkCredentials(loginOrEmail: string, password: string): Promise<UserType  | string> {
+        const user: UserType|null  = await userRepositories.findLoginOrEmail(loginOrEmail)
 
-        if (checkIp == "too mach") {
-            return more
-        }
-        if (!user) return false
-        if (!user.emailConfirmation.isConfirmed) {
-            return false
-        }
 
-        const passwordHash = await this.generateHash(password, user.accountData.passwordSalt)
+        const passwordHash = await this.generateHash(password, user!.accountData.passwordSalt)
 
-        if (user.accountData.passwordHash !== passwordHash) {
-            return false
+        if (user!.accountData.passwordHash !== passwordHash) {
+            return wrongPassword
         }
+        // @ts-ignore
         return user
     },
     async generateHash(password: string, salt: string): Promise<string> {
         return await bcrypt.hash(password, salt)
 
     },
-    async confirmEmail(code: string, ip: string):Promise<string|boolean> {
-        const checkIp = await accessAttemptsService.countAttempts(ip, new Date(), "confirmation")
-
-        if (checkIp == "too mach") {
-            return more
-        }
-
-        let user:UserType|null = await userRepositories.findUserByCode(code)
-
-        if (!user) return false
+    async confirmEmail(code: string): Promise<string | boolean> {
 
 
+        let user: UserType | null = await userRepositories.findUserByCode(code)
 
-        if (false !== user.emailConfirmation.isConfirmed) {
-            return codeExist
-        }
 
-        if (user.emailConfirmation.expirationDate < new Date()) {
-            return false
-        }
-        let result = await userRepositories.updateConfirmation(user._id)
+        let result = await userRepositories.updateConfirmation(user!._id)
         if (result) return allOk
         return false
 
 
     },
-    async resentConfirmationCode(email: string, ip: string,) {
-        const checkIp = await accessAttemptsService.countAttempts(ip, new Date(), "resent")
+    async resentConfirmationCode(email: string): Promise<string | boolean> {
 
-        if (checkIp == "too mach") {
-            return more
-        }
-        const user = await userRepositories.findLoginOrEmail(email)
-
-        if (!user) return doesntExist
-        if (user.emailConfirmation.isConfirmed === true) {
-            return confirmed
-        }
 
         const confirmationCode = uuidv4()
         const expirationDate = add(new Date(),
@@ -163,17 +105,19 @@ export const authService = {
             }
         )
 
-        const code = await userRepositories.renewConfirmationCode(user.emailConfirmation.confirmationCode, confirmationCode, expirationDate)
+        const code = await userRepositories.renewConfirmationCode(email, confirmationCode, expirationDate)
 
                 try {
 
-                    await emailManager.resentEmailConfirmationMessage(user.accountData.email, code)
+                    await emailManager.resentEmailConfirmationMessage(email, code)
                     return allOk
                 } catch (error) {
                     console.error(error)
 
                     return true
                 }
+
+
 
 
         return allOk

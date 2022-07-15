@@ -100,7 +100,11 @@ export const postsService = {
         if (idHex.length !== 48) {
             return false
         }
-        return await postsRepositories.deletePost(id)
+        const isDeleted = await postsRepositories.deletePost(id)
+        if(isDeleted){
+            return await commentsService.deleteCommentsByPost(id)
+        }
+        return false
 
 
     },

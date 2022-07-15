@@ -58,6 +58,7 @@ export const commentsRepositories = {
             .findOne({_id: new ObjectId(idComment)}, {
                 projection: projectionComment
             })
+
         if (comments) {
             return {
                 id: comments.id,
@@ -81,6 +82,10 @@ export const commentsRepositories = {
     async deleteCommentsById(id: string): Promise<boolean> {
 
         const result = await commentsCollection.deleteOne({_id: new ObjectId(id)})
+        return result.deletedCount === 1
+    },
+   async deleteCommentsByPost(postid: string):Promise<boolean> {
+        const result = await commentsCollection.deleteMany({postid})
         return result.deletedCount === 1
     }
 }

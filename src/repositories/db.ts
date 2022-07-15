@@ -30,7 +30,7 @@ export const testing = {
 
         } catch {
             await client.close()
-            runDb()
+            await runDb()
         }
 
 

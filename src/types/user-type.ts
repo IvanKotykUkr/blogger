@@ -5,7 +5,6 @@ import {PostsResponseType} from "./posts-type";
 export type UserType = {
     _id?: ObjectId|string,
     accountData: AccountDataType,
-    registrationData: RegistrationDataType,
     emailConfirmation: EmailConfirmationType,
 }
 export type UserResponseType = {

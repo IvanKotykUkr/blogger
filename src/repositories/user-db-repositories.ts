@@ -57,7 +57,6 @@ export const userRepositories = {
             return {
                 _id: user._id,
                 accountData: user.accountData,
-                registrationData:user.registrationData,
                 emailConfirmation: user.emailConfirmation,
 
 
@@ -78,7 +77,6 @@ export const userRepositories = {
             return {
                 _id: user._id,
                 accountData: user.accountData,
-                registrationData:user.registrationData,
                 emailConfirmation: user.emailConfirmation,
 
 
@@ -87,15 +85,15 @@ export const userRepositories = {
         }
         return null
     },
-    async updateConfirmation(_id:ObjectId | string|undefined):Promise<boolean> {
+    async updateConfirmation(_id: ObjectId | string | undefined): Promise<boolean> {
         const result = await usersCollection.updateOne({_id}, {$set: {"emailConfirmation.isConfirmed": true}})
         return result.modifiedCount === 1
 
 
     },
 
-    async renewConfirmationCode(code: string, confirmationCode: string, expirationDate: Date):Promise<string> {
-        const result = await usersCollection.findOneAndUpdate({"emailConfirmation.confirmationCode": code}, {
+    async renewConfirmationCode(email: string, confirmationCode: string, expirationDate: Date): Promise<string> {
+        const result = await usersCollection.findOneAndUpdate({"accountData.email": email}, {
             $set: {
                 "emailConfirmation.confirmationCode": confirmationCode,
                 "emailConfirmation.expirationDate": expirationDate

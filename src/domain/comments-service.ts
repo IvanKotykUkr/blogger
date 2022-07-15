@@ -1,5 +1,6 @@
 import {commentsRepositories} from "../repositories/comments-db-repositories";
 import {CommentResponseType, CommentsResponseTypeWithPagination, CommentType} from "../types/commnet-type";
+import {ObjectId} from "mongodb";
 
 
 export const commentsService = {
@@ -65,5 +66,8 @@ export const commentsService = {
 
         const comment: CommentResponseType | null = await commentsRepositories.findCommentById(id)
         return comment
+    },
+    async deleteCommentsByPost(id: string) {
+        return await commentsRepositories.deleteCommentsByPost(id)
     }
 }
