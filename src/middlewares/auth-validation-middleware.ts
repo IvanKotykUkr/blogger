@@ -26,11 +26,13 @@ export const loginAuthMiddlewares = async (req: Request, res: Response, next: Ne
         res.status(400).json({errorsMessages: [{message: " login is wrong", field: " login"}]})
         return
     }
-    if (!user.emailConfirmation.isConfirmed) {
+  /*  if (!user.emailConfirmation.isConfirmed) {
         res.status(400).json({errorsMessages: [{message: "user not confirmed", field: "user"}]})
         return
 
     }
+
+   */
 
 
     next()
