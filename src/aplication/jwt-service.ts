@@ -7,12 +7,12 @@ import {UserFromTokenType, UserType} from "../types/user-type";
 import {refreshTokenValidation} from "../middlewares/input-validation-auth";
 
 export const jwtService = {
-    async createAccessToken(id:string): Promise<{ accesstoken: string }> {
+    async createAccessToken(id:string): Promise<{ accessToken: string }> {
 
 
         const access: string = jwt.sign({userId: id}, settings.ACCESS_JWT_SECRET, {expiresIn: "10s"})
 
-        return {accesstoken: access}
+        return {accessToken: access}
 
 
     },
