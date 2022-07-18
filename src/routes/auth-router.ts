@@ -43,6 +43,7 @@ authRouter.post('/login',
 
             res.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
+                secure:true
 
 
             });
@@ -63,6 +64,7 @@ authRouter.post('/refresh_token',
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
+            secure:true,
 
 
         });
