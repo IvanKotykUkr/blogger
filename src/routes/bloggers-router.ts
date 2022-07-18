@@ -4,13 +4,13 @@ import {
     inputValidationBlogger,
     nameValidation,
     youtubeUrlValidation,
-} from "../midlewares/input-validation-midlewares-bloggers";
-import {basicAuthorization} from "../midlewares/basicAuth";
+} from "../middlewares/input-validation-midlewares-bloggers";
+import {basicAuthorization} from "../middlewares/basicAuth";
 import {
     contentValidation, inputValidationPost,
     shortDescriptionValidation,
     titleValidation
-} from "../midlewares/input-validation-midlewares-posts";
+} from "../middlewares/input-validation-midlewares-posts";
 
 import {BloggerResponseType, BloggerResponseTypeWithPagination, BloggerType} from "../types/blogger-type";
 import {PostsResponseType, PostsResponseTypeWithPagination} from "../types/posts-type";

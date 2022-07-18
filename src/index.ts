@@ -8,12 +8,14 @@ import {authRouter} from "./routes/auth-router";
 import {commentsRouter} from "./routes/comments-router";
 import {usersRouter} from "./routes/users-router";
 import {testingRouter} from "./routes/testing-router";
+import cookieParser from "cookie-parser";
 
 
 const app = express();
 app.use(bodyParser.json())
 app.use(cors())
 app.enable('trust proxy')
+app.use(cookieParser())
 const port = process.env.PORT || 5001
 
 

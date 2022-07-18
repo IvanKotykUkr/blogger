@@ -1,13 +1,8 @@
 import {NextFunction, Request, Response} from "express";
-import {jwtService} from "../aplication/jwt-service";
-import {usersService} from "../domain/users-service";
-import {commentsService} from "../domain/comments-service";
-import {UserFromTokenType, UserType} from "../types/user-type";
-import {CommentResponseType, CommentType} from "../types/commnet-type";
+import {UserType} from "../types/user-type";
 
 import {userRepositories} from "../repositories/user-db-repositories";
 import {accessAttemptsDbRepositories, RecordType} from "../repositories/access-attempts-db-repositories";
-
 
 
 export const registrationMiddlewares = async (req: Request, res: Response, next: NextFunction) => {
@@ -117,44 +112,3 @@ export const antiDosMiddlewares = async (req: Request, res: Response, next: Next
 
 }
 
-export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.headers.authorization) {
-        res.sendStatus(401)
-        return
-    }
-    const token: string = req.headers.authorization.split(' ')[1]
-
-    const user: UserFromTokenType | null = await jwtService.getUserIdByToken(token)
-
-    if (!user) {
-        res.sendStatus(401)
-        return
-    }
-
-
-    req.user = await usersService.findUserById(user.userId)
-
-    if (req.user === null) {
-        res.sendStatus(401)
-        return
-    }
-    next()
-
-
-}
-export const authMiddlewaresWithCheckOwn = async (req: Request, res: Response, next: NextFunction) => {
-    const comment: CommentResponseType | null = await commentsService.findCommentsById(req.params.id)
-
-    if (!comment) {
-        res.sendStatus(404)
-        return
-    }
-
-    if (req.user!.id.toString() !== comment.userId!.toString()) {
-
-        res.sendStatus(403)
-        return
-    }
-
-    next()
-}

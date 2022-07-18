@@ -3,29 +3,52 @@ import jwt from 'jsonwebtoken'
 
 import {settings} from "../settings";
 import {ObjectId} from "mongodb";
-import { UserFromTokenType, UserType} from "../types/user-type";
+import {UserFromTokenType, UserType} from "../types/user-type";
+import {refreshTokenValidation} from "../middlewares/input-validation-auth";
 
 export const jwtService = {
-    async createJWT(user: UserType): Promise<{ token: string }> {
+    async createAccessToken(id:string): Promise<{ accesstoken: string }> {
 
-        const token: string = jwt.sign({userId: new ObjectId(user._id)}, settings.JWT_SECRET, {expiresIn: '1h'})
 
-        return {token: token}
+        const access: string = jwt.sign({userId: id}, settings.ACCESS_JWT_SECRET, {expiresIn: "10s"})
+
+        return {accesstoken: access}
 
 
     },
-    async getUserIdByToken(token: string): Promise<UserFromTokenType | null> {
+    async createRefreshToken(id:string): Promise<string> {
+
+        const refresh: string = jwt.sign({userId: id}, settings.REFRESH_JWT_SECRET, {expiresIn: "20s"})
+
+
+        return refresh
+
+
+    },
+    async getUserIdByAccessToken(token: string): Promise<UserFromTokenType | null> {
         try {
 
 
-
             // @ts-ignore
-            return await jwt.verify(token, settings.JWT_SECRET)
+            return jwt.verify(token, settings.ACCESS_JWT_SECRET)
 
 
         } catch (error) {
             return null
         }
 
-    }
+    },
+    async getUserIdByRefreshToken(token: string): Promise<UserFromTokenType | null> {
+        try {
+
+            //@ts-ignore
+            return await jwt.verify(token, settings.REFRESH_JWT_SECRET)
+
+
+        } catch (error) {
+            return null
+        }
+
+    },
+
 }

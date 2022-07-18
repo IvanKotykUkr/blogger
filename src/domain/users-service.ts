@@ -25,6 +25,7 @@ export const usersService = {
             return null
         }
 
+
         return await userRepositories.findUserById(userid)
 
     },
@@ -56,10 +57,7 @@ export const usersService = {
     async createUserByUser(login: string, email: string, password: string, ip: string): Promise<UserRoutType | null> {
         const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await authService.generateHash(password, passwordSalt)
-        const chekEmail = await userRepositories.findLoginOrEmail(email)
-        if (chekEmail !== null) {
-            return null
-        }
+
         const newUser: UserType = {
             accountData: {
                 login,
@@ -67,9 +65,6 @@ export const usersService = {
                 passwordHash,
                 passwordSalt,
                 createdAt: new Date()
-            },
-            registrationData: {
-                ip
             },
             emailConfirmation: {
                 confirmationCode: uuidv4(),

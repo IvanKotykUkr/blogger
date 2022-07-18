@@ -33,6 +33,7 @@ export const userRepositories = {
         if (user) {
             return {
                 id: user._id,
+                email:user.accountData.email,
                 login: user.accountData.login,
                 passwordHash: user.accountData.passwordHash,
                 passwordSalt: user.accountData.passwordSalt,

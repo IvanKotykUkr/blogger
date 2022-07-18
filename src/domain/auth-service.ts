@@ -65,7 +65,7 @@ export const authService = {
 
         return null
     },
-    async checkCredentials(loginOrEmail: string, password: string): Promise<UserType  | string> {
+    async checkCredentials(loginOrEmail: string, password: string): Promise<string> {
         const user: UserType|null  = await userRepositories.findLoginOrEmail(loginOrEmail)
 
 
@@ -75,7 +75,7 @@ export const authService = {
             return wrongPassword
         }
         // @ts-ignore
-        return user
+        return user._id
     },
     async generateHash(password: string, salt: string): Promise<string> {
         return await bcrypt.hash(password, salt)

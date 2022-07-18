@@ -9,6 +9,7 @@ export const postsCollection = db.collection("posts");
 export const usersCollection = db.collection("users");
 export const commentsCollection = db.collection("comment");
 export const trafficCollection= db.collection("traffic");
+export const tokenCollection = db.collection("tokens")
 
 export async function runDb() {
     try {

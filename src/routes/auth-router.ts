@@ -7,17 +7,20 @@ import {
 
     loginValidation,
     passwordValidation,
-    inputValidationAuth, codeValidation, emailValidation,
-} from "../midlewares/input-validation-auth";
+    inputValidationAuth, codeValidation, emailValidation, refreshTokenValidation, tokenValidationAuth,
+} from "../middlewares/input-validation-auth";
 import {UserType} from "../types/user-type";
 import {authService} from "../domain/auth-service";
 import {emailManager} from "../managers/email-manager";
-import {inputValidationUser, loginValidationUser, passwordValidationUser} from "../midlewares/input-validation-users";
+import {inputValidationUser, loginValidationUser, passwordValidationUser} from "../middlewares/input-validation-users";
 import {
     antiDosMiddlewares, loginAuthMiddlewares,
     registrationConfirmMiddlewares,
     registrationMiddlewares, registrationResendingMiddlewares
-} from "../midlewares/auth-middleware";
+} from "../middlewares/auth-validation-middleware";
+import {authRefreshTokenMiddlewares, authValidationMiddleware} from "../middlewares/auth-access-middlewares";
+import {tokenService} from "../domain/token-service";
+
 
 export const authRouter = Router({})
 
@@ -29,16 +32,59 @@ authRouter.post('/login',
     inputValidationAuth,
     loginAuthMiddlewares,
     async (req: Request, res: Response) => {
-        const user: UserType |  string = await authService.checkCredentials(req.body.login, req.body.password)
-        if(user==="wrong password") {
+        const user = await authService.checkCredentials(req.body.login, req.body.password)
+        if (user === "wrong password") {
             res.status(401).json({errorsMessages: [{message: "password  is wrong", field: " password"}]})
             return
         }
         if (user) {
-            const token = await jwtService.createJWT(<UserType>user)
-            res.status(200).send(token)
+            const accessToken = await jwtService.createAccessToken(user)
+            const refreshToken = await jwtService.createRefreshToken(user)
+
+            res.cookie("refreshToken", refreshToken, {
+                httpOnly: true,
+
+
+            });
+            res.status(200).send(accessToken)
             return
         }
+
+
+    });
+authRouter.post('/refresh_token',
+
+    refreshTokenValidation,
+    tokenValidationAuth,
+    authRefreshTokenMiddlewares,
+    async (req: Request, res: Response) => {
+        const accessToken = await jwtService.createAccessToken(req.user.id)
+        const refreshToken = await jwtService.createRefreshToken(req.user.id)
+
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+
+
+        });
+        res.status(200).send(accessToken)
+        return
+
+    });
+authRouter.post('/logout',
+
+    refreshTokenValidation,
+    tokenValidationAuth,
+    authRefreshTokenMiddlewares,
+    async (req: Request, res: Response) => {
+
+        if (req.headers.cookie) {
+            await tokenService.saveTokenInBlacklist(req.headers.cookie)
+
+            res.clearCookie("refreshToken")
+            res.sendStatus(204)
+            return
+        }
+
 
 
     });
@@ -95,3 +141,42 @@ authRouter.post('/registration-email-resending',
         }
 
     });
+authRouter.get('/me', authValidationMiddleware, async (req: Request, res: Response) => {
+
+    res.status(200).json({
+        "email": req.user.email,
+        "login": req.user.login,
+        "userId": req.user.id
+    })
+
+});
+/*
+authRouter.get('/test',async (req: Request, res: Response) => {
+    const dataToSecure = {
+        dataToSecure: "This is the secret data in the cookie.",
+    };
+    res.cookie("loggedin", "true",{
+        httpOnly: true,
+
+
+    });
+
+    res.send("Cookie sent!");
+    return
+
+
+});
+authRouter.get('/test2',async (req: Request, res: Response) => {
+    let response = "Not logged in!";
+
+    if(req.cookies.logged == "true") {
+        response = "Yup! You are logged in!";
+    }
+
+    res.send(response);
+    return
+
+
+});
+
+ */

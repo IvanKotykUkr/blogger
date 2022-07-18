@@ -1,10 +1,10 @@
 import {Request, Response, Router} from "express";
 import {usersService} from "../domain/users-service";
-import {basicAuthorization} from "../midlewares/basicAuth";
-import {inputValidationUser, loginValidationUser, passwordValidationUser} from "../midlewares/input-validation-users";
+import {basicAuthorization} from "../middlewares/basicAuth";
+import {inputValidationUser, loginValidationUser, passwordValidationUser} from "../middlewares/input-validation-users";
 import {UserRoutType} from "../types/user-type";
 import {authService} from "../domain/auth-service";
-import {emailValidation, inputValidationAuth} from "../midlewares/input-validation-auth";
+import {emailValidation, inputValidationAuth} from "../middlewares/input-validation-auth";
 
 export const usersRouter = Router({})
 usersRouter.get('/', async (req: Request, res: Response) => {

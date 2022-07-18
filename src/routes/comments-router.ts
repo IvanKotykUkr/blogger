@@ -1,15 +1,15 @@
 import {Request, Response, Router} from "express";
 import {commentsService} from "../domain/comments-service";
-import {authMiddleware, authMiddlewaresWithCheckOwn} from "../midlewares/auth-middleware";
 
 
-import {commentValidation, inputValidationComment} from "../midlewares/input-validation-comments";
+import {commentValidation, inputValidationComment} from "../middlewares/input-validation-comments";
 import {CommentResponseType} from "../types/commnet-type";
+import {authMiddlewaresWithCheckOwn, authValidationMiddleware} from "../middlewares/auth-access-middlewares";
 
 export const commentsRouter = Router({})
 
 commentsRouter.put('/:id',
-    authMiddleware,
+    authValidationMiddleware,
     authMiddlewaresWithCheckOwn,
     commentValidation,
     inputValidationComment,
@@ -26,7 +26,7 @@ commentsRouter.put('/:id',
 
 
     });
-commentsRouter.delete('/:id', authMiddleware, authMiddlewaresWithCheckOwn, async (req: Request, res: Response) => {
+commentsRouter.delete('/:id', authValidationMiddleware, authMiddlewaresWithCheckOwn, async (req: Request, res: Response) => {
     const isDeleted: boolean = await commentsService.deleteCommentsById(req.params.id)
     if (isDeleted) {
         res.sendStatus(204)
