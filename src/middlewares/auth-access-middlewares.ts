@@ -77,10 +77,10 @@ export const authRefreshTokenMiddlewares = async (req: Request, res: Response, n
         res.status(401).json({errorsMessages: [{message: " expired", field: "refreshToken"}]})
         return
     }
-    await tokenService.saveTokenInBlacklist(req.headers.cookie)
-
-    req.user = await usersService.findUserById(user.userId)
-
+    const addToken = await tokenService.saveTokenInBlacklist(req.headers.cookie)
+    if (addToken) {
+        req.user = await usersService.findUserById(user.userId)
+    }
     if (req.user === null) {
         res.status(401).json({errorsMessages: [{message: "there is no user", field: "token"}]})
         return

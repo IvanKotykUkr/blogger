@@ -43,7 +43,7 @@ authRouter.post('/login',
 
             res.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
-                secure:true
+                secure: true
 
 
             });
@@ -55,8 +55,8 @@ authRouter.post('/login',
     });
 authRouter.post('/refresh-token',
 
-    refreshTokenValidation,
-    tokenValidationAuth,
+    //refreshTokenValidation,
+    //tokenValidationAuth,
     authRefreshTokenMiddlewares,
     async (req: Request, res: Response) => {
         const accessToken = await jwtService.createAccessToken(req.user.id)
@@ -64,7 +64,7 @@ authRouter.post('/refresh-token',
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-            secure:true,
+           secure: true,
 
 
         });
@@ -79,9 +79,9 @@ authRouter.post('/logout',
     authRefreshTokenMiddlewares,
     async (req: Request, res: Response) => {
 
-        if (req.headers.cookie) {
-            await tokenService.saveTokenInBlacklist(req.headers.cookie)
 
+        const token = await tokenService.saveTokenInBlacklist(req.headers.cookie!)
+        if (token) {
             res.clearCookie("refreshToken")
             res.sendStatus(204)
             return
@@ -89,7 +89,7 @@ authRouter.post('/logout',
 
 
 
-    });
+});
 authRouter.post('/registration-confirmation',
     antiDosMiddlewares,
 
