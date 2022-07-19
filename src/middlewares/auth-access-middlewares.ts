@@ -5,6 +5,7 @@ import {UserFromTokenType} from "../types/user-type";
 import {jwtService} from "../aplication/jwt-service";
 import {usersService} from "../domain/users-service";
 import {tokenService} from "../domain/token-service";
+import * as bcrypt from "bcrypt";
 
 export const authValidationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.headers.authorization) {
@@ -20,11 +21,11 @@ export const authValidationMiddleware = async (req: Request, res: Response, next
     const token: string = req.headers.authorization.split(' ')[1]
 
     const user: UserFromTokenType | null = await jwtService.getUserIdByAccessToken(token)
-
     if (!user) {
         res.status(401).json({errorsMessages: [{message: "Should be valide JWT Token", field: "token"}]})
         return
     }
+
 
     req.user = await usersService.findUserById(user.userId)
 

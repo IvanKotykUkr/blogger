@@ -80,6 +80,7 @@ export const authService = {
     async generateHash(password: string, salt: string): Promise<string> {
         return await bcrypt.hash(password, salt)
 
+
     },
     async confirmEmail(code: string): Promise<string | boolean> {
 

@@ -30,7 +30,7 @@ export const jwtService = {
 
 
             // @ts-ignore
-            return jwt.verify(token, settings.ACCESS_JWT_SECRET)
+            return await jwt.verify(token, settings.ACCESS_JWT_SECRET)
 
 
         } catch (error) {

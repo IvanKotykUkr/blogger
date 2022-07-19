@@ -12,7 +12,7 @@ import {
     titleValidation
 } from "../middlewares/input-validation-midlewares-posts";
 
-import {BloggerResponseType, BloggerResponseTypeWithPagination, BloggerType} from "../types/blogger-type";
+import {BloggerResponseType, BloggerResponseTypeWithPagination} from "../types/blogger-type";
 import {PostsResponseType, PostsResponseTypeWithPagination} from "../types/posts-type";
 
 
