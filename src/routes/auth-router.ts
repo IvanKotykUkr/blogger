@@ -38,12 +38,13 @@ authRouter.post('/login',
             return
         }
         if (user) {
+
             const accessToken = await jwtService.createAccessToken(user)
             const refreshToken = await jwtService.createRefreshToken(user)
-
+            res.clearCookie("refreshToken")
             res.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
-                secure: true
+              secure: true
 
 
             });
@@ -55,16 +56,16 @@ authRouter.post('/login',
     });
 authRouter.post('/refresh-token',
 
-    //refreshTokenValidation,
-    //tokenValidationAuth,
+    refreshTokenValidation,
+    tokenValidationAuth,
     authRefreshTokenMiddlewares,
     async (req: Request, res: Response) => {
         const accessToken = await jwtService.createAccessToken(req.user.id)
         const refreshToken = await jwtService.createRefreshToken(req.user.id)
-
+        res.clearCookie("refreshToken")
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-           secure: true,
+            secure: true,
 
 
         });
