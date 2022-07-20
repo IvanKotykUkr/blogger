@@ -61,6 +61,7 @@ export const authRefreshTokenMiddlewares = async (req: Request, res: Response, n
     }
 
     const refreshToken: string = req.headers.cookie.split('=')[1]
+    console.log(refreshToken)
     const alreadyUsed = await tokenService.checkToken(refreshToken)
     if (alreadyUsed === true) {
         res.clearCookie("refreshToken")
@@ -68,7 +69,7 @@ export const authRefreshTokenMiddlewares = async (req: Request, res: Response, n
         return
     }
 
-    const user: UserFromTokenType | null = await jwtService.getUserIdByRefreshToken(refreshToken)
+    const user: UserFromTokenType | null = jwtService.getUserIdByRefreshToken(refreshToken)
 
 
     if (!user) {
