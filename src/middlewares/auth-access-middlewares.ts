@@ -71,11 +71,12 @@ export const authRefreshTokenMiddlewares = async (req: Request, res: Response, n
 
     const user: UserFromTokenType | null = jwtService.getUserIdByRefreshToken(refreshToken)
 
-
     if (!user) {
         await tokenService.saveTokenInBlacklist(req.headers.cookie)
+        console.log('expired log')
+        console.log('user', user)
         res.clearCookie("refreshToken")
-        res.status(401).json({errorsMessages: [{message: " expired", field: "refreshToken"}]})
+        res.status(401).json({errorsMessages: [{message: "expired", field: "refreshToken"}]})
         return
     }
     const addToken = await tokenService.saveTokenInBlacklist(req.headers.cookie)

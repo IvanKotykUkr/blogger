@@ -66,12 +66,9 @@ authRouter.post('/refresh-token',
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
            secure: true,
-
-
         });
-        res.status(200).send(accessToken)
-        return
 
+        return res.status(200).send(accessToken)
     });
 authRouter.post('/logout',
 
