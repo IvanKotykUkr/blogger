@@ -38,10 +38,22 @@ export const jwtService = {
         }
 
     },
+    decodCode(token: string):UserFromTokenType{
+        try {
+
+
+            return jwt.decode(token, settings.REFRESH_JWT_SECRET)
+
+
+        } catch (error) {
+            return
+        }
+
+    },
     getUserIdByRefreshToken(token: string): UserFromTokenType | null {
         try {
 
-            //@ts-ignore
+
             return jwt.verify(token, settings.REFRESH_JWT_SECRET)
 
 

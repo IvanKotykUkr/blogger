@@ -61,17 +61,17 @@ export const authRefreshTokenMiddlewares = async (req: Request, res: Response, n
     }
 
     const refreshToken: string = req.headers.cookie.split('=')[1]
-    console.log(refreshToken)
+
     const alreadyUsed = await tokenService.checkToken(refreshToken)
     if (alreadyUsed === true) {
         res.clearCookie("refreshToken")
         res.status(401).json({errorsMessages: [{message: "alreadyUsed", field: "refreshToken"}]})
         return
     }
-
-    const user: UserFromTokenType | null = jwtService.getUserIdByRefreshToken(refreshToken)
-
-    if (!user) {
+    const user:UserFromTokenType=jwtService.decodCode(refreshToken)
+    //const user: UserFromTokenType | null = jwtService.getUserIdByRefreshToken(refreshToken)
+    console.log(user)
+    if (Date.now() >= user.exp * 1000) {
         await tokenService.saveTokenInBlacklist(req.headers.cookie)
         console.log('expired log')
         console.log('user', user)
@@ -79,6 +79,16 @@ export const authRefreshTokenMiddlewares = async (req: Request, res: Response, n
         res.status(401).json({errorsMessages: [{message: "expired", field: "refreshToken"}]})
         return
     }
+    /*if (!user) {
+        await tokenService.saveTokenInBlacklist(req.headers.cookie)
+        console.log('expired log')
+        console.log('user', user)
+        res.clearCookie("refreshToken")
+        res.status(401).json({errorsMessages: [{message: "expired", field: "refreshToken"}]})
+        return
+    }
+
+     */
     const addToken = await tokenService.saveTokenInBlacklist(req.headers.cookie)
     if (addToken) {
         req.user = await usersService.findUserById(user.userId)

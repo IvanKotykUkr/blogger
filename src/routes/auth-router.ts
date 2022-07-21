@@ -41,16 +41,16 @@ authRouter.post('/login',
 
             const accessToken = await jwtService.createAccessToken(user)
             const refreshToken = await jwtService.createRefreshToken(user)
-            console.log('new token')
-            console.log('refreshtoken '+new Date(), refreshToken)
+            //  console.log('new token')
+            //console.log('refreshtoken '+new Date(), refreshToken)
             res.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
-                secure: true
+                //   secure: true
 
 
             });
             res.status(200).send(accessToken)
-            console.log("req " + new Date())
+            //console.log("req " + new Date())
             return
         }
 
@@ -67,7 +67,7 @@ authRouter.post('/refresh-token',
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-            secure: true,
+            // secure: true,
         });
 
         return res.status(200).send(accessToken)
