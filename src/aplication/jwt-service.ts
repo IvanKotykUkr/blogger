@@ -63,7 +63,7 @@ export const jwtService = {
 
 
         } catch (error) {
-            console.log("return null = error")
+
             return null
         }
 

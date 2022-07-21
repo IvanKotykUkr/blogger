@@ -81,7 +81,7 @@ export const authRefreshTokenMiddlewares = async (req: Request, res: Response, n
     }
 
     */
-    if (!user) {
+    if (user===null) {
         await tokenService.saveTokenInBlacklist(req.headers.cookie)
 
         res.clearCookie("refreshToken")
