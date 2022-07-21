@@ -5,7 +5,7 @@ import {settings} from "../settings";
 import {ObjectId} from "mongodb";
 import {UserFromTokenType, UserType} from "../types/user-type";
 import {refreshTokenValidation} from "../middlewares/input-validation-auth";
-
+const expired = "expired";
 export const jwtService = {
     async createAccessToken(id:string): Promise<{ accessToken: string }> {
 
@@ -54,17 +54,18 @@ export const jwtService = {
         }
 
     },
-    getUserIdByRefreshToken(token: string): UserFromTokenType | null {
+    getUserIdByRefreshToken(token: string): any {
         try {
 
 
-            // @ts-ignore
+
             return jwt.verify(token, settings.REFRESH_JWT_SECRET)
 
 
         } catch (error) {
 
-            return null
+
+            return expired
         }
 
     },

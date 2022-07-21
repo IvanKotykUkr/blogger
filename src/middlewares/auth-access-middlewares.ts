@@ -69,7 +69,7 @@ export const authRefreshTokenMiddlewares = async (req: Request, res: Response, n
         return
     }
    // const user:UserFromTokenType=jwtService.decodCode(refreshToken)
-    const user: UserFromTokenType | null = jwtService.getUserIdByRefreshToken(refreshToken)
+    const user = jwtService.getUserIdByRefreshToken(refreshToken)
 
    /* if (Date.now() >= user.exp * 1000) {
         await tokenService.saveTokenInBlacklist(req.headers.cookie)
@@ -81,7 +81,7 @@ export const authRefreshTokenMiddlewares = async (req: Request, res: Response, n
     }
 
     */
-    if (user===null) {
+    if (user==="expired") {
         await tokenService.saveTokenInBlacklist(req.headers.cookie)
 
         res.clearCookie("refreshToken")
