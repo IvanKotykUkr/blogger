@@ -42,11 +42,15 @@ export const jwtService = {
         try {
 
 
+            // @ts-ignore
             return jwt.decode(token, settings.REFRESH_JWT_SECRET)
 
 
         } catch (error) {
+
+            // @ts-ignore
             return
+
         }
 
     },
@@ -54,6 +58,7 @@ export const jwtService = {
         try {
 
 
+            // @ts-ignore
             return jwt.verify(token, settings.REFRESH_JWT_SECRET)
 
 
