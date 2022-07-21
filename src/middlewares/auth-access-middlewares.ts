@@ -69,7 +69,7 @@ export const authRefreshTokenMiddlewares = async (req: Request, res: Response, n
         return
     }
    // const user:UserFromTokenType=jwtService.decodCode(refreshToken)
-    const user = jwtService.getUserIdByRefreshToken(refreshToken)
+    const user: UserFromTokenType|string  = jwtService.getUserIdByRefreshToken(refreshToken)
 
    /* if (Date.now() >= user.exp * 1000) {
         await tokenService.saveTokenInBlacklist(req.headers.cookie)
@@ -91,8 +91,10 @@ export const authRefreshTokenMiddlewares = async (req: Request, res: Response, n
 
 
     const addToken = await tokenService.saveTokenInBlacklist(req.headers.cookie)
-    if (addToken) {
-        req.user = await usersService.findUserById(user.userId)
+    if (addToken&&typeof user !== "string") {
+
+            req.user = await usersService.findUserById(user.userId)
+
     }
     if (req.user === null) {
         res.status(401).json({errorsMessages: [{message: "there is no user", field: "token"}]})

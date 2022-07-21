@@ -10,7 +10,7 @@ export const jwtService = {
     async createAccessToken(id:string): Promise<{ accessToken: string }> {
 
 
-        const access: string = jwt.sign({userId: id}, settings.ACCESS_JWT_SECRET, {expiresIn: "10s"})
+        const access: string = jwt.sign({userId: id}, settings.ACCESS_JWT_SECRET, {expiresIn: "11s"})
 
         return {accessToken: access}
 
@@ -18,7 +18,7 @@ export const jwtService = {
     },
     async createRefreshToken(id:string): Promise<string> {
 
-        const refresh: string = jwt.sign({userId: id}, settings.REFRESH_JWT_SECRET, {expiresIn: "20s"})
+        const refresh: string = jwt.sign({userId: id}, settings.REFRESH_JWT_SECRET, {expiresIn: "21s"})
 
 
         return refresh
@@ -54,11 +54,11 @@ export const jwtService = {
         }
 
     },
-    getUserIdByRefreshToken(token: string): any {
+    getUserIdByRefreshToken(token: string): UserFromTokenType | string {
         try {
 
 
-
+            // @ts-ignore
             return jwt.verify(token, settings.REFRESH_JWT_SECRET)
 
 
