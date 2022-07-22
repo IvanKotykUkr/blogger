@@ -2,8 +2,8 @@ import {tokenCollection} from "./db";
 
 export const tokenRepositories = {
 
-    async addTokenInBlacklist(token: any) {
-        const result = await tokenCollection.insertOne(token)
+    async addTokenInBlacklist(token: string) {
+        const result = await tokenCollection.insertOne({token})
         return result
     },
     async checkTokenInBlacklist(refreshToken: string) {

@@ -55,13 +55,16 @@ export const authMiddlewaresWithCheckOwn = async (req: Request, res: Response, n
     next()
 }
 export const authRefreshTokenMiddlewares = async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.headers.cookie) {
+    const refreshToken = req.cookies.refreshToken
+    console.log(refreshToken)
+
+    if (!refreshToken) {
         res.status(401).json({errorsMessages: [{message: "token", field: "cookie"}]})
         return
     }
 
-    const refreshToken: string = req.headers.cookie.split('=')[1]
-    console.log(refreshToken)
+
+
     const alreadyUsed = await tokenService.checkToken(refreshToken)
     if (alreadyUsed === true) {
         res.clearCookie("refreshToken")
@@ -82,7 +85,7 @@ export const authRefreshTokenMiddlewares = async (req: Request, res: Response, n
 
      */
     if (user === "expired") {
-        await tokenService.saveTokenInBlacklist(req.headers.cookie)
+        await tokenService.saveTokenInBlacklist(refreshToken)
         console.log("11111   "+refreshToken)
 
         res.clearCookie("refreshToken")
@@ -91,7 +94,7 @@ export const authRefreshTokenMiddlewares = async (req: Request, res: Response, n
     }
 
 
-    const addToken = await tokenService.saveTokenInBlacklist(req.headers.cookie)
+    const addToken = await tokenService.saveTokenInBlacklist(refreshToken)
     if (addToken && typeof user !== "string") {
 
         req.user = await usersService.findUserById(user.userId)
