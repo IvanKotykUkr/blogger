@@ -45,7 +45,7 @@ authRouter.post('/login',
             //console.log('refreshtoken '+new Date(), refreshToken)
             res.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
-                //secure: true
+                secure: true
 
 
             });
@@ -67,7 +67,7 @@ authRouter.post('/refresh-token',
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-           // secure: true,
+            secure: true,
         });
 
         return res.status(200).send(accessToken)
