@@ -61,28 +61,29 @@ export const authRefreshTokenMiddlewares = async (req: Request, res: Response, n
     }
 
     const refreshToken: string = req.headers.cookie.split('=')[1]
-
+    console.log(refreshToken)
     const alreadyUsed = await tokenService.checkToken(refreshToken)
     if (alreadyUsed === true) {
         res.clearCookie("refreshToken")
         res.status(401).json({errorsMessages: [{message: "alreadyUsed", field: "refreshToken"}]})
         return
     }
-   // const user:UserFromTokenType=jwtService.decodCode(refreshToken)
-    const user: UserFromTokenType|string  = jwtService.getUserIdByRefreshToken(refreshToken)
+    // const user:UserFromTokenType=jwtService.decodCode(refreshToken)
+    const user: UserFromTokenType | string = jwtService.getUserIdByRefreshToken(refreshToken)
 
-   /* if (Date.now() >= user.exp * 1000) {
-        await tokenService.saveTokenInBlacklist(req.headers.cookie)
-        console.log('expired log')
-        console.log('user', user)
-        res.clearCookie("refreshToken")
-        res.status(401).json({errorsMessages: [{message: "expired", field: "refreshToken"}]})
-        return
-    }
+    /* if (Date.now() >= user.exp * 1000) {
+         await tokenService.saveTokenInBlacklist(req.headers.cookie)
+         console.log('expired log')
+         console.log('user', user)
+         res.clearCookie("refreshToken")
+         res.status(401).json({errorsMessages: [{message: "expired", field: "refreshToken"}]})
+         return
+     }
 
-    */
-    if (user==="expired") {
+     */
+    if (user === "expired") {
         await tokenService.saveTokenInBlacklist(req.headers.cookie)
+        console.log("11111   "+refreshToken)
 
         res.clearCookie("refreshToken")
         res.status(401).json({errorsMessages: [{message: "expired", field: "refreshToken"}]})
@@ -91,9 +92,9 @@ export const authRefreshTokenMiddlewares = async (req: Request, res: Response, n
 
 
     const addToken = await tokenService.saveTokenInBlacklist(req.headers.cookie)
-    if (addToken&&typeof user !== "string") {
+    if (addToken && typeof user !== "string") {
 
-            req.user = await usersService.findUserById(user.userId)
+        req.user = await usersService.findUserById(user.userId)
 
     }
     if (req.user === null) {
