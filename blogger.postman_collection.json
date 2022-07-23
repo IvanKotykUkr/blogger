@@ -9,10 +9,16 @@
 			"name": "Авторизація",
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "x-forwarded-for",
+						"value": "203.0.113.191",
+						"type": "default"
+					}
+				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"login\":\"Vasya\",\n  \"password\":\"111111\"\n}",
+					"raw": "{\n    \"login\":\"erOly\",\n  \"password\":\"111111\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -35,12 +41,207 @@
 			"response": []
 		},
 		{
+			"name": "рефреш",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-forwarded-for",
+						"value": "203.0.113.191",
+						"type": "default"
+					},
+					{
+						"key": "Cookie",
+						"value": "re",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5001/auth/refresh-token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"auth",
+						"refresh-token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "logout",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-forwarded-for",
+						"value": "203.0.113.191",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"login\":\"Misha\",\n  \"password\":\"111111\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/auth/refresh_token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"auth",
+						"refresh_token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "підтвердження",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"code\": \"0eab37ef-7c43-4af6-9adb-7328379ae089\"\n   \n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/auth/registration-confirmation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"auth",
+						"registration-confirmation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "регістрапція",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-forwarded-for",
+						"value": " 203.0.113.191",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"login\":\"erOly\",\n    \"email\":\"beefier_tangos0q@icloud.com\",\n  \"password\":\"111111\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/auth/registration",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"auth",
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "перевідправка кода",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-forwarded-for",
+						"value": "203.0.113.191",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \n    \"email\":\"beefier_tangos0q@icloud.com\"\n \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/auth/registration-email-resending",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"auth",
+						"registration-email-resending"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "me",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmRjMmMyYmUyM2JiNjUzMTM4OThlOTAiLCJpYXQiOjE2NTg1OTY0MjEsImV4cCI6MTY1ODYwMDAyMX0.Fvx3KPdz9tSH-zTIYPN46hmWDnB9YVskhHDYXJxAG3M",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/auth/me",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"auth",
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Вивести список блогерів",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5001/bloggers/62c350efcea20f1982b4c04c",
+					"raw": "http://localhost:5001/bloggers/62dc1779891e525c1b556222",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -48,7 +249,7 @@
 					"port": "5001",
 					"path": [
 						"bloggers",
-						"62c350efcea20f1982b4c04c"
+						"62dc1779891e525c1b556222"
 					]
 				}
 			},
@@ -163,7 +364,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5001/bloggers/62c3540bc352a97a8611db8c",
+					"raw": "http://localhost:5001/bloggers/62dc1753891e525c1b556217",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -171,7 +372,7 @@
 					"port": "5001",
 					"path": [
 						"bloggers",
-						"62c3540bc352a97a8611db8c"
+						"62dc1753891e525c1b556217"
 					]
 				}
 			},
@@ -183,7 +384,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5001/bloggers/62c365e968d2863f3a9a43dd/posts/",
+					"raw": "http://localhost:5001/bloggers/62dc1779891e525c1b556222/posts/",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -191,7 +392,7 @@
 					"port": "5001",
 					"path": [
 						"bloggers",
-						"62c365e968d2863f3a9a43dd",
+						"62dc1779891e525c1b556222",
 						"posts",
 						""
 					]
@@ -229,7 +430,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5001/bloggers/62c365e968d2863f3a9a43dd/posts",
+					"raw": "http://localhost:5001/bloggers/62dc2c88e23bb65313898ea2/posts",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -237,7 +438,7 @@
 					"port": "5001",
 					"path": [
 						"bloggers",
-						"62c365e968d2863f3a9a43dd",
+						"62dc2c88e23bb65313898ea2",
 						"posts"
 					]
 				}
@@ -250,7 +451,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5001/posts/62c35475c352a97a8611db8e",
+					"raw": "http://localhost:5001/posts/",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -258,7 +459,7 @@
 					"port": "5001",
 					"path": [
 						"posts",
-						"62c35475c352a97a8611db8e"
+						""
 					]
 				}
 			},
@@ -286,7 +487,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \n  \"title\": \"post\",\n  \"shortDescription\": \"Post from add post\",\n  \"content\": \"cвісавvxvx\",\n  \"bloggerId\": \"62c365e968d2863f3a9a43dd\"\n}\n\n",
+					"raw": "{\n  \n  \"title\": \"post\",\n  \"shortDescription\": \"Post from add post\",\n  \"content\": \"cвісавvxvx\",\n  \"bloggerId\": \"62dc1779891e525c1b556222\"\n}\n\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -329,7 +530,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": " {\"content\":\"new post content\",\n \"shortDescription\":\"description\",\n \"title\":\"post\",\n \"bloggerId\":\"1655915158129\"}",
+					"raw": " {\"content\":\"new post content\",\n \"shortDescription\":\"description\",\n \"title\":\"post\",\n \"bloggerId\":\"62dc1a704418b9627a3de7a5\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -337,7 +538,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5001/posts/1655846121401",
+					"raw": "http://localhost:5001/posts/62dc1ad8c6aa5c305d8e86a9",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -345,7 +546,7 @@
 					"port": "5001",
 					"path": [
 						"posts",
-						"1655846121401"
+						"62dc1ad8c6aa5c305d8e86a9"
 					]
 				}
 			},
@@ -359,7 +560,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxNjU2NjIxNTAzMzA0IiwiaWF0IjoxNjU2Nzc4NjM0LCJleHAiOjE2NTY3ODIyMzR9.5Hf3aHJNbtzJec893PqBmb1Itv4SRTco9NOcA6jCFkY",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmRjMzEwYzdkZjA3MTczYjRkNDA4OTEiLCJpYXQiOjE2NTg1OTc3MDgsImV4cCI6MTY1ODYwMTMwOH0.8qfz3HmQmTTXdlvgzyR6gED8efOQyJA3qLch72J9le0",
 							"type": "string"
 						}
 					]
@@ -368,7 +569,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \n  \n  \"content\": \"comenthgfdfghjhgfghjhgfcghgv\"\n  \n}",
+					"raw": "{\n  \n  \n  \"content\": \"try do mongoose new content\"\n  \n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -376,7 +577,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5001/posts/1656770264199/comments",
+					"raw": "http://localhost:5001/posts/62dc2c97e23bb65313898ea7/comments",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -384,7 +585,7 @@
 					"port": "5001",
 					"path": [
 						"posts",
-						"1656770264199",
+						"62dc2c97e23bb65313898ea7",
 						"comments"
 					]
 				}
@@ -397,7 +598,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5001/posts/1656521367779/comments",
+					"raw": "http://localhost:5001/posts/62dc2c97e23bb65313898ea7/comments",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -405,7 +606,7 @@
 					"port": "5001",
 					"path": [
 						"posts",
-						"1656521367779",
+						"62dc2c97e23bb65313898ea7",
 						"comments"
 					]
 				}
@@ -433,15 +634,15 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5001/comments/1656444554750",
+					"raw": "http://localhost:5001/posts/62d1d784431342239445bc1a",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "5001",
 					"path": [
-						"comments",
-						"1656444554750"
+						"posts",
+						"62d1d784431342239445bc1a"
 					]
 				}
 			},
@@ -485,10 +686,16 @@
 					]
 				},
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "x-forwarded-for",
+						"value": "203.0.113.191",
+						"type": "default"
+					}
+				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"login\":\"Vasya\",\n  \"password\":\"111111\"\n}",
+					"raw": "{\n    \"login\":\"Vasya\",\n    \"email\":\"baasdsadsdasdfsafdassdsardxslsdasdsaz@gmail.com\",\n  \"password\":\"111111\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -531,7 +738,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5001/users/62c3505f83b0b8d29fd6fe79",
+					"raw": "http://localhost:5001/users/62dc2c2be23bb65313898e90",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -539,7 +746,7 @@
 					"port": "5001",
 					"path": [
 						"users",
-						"62c3505f83b0b8d29fd6fe79"
+						"62dc2c2be23bb65313898e90"
 					]
 				}
 			},
@@ -553,7 +760,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxNjU2NTI4ODkwMjE4IiwiaWF0IjoxNjU2NjE1NDA0LCJleHAiOjE2NTY2MTkwMDR9.eH2iVWlJxO9Ig4hC6A4MUq7oG_Grpa57SrGgbFX2tss",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmRjMmMyYmUyM2JiNjUzMTM4OThlOTAiLCJpYXQiOjE2NTg1OTY1MzUsImV4cCI6MTY1ODYwMDEzNX0.ONBDKW8eMZFuPNBCA-85GlQiVH-Dlayei4EawX_MrHo",
 							"type": "string"
 						}
 					]
@@ -570,7 +777,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5001/comments/1656616608561",
+					"raw": "http://localhost:5001/comments/62dc2e6d6fa6c311d81642a1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -578,7 +785,7 @@
 					"port": "5001",
 					"path": [
 						"comments",
-						"1656616608561"
+						"62dc2e6d6fa6c311d81642a1"
 					]
 				}
 			},
@@ -629,6 +836,61 @@
 					"path": [
 						"comments",
 						"1656446865865"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/auth/test",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"auth",
+						"test"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "тест видалити все",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "qwerty",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/testing/all-data",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"testing",
+						"all-data"
 					]
 				}
 			},
