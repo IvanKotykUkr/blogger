@@ -38,7 +38,7 @@ export const postsService = {
         if (idHex.length !== 48) {
             return null
         }
-        const post: PostsResponseType | null = await postsRepositories.findPostsById(id)
+        const post: PostsResponseType | null = await postsRepositories.findPostsById(new ObjectId(id))
 
         if (post) {
             return post;
@@ -50,22 +50,24 @@ export const postsService = {
     async createPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostsResponseType | null> {
         const blogger: BloggerResponseType | null = await bloggersService.findBloggersById(bloggerId)
         if (blogger) {
-            const newpost: PostsType | null = {
+            const newpost: PostsType = {
                 title: title,
                 shortDescription: shortDescription,
                 content: content,
                 bloggerId: new ObjectId(bloggerId),
                 bloggerName: blogger.name,
             }
-            await postsRepositories.createPost(newpost)
-            return {
-                id: newpost._id,
-                title: newpost.title,
-                shortDescription: newpost.shortDescription,
-                content: newpost.content,
-                bloggerId: newpost.bloggerId,
-                bloggerName: newpost.bloggerName
-            }
+            return await postsRepositories.createPost(newpost)
+            /* return {
+                 id: newpost._id,
+                 title: newpost.title,
+                 shortDescription: newpost.shortDescription,
+                 content: newpost.content,
+                 bloggerId: newpost.bloggerId,
+                 bloggerName: newpost.bloggerName
+             }
+
+             */
         }
         return null
     },
@@ -82,14 +84,14 @@ export const postsService = {
 
         let blogger: BloggerResponseType | null = await bloggersService.findBloggersById(bloggerId)
 
-        let upPost: PostsResponseType | null = await postsService.findPostsById(id)
 
-        if (upPost) {
-            if (blogger) {
-                return await postsRepositories.updatePost(id, title, shortDescription, content, bloggerId, blogger.name)
-            }
-            return null
+
+
+        if (blogger) {
+            return await postsRepositories.updatePost(new ObjectId(id), title, shortDescription, content, new ObjectId(bloggerId), blogger.name)
         }
+
+
         return false
 
     },
@@ -100,8 +102,8 @@ export const postsService = {
         if (idHex.length !== 48) {
             return false
         }
-        const isDeleted = await postsRepositories.deletePost(id)
-        if(isDeleted){
+        const isDeleted = await postsRepositories.deletePost(new ObjectId(id))
+        if (isDeleted) {
             return await commentsService.deleteCommentsByPost(id)
         }
         return false
@@ -111,7 +113,7 @@ export const postsService = {
 
 
     async createCommentsByPost(postid: string, content: string, userid: string, userLogin: string): Promise<CommentResponseType | null> {
-        let post: PostsType | null = await this.findPostsById(postid)
+        let post = await this.findPostsById(postid)
         if (post) {
             let newComment: CommentResponseType | null = await commentsService.createCommentsByPost(postid, content, userid, userLogin)
             return newComment
@@ -123,7 +125,7 @@ export const postsService = {
         let post: PostsResponseType | null = await this.findPostsById(postid)
 
         if (post) {
-            let allComments: CommentsResponseTypeWithPagination = await commentsService.sendAllCommentsByPostId(postid, pagenumber, pagesize)
+            let allComments: CommentsResponseTypeWithPagination = await commentsService.sendAllCommentsByPostId(new ObjectId(postid), pagenumber, pagesize)
             return allComments
         }
         return null

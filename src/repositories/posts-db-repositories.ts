@@ -1,5 +1,5 @@
-import {postsCollection} from "./db";
-import {InsertOneResult, ObjectId} from "mongodb";
+import {PostsModelClass} from "./db";
+import {ObjectId} from "mongodb";
 import {PostsResponseType, PostsType} from "../types/posts-type";
 
 const projectionPost = {
@@ -23,20 +23,18 @@ export const postsRepositories = {
     },
     async findPostsByIdBloggerCount(bloggerId: undefined | string | ObjectId): Promise<number> {
         const filter = await this.paginationFilter(bloggerId)
-        const posts: number = await postsCollection.countDocuments(filter)
-        return posts
+        return PostsModelClass.countDocuments(filter)
     },
     async findPostsByIdBloggerPagination(bloggerId: undefined | string | ObjectId, number: number, size: number): Promise<PostsResponseType[]> {
         const filter = await this.paginationFilter(bloggerId)
 
-        const posts = await postsCollection.find(filter)
+        const posts = await PostsModelClass.find(filter)
             .skip(number > 0 ? ((number - 1) * size) : 0)
             .limit(size)
-            .project(projectionPost)
-            .toArray()
+            .lean()
 
         return posts.map(p => ({
-            id: p.id,
+            id: p._id,
             title: p.title,
             shortDescription: p.shortDescription,
             content: p.content,
@@ -46,58 +44,69 @@ export const postsRepositories = {
 
     },
 
-    async findPostsById(postid: string): Promise<PostsResponseType | null> {
+    async findPostsById(postid: ObjectId): Promise<PostsResponseType | null> {
 
 
-
-        const post = await postsCollection.findOne(
-            {_id: new ObjectId(postid)},
-            {
-                projection: projectionPost
-            })
+        const post = await PostsModelClass.findOne(
+            {_id: new ObjectId(postid)})
 
         if (post) {
 
 
             return {
-                id: post.id,
+                id: post._id,
                 title: post.title,
                 shortDescription: post.shortDescription,
                 content: post.content,
                 bloggerId: post.bloggerId,
-                bloggerName:post.bloggerName
+                bloggerName: post.bloggerName
             }
         }
         return null;
 
     },
-    async createPost(newpost: PostsType): Promise<InsertOneResult<PostsType>> {
+    async createPost(newpost: PostsType): Promise<PostsResponseType> {
 
 
-        const result: InsertOneResult<PostsType> = await postsCollection.insertOne(newpost)
+        const postsInstance = new PostsModelClass
+        postsInstance._id = new ObjectId(),
+            postsInstance.title = newpost.title
+        postsInstance.shortDescription = newpost.shortDescription
+        postsInstance.content = newpost.content
+        postsInstance.bloggerId = newpost.bloggerId
+        postsInstance.bloggerName = newpost.bloggerName
+        await postsInstance.save()
+        return {
+            id: postsInstance._id,
+            title: postsInstance.title,
+            shortDescription: postsInstance.shortDescription,
+            content: postsInstance.content,
+            bloggerId: postsInstance.bloggerId,
+            bloggerName: postsInstance.bloggerName
+        }
 
-        return result
 
     },
-    async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string, bloggerName: string): Promise<boolean> {
-        const result = await postsCollection.updateOne({_id: new ObjectId(id)},
-            {
-                $set: {
-                    title: title,
-                    shortDescription: shortDescription,
-                    content: content,
-                    bloggerId: bloggerId,
-                    bloggerName: bloggerName
-                }
-            })
-        return result.matchedCount === 1
+    async updatePost(_id: ObjectId, title: string, shortDescription: string, content: string, bloggerId: ObjectId, bloggerName: string): Promise<boolean> {
+        const postsInstance = await PostsModelClass.findById(_id)
+
+        if (!postsInstance) return false
+
+        postsInstance.title = title
+        postsInstance.shortDescription = shortDescription
+        postsInstance.content = content
+        postsInstance.bloggerId = bloggerId
+        postsInstance.bloggerName = bloggerName
+        await postsInstance.save()
+        return true
     },
 
 
-    async deletePost(id: string): Promise<boolean> {
-        const result = await postsCollection.deleteOne({_id: new ObjectId(id)})
-        return result.deletedCount === 1
-
+    async deletePost(_id: ObjectId): Promise<boolean> {
+        const postsInstance = await PostsModelClass.findById(_id)
+        if (!postsInstance) return false
+        await postsInstance.deleteOne()
+        return true
 
     },
 

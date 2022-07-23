@@ -13,7 +13,7 @@ export const commentsService = {
 
         return hex
     },
-    async sendAllCommentsByPostId(postId: string, pagenumber: number, pagesize: number): Promise<CommentsResponseTypeWithPagination> {
+    async sendAllCommentsByPostId(postId: ObjectId, pagenumber: number, pagesize: number): Promise<CommentsResponseTypeWithPagination> {
 
         let totalCount: number = await commentsRepositories.commentCount(postId)
 
@@ -32,11 +32,11 @@ export const commentsService = {
     },
     async createCommentsByPost(postid: string, content: string, userid: string, userLogin: string): Promise<CommentResponseType | null> {
         const newComment: CommentType = {
-            postid: postid,
+            postId: new ObjectId(postid),
             content,
-            userId: userid,
+            userId:new ObjectId(userid),
             userLogin,
-            addedAt: "" + (new Date())
+            addedAt:  new Date()
         }
         const generatedComment: CommentResponseType | null = await commentsRepositories.createComment(newComment)
         if (generatedComment) {
@@ -45,7 +45,8 @@ export const commentsService = {
         return null
     },
     async updateCommentById(id: string, content: string): Promise<boolean> {
-        return await commentsRepositories.updateCommentById(id, content)
+
+        return await commentsRepositories.updateCommentById(new ObjectId(id), content)
 
 
     },
@@ -54,7 +55,7 @@ export const commentsService = {
         if (idHex.length !== 48) {
             return false
         }
-        return await commentsRepositories.deleteCommentsById(id)
+        return await commentsRepositories.deleteCommentsById(new ObjectId(id))
 
     },
 
@@ -68,6 +69,6 @@ export const commentsService = {
         return comment
     },
     async deleteCommentsByPost(id: string) {
-        return await commentsRepositories.deleteCommentsByPost(id)
+        return await commentsRepositories.deleteCommentsByPost(new ObjectId(id))
     }
 }

@@ -119,8 +119,5 @@ export const authService = {
                 }
 
 
-
-
-        return allOk
     }
 }

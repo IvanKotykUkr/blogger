@@ -5,6 +5,7 @@ import {inputValidationUser, loginValidationUser, passwordValidationUser} from "
 import {UserRoutType} from "../types/user-type";
 import {authService} from "../domain/auth-service";
 import {emailValidation, inputValidationAuth} from "../middlewares/input-validation-auth";
+import {registrationMiddlewares} from "../middlewares/auth-validation-middleware";
 
 export const usersRouter = Router({})
 usersRouter.get('/', async (req: Request, res: Response) => {
@@ -23,6 +24,7 @@ usersRouter.post('/',
 
     passwordValidationUser,
     inputValidationUser,
+    registrationMiddlewares,
 
     async (req: Request, res: Response) => {
         const newUser: UserRoutType | null = await usersService.createUserByUser(req.body.login, req.body.email, req.body.password, req.ip)

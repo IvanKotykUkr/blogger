@@ -1,5 +1,10 @@
 import * as QueryString from "querystring";
-import {ObjectId} from "mongodb";
+import {ObjectId, WithId} from "mongodb";
+export type BloggerDBType=WithId<{
+    name: string,
+    youtubeUrl: string,
+
+}>
 
 export type BloggerType = {
     _id?: ObjectId,

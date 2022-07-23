@@ -1,16 +1,13 @@
-import {trafficCollection} from "./db";
+import { TrafficModelClass} from "./db";
 import {ObjectId, WithId} from "mongodb";
+import {RecordType} from "../types/traffic-type";
 
 
-export type RecordType = {
-    ip: string,
-    date: Date
-    process:string
-}
+
 
 export const accessAttemptsDbRepositories = {
-    async countDate(record:RecordType):Promise< WithId<Document>[]>{
-        const ipFound = await trafficCollection.find({"ip": record.ip,"process":record.process}).toArray()
+    async countDate(record:RecordType){
+        const ipFound = await TrafficModelClass.find({"ip": record.ip,"process":record.process}).lean()
 
 
         return ipFound.map(val => (val.date)).slice(Math.max(ipFound.length - 6, 0))
@@ -19,9 +16,16 @@ export const accessAttemptsDbRepositories = {
 
 
 
-    async createRecord(record: RecordType):Promise<WithId<Document>[]> {
-        await trafficCollection.insertOne(record)
-        return await this.countDate(record)
+    async createRecord(record: RecordType) {
+        const recordInstance = new TrafficModelClass
+        recordInstance._id=new ObjectId()
+        recordInstance.ip=record.ip
+        recordInstance.date=record.date,
+        recordInstance.process = record.process
+        await recordInstance.save()
+
+
+        return await this.countDate(recordInstance)
 
 
 

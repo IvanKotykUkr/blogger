@@ -1,13 +1,16 @@
-import {tokenCollection} from "./db";
+import { TokensModelClass} from "./db";
 
 export const tokenRepositories = {
 
     async addTokenInBlacklist(token: string) {
-        const result = await tokenCollection.insertOne({token})
-        return result
+        const tokenInstance = new TokensModelClass
+        tokenInstance.token=token
+        await tokenInstance.save()
+        return tokenInstance
     },
-    async checkTokenInBlacklist(refreshToken: string) {
-        const result = await tokenCollection.findOne({token: refreshToken})
+    async checkTokenInBlacklist(token: string) {
+
+        const result = await TokensModelClass.findOne({token})
         if (result) {
             return true
         }

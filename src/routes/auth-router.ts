@@ -9,9 +9,8 @@ import {
     passwordValidation,
     inputValidationAuth, codeValidation, emailValidation, refreshTokenValidation, tokenValidationAuth,
 } from "../middlewares/input-validation-auth";
-import {UserType} from "../types/user-type";
 import {authService} from "../domain/auth-service";
-import {emailManager} from "../managers/email-manager";
+
 import {inputValidationUser, loginValidationUser, passwordValidationUser} from "../middlewares/input-validation-users";
 import {
     antiDosMiddlewares, loginAuthMiddlewares,
@@ -32,26 +31,21 @@ authRouter.post('/login',
     inputValidationAuth,
     loginAuthMiddlewares,
     async (req: Request, res: Response) => {
-        const user = await authService.checkCredentials(req.body.login, req.body.password)
-        if (user === "wrong password") {
+        const userId: string = await authService.checkCredentials(req.body.login, req.body.password)
+        if (userId === "wrong password") {
             res.status(401).json({errorsMessages: [{message: "password  is wrong", field: " password"}]})
             return
         }
-        if (user) {
+        if (userId) {
 
-            const accessToken = await jwtService.createAccessToken(user)
-            const refreshToken = await jwtService.createRefreshToken(user)
-            //  console.log('new token')
-            //console.log('refreshtoken '+new Date(), refreshToken)
+            const accessToken = await jwtService.createAccessToken(userId)
+            const refreshToken = await jwtService.createRefreshToken(userId)
             res.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
-                secure: true
-
-
+               // secure: true,
             });
-            res.status(200).send(accessToken)
-            //console.log("req " + new Date())
-            return
+
+            return res.status(200).send(accessToken)
         }
 
 
@@ -67,7 +61,7 @@ authRouter.post('/refresh-token',
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-            secure: true,
+           // secure: true,
         });
 
         return res.status(200).send(accessToken)
@@ -115,7 +109,7 @@ authRouter.post('/registration',
 
     passwordValidationUser,
     inputValidationUser,
-    registrationMiddlewares,
+
     async (req: Request, res: Response) => {
 
         const user = await authService.createUserByAuth(req.body.login, req.body.email, req.body.password)
@@ -151,33 +145,3 @@ authRouter.get('/me', authValidationMiddleware, async (req: Request, res: Respon
     })
 
 });
-/*
-authRouter.get('/test',async (req: Request, res: Response) => {
-    const dataToSecure = {
-        dataToSecure: "This is the secret data in the cookie.",
-    };
-    res.cookie("loggedin", "true",{
-        httpOnly: true,
-
-
-    });
-
-    res.send("Cookie sent!");
-    return
-
-
-});
-authRouter.get('/test2',async (req: Request, res: Response) => {
-    let response = "Not logged in!";
-
-    if(req.cookies.logged == "true") {
-        response = "Yup! You are logged in!";
-    }
-
-    res.send(response);
-    return
-
-
-});
-
- */

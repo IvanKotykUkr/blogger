@@ -1,4 +1,4 @@
-import {commentsCollection} from "./db";
+import {CommentsModelClass} from "./db";
 import {InsertOneResult, ObjectId, UpdateResult} from "mongodb";
 import {CommentResponseType, CommentType} from "../types/commnet-type";
 import {BloggerType} from "../types/blogger-type";
@@ -13,19 +13,27 @@ const projectionComment = {
     addedAt: "$addedAt",
 }
 export const commentsRepositories = {
-    async commentCount(post: string): Promise<number> {
-        const result: number = await commentsCollection.countDocuments({postid: post})
+    async commentCount(post: ObjectId): Promise<number> {
+        const result: number = await CommentsModelClass.countDocuments({postid: post})
         return result
     },
     async createComment(comment: CommentType): Promise<CommentResponseType | null> {
-        const newComment = await commentsCollection.insertOne(comment)
-        if (newComment) {
+        const commentInstance = new CommentsModelClass
+        commentInstance.id = new ObjectId()
+        commentInstance.postid = comment.postId
+        commentInstance.content = comment.content
+        commentInstance.userId = comment.userId
+        commentInstance.userLogin = comment.userLogin
+        commentInstance.addedAt = comment.addedAt
+        await commentInstance.save()
+
+        if (commentInstance) {
             return {
-                id: comment._id,
-                content: comment.content,
-                userId: comment.userId,
-                userLogin: comment.userLogin,
-                addedAt: comment.addedAt
+                id: commentInstance._id,
+                content: commentInstance.content,
+                userId: commentInstance.userId,
+                userLogin: commentInstance.userLogin,
+                addedAt: commentInstance.addedAt
             }
         }
         return null
@@ -33,17 +41,16 @@ export const commentsRepositories = {
 
     },
 
-    async allCommentByPostIdPagination(post: string, number: number, size: number): Promise<CommentResponseType[]> {
+    async allCommentByPostIdPagination(post: ObjectId, number: number, size: number): Promise<CommentResponseType[]> {
 
-        const comments = await commentsCollection.find({postid: post})
+        const comments = await CommentsModelClass.find({postid: post})
             .skip(number > 0 ? ((number - 1) * size) : 0)
             .limit(size)
-            .project(projectionComment)
-            .toArray()
+            .lean()
 
 
         return comments.map(d => ({
-            id: d.id,
+            id: d._id,
             content: d.content,
             userId: d.userId,
             userLogin: d.userLogin,
@@ -54,14 +61,13 @@ export const commentsRepositories = {
     },
     async findCommentById(idComment: string): Promise<CommentResponseType | null> {
 
-        const comments = await commentsCollection
-            .findOne({_id: new ObjectId(idComment)}, {
-                projection: projectionComment
-            })
+        const comments = await CommentsModelClass
+            .findOne({_id: new ObjectId(idComment)}
+            )
 
         if (comments) {
             return {
-                id: comments.id,
+                id: comments._id,
                 content: comments.content,
                 userId: comments.userId,
                 userLogin: comments.userLogin,
@@ -73,19 +79,28 @@ export const commentsRepositories = {
 
     },
 
-    async updateCommentById(id: string, content: string): Promise<boolean> {
-        const result = await commentsCollection.updateOne({_id: new ObjectId(id)},
-            {$set: {content: content}})
+    async updateCommentById(_id: ObjectId, content: string): Promise<boolean> {
+        const commentInstance = await CommentsModelClass.findById(_id)
+        if (!commentInstance) return false
 
-        return result.matchedCount === 1
-    },
-    async deleteCommentsById(id: string): Promise<boolean> {
+        commentInstance.content = content
 
-        const result = await commentsCollection.deleteOne({_id: new ObjectId(id)})
-        return result.deletedCount === 1
+        await commentInstance.save()
+        return true
+
     },
-   async deleteCommentsByPost(postid: string):Promise<boolean> {
-        const result = await commentsCollection.deleteMany({postid})
-        return result.deletedCount === 1
+    async deleteCommentsById(_id:ObjectId): Promise<boolean> {
+        const commentInstance =await CommentsModelClass.findById(_id)
+        if(!commentInstance) return false
+        await commentInstance.deleteOne()
+        return true
+
+
+    },
+    async deleteCommentsByPost(postid: ObjectId): Promise<boolean> {
+        const commentInstance = await CommentsModelClass.findOne(postid)
+        if(!commentInstance) return false
+        await commentInstance.deleteOne()
+        return true
     }
 }

@@ -26,7 +26,7 @@ export const usersService = {
         }
 
 
-        return await userRepositories.findUserById(userid)
+        return await userRepositories.findUserById(new ObjectId(userid))
 
     },
 
@@ -50,7 +50,7 @@ export const usersService = {
         if (idHex.length !== 48) {
             return false
         }
-        return await userRepositories.deleteUserById(id)
+        return await userRepositories.deleteUserById(new ObjectId(id))
 
     },
 
@@ -83,7 +83,7 @@ export const usersService = {
 
         if (generatedUser) {
 
-            return {id: generatedUser.insertedId, login: newUser.accountData.login}
+            return {id: generatedUser._id, login: newUser.accountData.login}
         }
 
         return null

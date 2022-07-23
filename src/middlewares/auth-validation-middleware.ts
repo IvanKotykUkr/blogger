@@ -2,7 +2,9 @@ import {NextFunction, Request, Response} from "express";
 import {UserType} from "../types/user-type";
 
 import {userRepositories} from "../repositories/user-db-repositories";
-import {accessAttemptsDbRepositories, RecordType} from "../repositories/access-attempts-db-repositories";
+import {accessAttemptsDbRepositories} from "../repositories/access-attempts-db-repositories";
+import {RecordType} from "../types/traffic-type";
+import {ObjectId, WithId} from "mongodb";
 
 
 export const registrationMiddlewares = async (req: Request, res: Response, next: NextFunction) => {
@@ -78,7 +80,8 @@ export const antiDosMiddlewares = async (req: Request, res: Response, next: Next
 
     const countAttempts = async (ip: string, date: Date, process: string): Promise<string> => {
 
-        const createRecord: RecordType = {
+        const createRecord:RecordType = {
+            _id:new ObjectId(),
             ip,
             date,
             process

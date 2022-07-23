@@ -15,7 +15,9 @@ commentsRouter.put('/:id',
     inputValidationComment,
 
 
+
     async (req: Request, res: Response) => {
+
         const isUpdated: boolean = await commentsService.updateCommentById(req.params.id, req.body.content)
         if (isUpdated) {
             res.status(204).json(isUpdated)

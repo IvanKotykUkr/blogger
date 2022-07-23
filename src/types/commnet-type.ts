@@ -1,13 +1,20 @@
-import {ObjectId} from "mongodb";
+import {ObjectId, WithId} from "mongodb";
 import {BloggerResponseType, PaginationType} from "./blogger-type";
+export type CommentsDBType=WithId<{
+    postid?: ObjectId,
+    content: string,
+    userId: ObjectId,
+    userLogin: string,
+    addedAt: Date
+}>
 
 export type CommentType = {
     _id?: ObjectId,
-    postid?: string,
+    postId?: ObjectId,
     content: string,
-    userId: string,
+    userId: ObjectId,
     userLogin: string,
-    addedAt: string
+    addedAt: Date
 }
 
 export type CommentResponseType = {
@@ -16,6 +23,6 @@ export type CommentResponseType = {
     content: string,
     userId: ObjectId | string | undefined,
     userLogin: string,
-    addedAt: string
+    addedAt: Date
 }
 export type CommentsResponseTypeWithPagination = PaginationType<CommentResponseType>
