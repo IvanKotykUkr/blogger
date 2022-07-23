@@ -65,7 +65,7 @@ export const commentsService = {
             return null
         }
 
-        const comment: CommentResponseType | null = await commentsRepositories.findCommentById(id)
+        const comment: CommentResponseType | null = await commentsRepositories.findCommentById(new ObjectId(id))
         return comment
     },
     async deleteCommentsByPost(id: string) {

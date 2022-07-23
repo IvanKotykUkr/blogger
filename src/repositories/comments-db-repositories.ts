@@ -12,6 +12,16 @@ const projectionComment = {
     userLogin: "$userLogin",
     addedAt: "$addedAt",
 }
+const reqComment = (comment:CommentType) => {
+    return {
+        id: comment._id,
+        content: comment.content,
+        userId: comment.userId,
+        userLogin: comment.userLogin,
+        addedAt: comment.addedAt
+    }
+
+}
 export const commentsRepositories = {
     async commentCount(post: ObjectId): Promise<number> {
         const result: number = await CommentsModelClass.countDocuments({postid: post})
@@ -28,13 +38,7 @@ export const commentsRepositories = {
         await commentInstance.save()
 
         if (commentInstance) {
-            return {
-                id: commentInstance._id,
-                content: commentInstance.content,
-                userId: commentInstance.userId,
-                userLogin: commentInstance.userLogin,
-                addedAt: commentInstance.addedAt
-            }
+            return reqComment(commentInstance)
         }
         return null
 
@@ -59,20 +63,14 @@ export const commentsRepositories = {
 
 
     },
-    async findCommentById(idComment: string): Promise<CommentResponseType | null> {
+    async findCommentById(_id: ObjectId): Promise<CommentResponseType | null> {
 
         const comments = await CommentsModelClass
-            .findOne({_id: new ObjectId(idComment)}
-            )
+            .findOne({_id})
+
 
         if (comments) {
-            return {
-                id: comments._id,
-                content: comments.content,
-                userId: comments.userId,
-                userLogin: comments.userLogin,
-                addedAt: comments.addedAt
-            }
+            return reqComment(comments)
         }
         return null
 

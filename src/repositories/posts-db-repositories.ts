@@ -12,7 +12,17 @@ const projectionPost = {
     bloggerName: "$bloggerName",
 
 }
+export const resPost = (post:PostsType) => {
+    return {
+        id: post._id,
+        title: post.title,
+        shortDescription: post.shortDescription,
+        content: post.content,
+        bloggerId: post.bloggerId,
+        bloggerName: post.bloggerName
+    }
 
+}
 export const postsRepositories = {
     async paginationFilter(bloggerId: undefined | string | ObjectId) {
         let filter = {}
@@ -44,23 +54,16 @@ export const postsRepositories = {
 
     },
 
-    async findPostsById(postid: ObjectId): Promise<PostsResponseType | null> {
+    async findPostsById(_id: ObjectId): Promise<PostsResponseType | null> {
 
 
         const post = await PostsModelClass.findOne(
-            {_id: new ObjectId(postid)})
+            _id)
 
         if (post) {
 
 
-            return {
-                id: post._id,
-                title: post.title,
-                shortDescription: post.shortDescription,
-                content: post.content,
-                bloggerId: post.bloggerId,
-                bloggerName: post.bloggerName
-            }
+            return resPost(post)
         }
         return null;
 
@@ -76,14 +79,7 @@ export const postsRepositories = {
         postsInstance.bloggerId = newpost.bloggerId
         postsInstance.bloggerName = newpost.bloggerName
         await postsInstance.save()
-        return {
-            id: postsInstance._id,
-            title: postsInstance.title,
-            shortDescription: postsInstance.shortDescription,
-            content: postsInstance.content,
-            bloggerId: postsInstance.bloggerId,
-            bloggerName: postsInstance.bloggerName
-        }
+        return resPost(postsInstance)
 
 
     },

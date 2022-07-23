@@ -8,7 +8,10 @@ const projectionBlogger = {
     name: "$name",
     youtubeUrl: "$youtubeUrl",
 }
+const reqBlogger = (bloger:BloggerType) => {
+    return {id: bloger._id, name: bloger.name, youtubeUrl: bloger.youtubeUrl}
 
+}
 export const bloggersRepositories = {
     async paginationFilter(name: string | null) {
         let filter = {}
@@ -42,7 +45,7 @@ export const bloggersRepositories = {
 
         if (blogger) {
 
-            return {id: blogger.id, name: blogger.name, youtubeUrl: blogger.youtubeUrl}
+            return reqBlogger(blogger)
         }
         return null;
     },
@@ -57,8 +60,7 @@ export const bloggersRepositories = {
 
         //sconst result = await BloggerModelClass.create(newBlogger)
 
-        return {id: bloggerInstance._id, name: bloggerInstance.name, youtubeUrl: bloggerInstance.youtubeUrl}
-
+        return reqBlogger(bloggerInstance)
     },
     async updateBloggers(blogger: BloggerType): Promise<boolean> {
         const bloggerInstance = await BloggersModelClass.findById(blogger._id)

@@ -48,8 +48,8 @@ export const authService = {
                 } catch (error) {
                     console.error(error)
                     if (generatedUser) {
-                        //@ts-ignore
-                        await userRepositories.deleteUserById(generatedUser._id + "")
+                      //@ts-ignore
+                        await userRepositories.deleteUserById(generatedUser._id)
                         return null;
                     }
 

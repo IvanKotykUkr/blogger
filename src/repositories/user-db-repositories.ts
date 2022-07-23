@@ -1,7 +1,14 @@
-import { UsersModelClass} from "./db";
-import { ObjectId} from "mongodb";
-import {UserResponseType, UserRoutType, UserType} from "../types/user-type";
+import {UsersModelClass} from "./db";
+import {ObjectId} from "mongodb";
+import {AccountDataType, UserResponseType, UserRoutType, UserType} from "../types/user-type";
+const reqUsers = (user:UserType) => {
+    return {
+        _id: user._id,
+        accountData: user.accountData,
+        emailConfirmation: user.emailConfirmation,
+    }
 
+}
 
 export const userRepositories = {
     async countUsers(): Promise<number> {
@@ -28,22 +35,9 @@ export const userRepositories = {
         userInstance.emailConfirmation.expirationDate = newUser.emailConfirmation.expirationDate
         userInstance.emailConfirmation.isConfirmed = newUser.emailConfirmation.isConfirmed
         await userInstance.save()
-        return {
-            _id: userInstance._id,
-            accountData: {
-                login: userInstance.accountData.login,
-                email: userInstance.accountData.email,
-                passwordHash: userInstance.accountData.passwordHash,
-                passwordSalt: userInstance.accountData.passwordSalt,
-                createdAt: userInstance.accountData.createdAt
-            },
-            emailConfirmation:{
-                confirmationCode:userInstance.emailConfirmation.confirmationCode,
-            expirationDate:userInstance.emailConfirmation.expirationDate,
-           isConfirmed:userInstance.emailConfirmation.isConfirmed,
-            }
+        return reqUsers(userInstance)
 
-        }
+
 
 
     },
@@ -76,21 +70,15 @@ export const userRepositories = {
 
         if (user) {
 
-            return {
-                _id: user._id,
-                accountData: user.accountData,
-                emailConfirmation: user.emailConfirmation,
-
-
-            }
+            return reqUsers(user)
         }
 
         return null
     },
     async deleteUserById(_id: ObjectId): Promise<boolean> {
-        const userInstance =await UsersModelClass.findById({_id})
-        if(!userInstance)return false
-        await  userInstance.deleteOne()
+        const userInstance = await UsersModelClass.findById({_id})
+        if (!userInstance) return false
+        await userInstance.deleteOne()
         return true
 
 
@@ -99,13 +87,7 @@ export const userRepositories = {
     async findUserByCode(code: string): Promise<UserType | null> {
         const user = await UsersModelClass.findOne({"emailConfirmation.confirmationCode": code})
         if (user) {
-            return {
-                _id: user._id,
-                accountData: user.accountData,
-                emailConfirmation: user.emailConfirmation,
-
-
-            }
+            return reqUsers(user)
 
         }
         return null

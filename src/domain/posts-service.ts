@@ -114,6 +114,7 @@ export const postsService = {
 
     async createCommentsByPost(postid: string, content: string, userid: string, userLogin: string): Promise<CommentResponseType | null> {
         let post = await this.findPostsById(postid)
+
         if (post) {
             let newComment: CommentResponseType | null = await commentsService.createCommentsByPost(postid, content, userid, userLogin)
             return newComment

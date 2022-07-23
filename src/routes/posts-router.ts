@@ -121,6 +121,7 @@ postsRouter.post('/:id/comments',
 
     async (req: Request, res: Response) => {
 
+
         const newComment: CommentResponseType | null = await postsService.createCommentsByPost(req.params.id, req.body.content, "" + req.user!.id, req.user!.login)
 
         if (!newComment) {

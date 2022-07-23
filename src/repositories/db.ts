@@ -18,14 +18,14 @@ import {RecordType} from "../types/traffic-type";
 //export const trafficCollection = db.collection("traffic");
 //export const tokenCollection = db.collection("tokens")
 
-export const BloggerSchema = new mongoose.Schema<BloggerDBType>({
+ const BloggerSchema = new mongoose.Schema<BloggerDBType>({
         name: String,
         youtubeUrl: String,
     },
     {
         versionKey: false,
     });
-export const PostsSchema = new mongoose.Schema<PostsDBType>({
+ const PostsSchema = new mongoose.Schema<PostsDBType>({
         title: String,
         shortDescription: String,
         content: String,
@@ -35,7 +35,7 @@ export const PostsSchema = new mongoose.Schema<PostsDBType>({
     {
         versionKey: false,
     });
-export const UserSchema = new mongoose.Schema<UserDBType>({
+ const UserSchema = new mongoose.Schema<UserDBType>({
             accountData: {
                 login: String,
                 email: String,
@@ -56,7 +56,7 @@ export const UserSchema = new mongoose.Schema<UserDBType>({
         }
     )
 ;
-export const CommentsSchema = new mongoose.Schema<CommentsDBType>({
+const CommentsSchema = new mongoose.Schema<CommentsDBType>({
         postid: ObjectId,
         content: String,
         userId: ObjectId,
@@ -66,7 +66,7 @@ export const CommentsSchema = new mongoose.Schema<CommentsDBType>({
     {
         versionKey: false,
     });
-export const TrafficSchema = new mongoose.Schema<RecordType>({
+ const TrafficSchema = new mongoose.Schema<RecordType>({
         ip: String,
         date: Date,
         process: String
@@ -74,7 +74,7 @@ export const TrafficSchema = new mongoose.Schema<RecordType>({
     {
         versionKey: false,
     });
-export const TokenSchema = new mongoose.Schema<TokensType>({
+ const TokenSchema = new mongoose.Schema<TokensType>({
         token: String
     },
     {
