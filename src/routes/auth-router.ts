@@ -74,7 +74,7 @@ authRouter.post('/logout',
     async (req: Request, res: Response) => {
 
 
-        const token = await tokenService.saveTokenInBlacklist(req.headers.cookie!)
+        const token = await tokenService.saveTokenInBlacklist(req.cookies.refreshToken)
         if (token) {
             res.clearCookie("refreshToken")
             res.sendStatus(204)

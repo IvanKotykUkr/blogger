@@ -61,7 +61,7 @@ export const bloggersService = {
         }
         return await bloggersRepositories.deleteBloggers(id)
     },
-    async getPostsbyIdBlogger(id: string, pagenumber: number, pageesize: number): Promise<PostsResponseTypeWithPagination | null> {
+    async getPostsByIdBlogger(id: string, pagenumber: number, pageesize: number): Promise<PostsResponseTypeWithPagination | null> {
 
         let blogger: BloggerResponseType | null = await this.findBloggersById(id)
 
@@ -72,7 +72,7 @@ export const bloggersService = {
         return null
 
     },
-    async createPostbyBloggerId(id: string, title: string, shortDescription: string, content: string): Promise<PostsResponseType | null> {
+    async createPostByBloggerId(id: string, title: string, shortDescription: string, content: string): Promise<PostsResponseType | null> {
         let blogger: BloggerResponseType | null = await this.findBloggersById(id)
 
         if (blogger) {

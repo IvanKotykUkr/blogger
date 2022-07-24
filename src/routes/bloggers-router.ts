@@ -76,7 +76,7 @@ bloggersRouter.delete("/:id", basicAuthorization, async (req: Request, res: Resp
 bloggersRouter.get('/:id/posts', async (req: Request, res: Response) => {
     const pagenumber = req.query.PageNumber || 1;
     const pagesize = req.query.PageSize || 10;
-    let bloggerPosts: PostsResponseTypeWithPagination | null = await bloggersService.getPostsbyIdBlogger(req.params.id, +pagenumber, +pagesize)
+    let bloggerPosts: PostsResponseTypeWithPagination | null = await bloggersService.getPostsByIdBlogger(req.params.id, +pagenumber, +pagesize)
     if (bloggerPosts) {
         res.send(bloggerPosts)
         return
@@ -92,7 +92,7 @@ bloggersRouter.post('/:id/posts',
     contentValidation,
     inputValidationPost,
     async (req: Request, res: Response) => {
-        let newPosts: PostsResponseType | null = await bloggersService.createPostbyBloggerId
+        let newPosts: PostsResponseType | null = await bloggersService.createPostByBloggerId
         (req.params.id,
             req.body.title,
             req.body.shortDescription,

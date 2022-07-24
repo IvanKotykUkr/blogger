@@ -1,8 +1,14 @@
 import * as QueryString from "querystring";
 import {ObjectId, WithId} from "mongodb";
+import mongoose from "mongoose";
 export type BloggerDBType=WithId<{
     name: string,
     youtubeUrl: string,
+
+    isHistory?:boolean,
+    scrId?:mongoose.Types.ObjectId,
+    changer?:string
+    xupdate?:string
 
 }>
 

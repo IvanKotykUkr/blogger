@@ -21,6 +21,13 @@ import {RecordType} from "../types/traffic-type";
  const BloggerSchema = new mongoose.Schema<BloggerDBType>({
         name: String,
         youtubeUrl: String,
+    /* scrId:mongoose.Types.ObjectId,
+     isHistory:Boolean,
+     changer:String,
+
+
+     */
+
     },
     {
         versionKey: false,

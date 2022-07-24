@@ -1,6 +1,7 @@
 import {BloggersModelClass} from "./db";
 import {InsertOneResult, ObjectId, WithId} from "mongodb";
 import {BloggerDBType, BloggerResponseType, BloggerType} from "../types/blogger-type";
+import mongoose from "mongoose";
 
 const projectionBlogger = {
     _id: 0,
@@ -8,7 +9,7 @@ const projectionBlogger = {
     name: "$name",
     youtubeUrl: "$youtubeUrl",
 }
-const reqBlogger = (blogger:BloggerType) :BloggerResponseType=> {
+const reqBlogger = (blogger: BloggerType): BloggerResponseType => {
     return {id: blogger._id, name: blogger.name, youtubeUrl: blogger.youtubeUrl}
 
 }
@@ -64,14 +65,17 @@ export const bloggersRepositories = {
     async updateBloggers(blogger: BloggerType): Promise<boolean> {
         const bloggerInstance = await BloggersModelClass.findById(blogger._id)
         if (!bloggerInstance) return false
+      /*  const old=bloggerInstance.name
+        const old2=bloggerInstance.youtubeUrl
+        const history=new BloggersModelClass({isHistory:true,srcId:bloggerInstance._id,changer:'Ivan',old,old2})
 
+        await history.save()
+
+
+       */
         bloggerInstance.name = blogger.name
         bloggerInstance.youtubeUrl = blogger.youtubeUrl
         await bloggerInstance.save()
-
-
-
-
         return true
 
     },
