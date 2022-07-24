@@ -8,8 +8,8 @@ const projectionBlogger = {
     name: "$name",
     youtubeUrl: "$youtubeUrl",
 }
-const reqBlogger = (bloger:BloggerType) => {
-    return {id: bloger._id, name: bloger.name, youtubeUrl: bloger.youtubeUrl}
+const reqBlogger = (blogger:BloggerType) :BloggerResponseType=> {
+    return {id: blogger._id, name: blogger.name, youtubeUrl: blogger.youtubeUrl}
 
 }
 export const bloggersRepositories = {
@@ -58,7 +58,6 @@ export const bloggersRepositories = {
         bloggerInstance.youtubeUrl = newBlogger.youtubeUrl
         await bloggerInstance.save()
 
-        //sconst result = await BloggerModelClass.create(newBlogger)
 
         return reqBlogger(bloggerInstance)
     },

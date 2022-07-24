@@ -99,7 +99,7 @@ export async function runDb() {
         console.log("Connected successfully to mongo server")
     } catch {
         console.log("Cant connect to db")
-
+      //  await client.close()
         await mongoose.disconnect();
     }
 }
@@ -113,6 +113,7 @@ export const testing = {
 
 
         } catch {
+            //  await client.close()
             await mongoose.disconnect()
             await runDb()
         }

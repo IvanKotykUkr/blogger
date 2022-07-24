@@ -23,6 +23,15 @@ import {tokenService} from "../domain/token-service";
 
 export const authRouter = Router({})
 
+const resToken = (accessToken: { accessToken: string }, refreshToken: string, res: Response) => {
+    res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        // secure: true,
+    });
+
+    return res.status(200).send(accessToken)
+}
+
 
 authRouter.post('/login',
     antiDosMiddlewares,
@@ -36,20 +45,16 @@ authRouter.post('/login',
             res.status(401).json({errorsMessages: [{message: "password  is wrong", field: " password"}]})
             return
         }
-        if (userId) {
-
-            const accessToken = await jwtService.createAccessToken(userId)
-            const refreshToken = await jwtService.createRefreshToken(userId)
-            res.cookie("refreshToken", refreshToken, {
-                httpOnly: true,
-               // secure: true,
-            });
-
-            return res.status(200).send(accessToken)
-        }
 
 
-    });
+        const accessToken = await jwtService.createAccessToken(userId)
+        const refreshToken = await jwtService.createRefreshToken(userId)
+        resToken(accessToken, refreshToken, res)
+
+
+
+    }
+);
 authRouter.post('/refresh-token',
 
     refreshTokenValidation,
@@ -58,13 +63,8 @@ authRouter.post('/refresh-token',
     async (req: Request, res: Response) => {
         const accessToken = await jwtService.createAccessToken(req.user.id)
         const refreshToken = await jwtService.createRefreshToken(req.user.id)
+        resToken(accessToken, refreshToken, res)
 
-        res.cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-           // secure: true,
-        });
-
-        return res.status(200).send(accessToken)
     });
 authRouter.post('/logout',
 

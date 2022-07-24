@@ -7,13 +7,14 @@ export type BloggerDBType=WithId<{
 }>
 
 export type BloggerType = {
+    id?:ObjectId,
     _id?: ObjectId,
     name: string,
     youtubeUrl: string,
 }
 export type BloggerPayloadType = Omit<BloggerResponseType, 'id'>
 export type BloggerResponseType = {
-    id: ObjectId | undefined | string,
+    id: ObjectId|undefined,
     name: string,
     youtubeUrl: string,
 }
