@@ -1,15 +1,19 @@
 import {bloggersRepositories} from "../repositories/bloggers-db-repositories";
 import {postsService} from "./posts-service";
 import {ObjectId} from "mongodb";
-import {BloggerResponseType, BloggerResponseTypeWithPagination, BloggerType} from "../types/blogger-type";
+import {
+    BloggerDBType,
+    BloggerResponseType,
+    BloggerResponseTypeWithPagination,
+    BloggerType
+} from "../types/blogger-type";
 import {PostsResponseType, PostsResponseTypeWithPagination} from "../types/posts-type";
 
-
-export const bloggersService = {
+class BloggersService{
     async convertToHex(id: string): Promise<string> {
         return id.split("").reduce((hex, c) => hex += c.charCodeAt(0).toString(16).padStart(2, "0"), "")
-    },
-    getBloggers: async function (searchnameterm: string | null, pagesize: number, pagenumber: number): Promise<BloggerResponseTypeWithPagination> {
+    }
+    async getBloggers(searchnameterm: string | null, pagesize: number, pagenumber: number): Promise<BloggerResponseTypeWithPagination> {
         let page: number = pagenumber
         let pageSize: number = pagesize
         let totalCountSearch: number = await bloggersRepositories.blooggersSeachCount(searchnameterm)
@@ -22,7 +26,7 @@ export const bloggersService = {
             totalCount: totalCountSearch,
             items: itemsSearch,
         }
-    },
+    }
     async findBloggersById(id: string): Promise<BloggerResponseType | null> {
         const idHex: string = await this.convertToHex(id)
         if (idHex.length !== 48) {
@@ -33,15 +37,16 @@ export const bloggersService = {
             return blogger;
         }
         return null;
-    },
-
+    }
     async createBlogger(name: string, youtubeUrl: string): Promise<BloggerResponseType> {
-        const newBlogger: BloggerType = {
-            name: name,
-            youtubeUrl: youtubeUrl
-        }
+        const newBlogger = new BloggerDBType(
+            new ObjectId(),
+            name,
+            youtubeUrl
+        )
+
         return await bloggersRepositories.createBlogger(newBlogger)
-    },
+    }
     async updateBloggers(id: string, name: string, youtubeUrl: string): Promise<boolean> {
         const idHex: string = await this.convertToHex(id)
         if (idHex.length !== 48) {
@@ -53,14 +58,14 @@ export const bloggersService = {
             youtubeUrl
         }
         return await bloggersRepositories.updateBloggers(blogger)
-    },
+    }
     async deleteBloggers(id: string): Promise<boolean> {
         const idHex: string = await this.convertToHex(id)
         if (idHex.length !== 48) {
             return false
         }
         return await bloggersRepositories.deleteBloggers(id)
-    },
+    }
     async getPostsByIdBlogger(id: string, pagenumber: number, pageesize: number): Promise<PostsResponseTypeWithPagination | null> {
 
         let blogger: BloggerResponseType | null = await this.findBloggersById(id)
@@ -71,13 +76,13 @@ export const bloggersService = {
         }
         return null
 
-    },
+    }
     async createPostByBloggerId(id: string, title: string, shortDescription: string, content: string): Promise<PostsResponseType | null> {
         let blogger: BloggerResponseType | null = await this.findBloggersById(id)
 
         if (blogger) {
 
-            let newPosts: PostsResponseType | null = await postsService.createPost(title, shortDescription, content,id )
+            let newPosts: PostsResponseType | null = await postsService.createPost(title, shortDescription, content, id)
 
 
             return newPosts
@@ -88,3 +93,5 @@ export const bloggersService = {
 
     }
 }
+
+export const bloggersService = new BloggersService()

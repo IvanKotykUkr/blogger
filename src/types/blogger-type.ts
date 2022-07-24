@@ -1,7 +1,16 @@
 import * as QueryString from "querystring";
 import {ObjectId, WithId} from "mongodb";
 import mongoose from "mongoose";
-export type BloggerDBType=WithId<{
+
+export class BloggerDBType {
+    constructor(public _id: ObjectId,
+                public name: string,
+                public youtubeUrl: string
+    ) {
+    }
+}
+
+/*export type BloggerDBType=WithId<{
     name: string,
     youtubeUrl: string,
 
@@ -12,15 +21,17 @@ export type BloggerDBType=WithId<{
 
 }>
 
+ */
+
 export type BloggerType = {
-    id?:ObjectId,
+    id?: ObjectId,
     _id?: ObjectId,
     name: string,
     youtubeUrl: string,
 }
 export type BloggerPayloadType = Omit<BloggerResponseType, 'id'>
 export type BloggerResponseType = {
-    id: ObjectId|undefined,
+    id: ObjectId | undefined,
     name: string,
     youtubeUrl: string,
 }
