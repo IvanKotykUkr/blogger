@@ -1,40 +1,33 @@
 import {PostsModelClass} from "./db";
 import {ObjectId} from "mongodb";
-import {PostsResponseType, PostsType} from "../types/posts-type";
+import {PostsDBType, PostsResponseType, PostsType} from "../types/posts-type";
 
-const projectionPost = {
-    _id: 0,
-    id: "$_id",
-    title: "$title",
-    shortDescription: "$shortDescription",
-    content: "$content",
-    bloggerId: "$bloggerId",
-    bloggerName: "$bloggerName",
+export class PostsRepositories {
+    resPost(post: PostsType) {
+        return {
+            id: post._id,
+            title: post.title,
+            shortDescription: post.shortDescription,
+            content: post.content,
+            bloggerId: post.bloggerId,
+            bloggerName: post.bloggerName
+        }
 
-}
-export const resPost = (post:PostsType) => {
-    return {
-        id: post._id,
-        title: post.title,
-        shortDescription: post.shortDescription,
-        content: post.content,
-        bloggerId: post.bloggerId,
-        bloggerName: post.bloggerName
     }
 
-}
-export const postsRepositories = {
     async paginationFilter(bloggerId: undefined | string | ObjectId) {
         let filter = {}
         if (bloggerId) {
             return filter = {bloggerId: new ObjectId(bloggerId)}
         }
         return filter
-    },
+    }
+
     async findPostsByIdBloggerCount(bloggerId: undefined | string | ObjectId): Promise<number> {
         const filter = await this.paginationFilter(bloggerId)
         return PostsModelClass.countDocuments(filter)
-    },
+    }
+
     async findPostsByIdBloggerPagination(bloggerId: undefined | string | ObjectId, number: number, size: number): Promise<PostsResponseType[]> {
         const filter = await this.paginationFilter(bloggerId)
 
@@ -52,7 +45,7 @@ export const postsRepositories = {
             bloggerName: p.bloggerName
         }))
 
-    },
+    }
 
     async findPostsById(_id: ObjectId): Promise<PostsResponseType | null> {
 
@@ -63,26 +56,28 @@ export const postsRepositories = {
         if (post) {
 
 
-            return resPost(post)
+            return this.resPost(post)
         }
         return null;
 
-    },
-    async createPost(newpost: PostsType): Promise<PostsResponseType> {
+    }
+
+    async createPost(newpost: PostsDBType): Promise<PostsResponseType> {
 
 
         const postsInstance = new PostsModelClass
-        postsInstance._id = new ObjectId(),
+        postsInstance._id = newpost._id,
             postsInstance.title = newpost.title
         postsInstance.shortDescription = newpost.shortDescription
         postsInstance.content = newpost.content
         postsInstance.bloggerId = newpost.bloggerId
         postsInstance.bloggerName = newpost.bloggerName
         await postsInstance.save()
-        return resPost(postsInstance)
+        return this.resPost(postsInstance)
 
 
-    },
+    }
+
     async updatePost(_id: ObjectId, title: string, shortDescription: string, content: string, bloggerId: ObjectId, bloggerName: string): Promise<boolean> {
         const postsInstance = await PostsModelClass.findById(_id)
 
@@ -95,7 +90,7 @@ export const postsRepositories = {
         postsInstance.bloggerName = bloggerName
         await postsInstance.save()
         return true
-    },
+    }
 
 
     async deletePost(_id: ObjectId): Promise<boolean> {
@@ -104,7 +99,6 @@ export const postsRepositories = {
         await postsInstance.deleteOne()
         return true
 
-    },
-
-
+    }
 }
+

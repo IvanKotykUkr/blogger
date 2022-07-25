@@ -1,25 +1,32 @@
+import {EmailAdapter} from "../adapters/email-adapter";
 
-import {emailAdapter} from "../adapters/email-adapter";
+export class EmailManager {
+    emailAdapter: EmailAdapter
 
-export const emailManager={
+    constructor() {
+        this.emailAdapter = new EmailAdapter()
+    }
 
-    async message(code:string){
+    message(code: string) {
 
 
         return ` <div><a href=https://some-front.com/confirm-registration?code=${code}>https://some-front.com/confirm-registration?code=${code}</a></div>`
-    },
-    async sendEmailConfirmationMessage(email:string,code:string){
-        const message=await this.message(code)
+    }
 
-        await emailAdapter.sendEmail(email,"registration",message)
-       return
-    },
-    async resentEmailConfirmationMessage(email:string,code:string) {
+    async sendEmailConfirmationMessage(email: string, code: string) {
+        const message = this.message(code)
 
-        const message=await this.message(code)
-
-        await emailAdapter.sendEmail(email,"resent registration code",message)
+        await this.emailAdapter.sendEmail(email, "registration", message)
         return
     }
+
+    async resentEmailConfirmationMessage(email: string, code: string) {
+
+        const message = this.message(code)
+
+        await this.emailAdapter.sendEmail(email, "resent registration code", message)
+        return
+    }
+
 
 }

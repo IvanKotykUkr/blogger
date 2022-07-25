@@ -1,7 +1,7 @@
 import {BloggersModelClass} from "./db";
-import {InsertOneResult, ObjectId, WithId} from "mongodb";
+import { ObjectId, WithId} from "mongodb";
 import {BloggerDBType, BloggerResponseType, BloggerType} from "../types/blogger-type";
-class BloggersRepositories {
+export class BloggersRepositories{
     reqBlogger (blogger: BloggerType){
         return {id: blogger._id, name: blogger.name, youtubeUrl: blogger.youtubeUrl}
 
@@ -78,4 +78,3 @@ class BloggersRepositories {
 
 }
 
-export const bloggersRepositories = new BloggersRepositories()

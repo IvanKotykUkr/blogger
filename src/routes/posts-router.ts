@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import {postsService} from "../domain/posts-service";
+import {PostsService} from "../domain/posts-service";
 import {
     bloggerIdtValidation,
     contentValidation, inputValidationPost,
@@ -15,38 +15,34 @@ import {authMiddlewaresWithCheckOwn, authValidationMiddleware} from "../middlewa
 
 export const postsRouter = Router({})
 
+class PostsController {
+    postsService: PostsService
 
-postsRouter.get("/:id", async (req: Request, res: Response) => {
-    const post: PostsResponseType | null = await postsService.findPostsById(req.params.id)
-    if (!post) {
-        res.sendStatus(404)
-        return
+    constructor() {
+        this.postsService = new PostsService()
     }
 
-    res.send(post)
+    async getPost(req: Request, res: Response) {
+        const post: PostsResponseType | null = await this.postsService.findPostsById(req.params.id)
+        if (!post) {
+            res.sendStatus(404)
+            return
+        }
+
+        res.send(post)
 
 
-});
+    }
 
-postsRouter.get("/", async (req: Request, res: Response) => {
-    const pagenumber = req.query.PageNumber || 1;
-    const pagesize = req.query.PageSize || 10;
-    const posts: PostsResponseTypeWithPagination = await postsService.findPostsByIdBlogger(+pagenumber, +pagesize)
-    res.status(200).send(posts)
-});
+    async getPosts(req: Request, res: Response) {
+        const pagenumber = req.query.PageNumber || 1;
+        const pagesize = req.query.PageSize || 10;
+        const posts: PostsResponseTypeWithPagination = await this.postsService.findPosts(+pagenumber, +pagesize)
+        res.status(200).send(posts)
+    }
 
-
-postsRouter.post("/",
-
-    basicAuthorization,
-    titleValidation,
-    shortDescriptionValidation,
-    contentValidation,
-    bloggerIdtValidation,
-    inputValidationPost,
-
-    async (req: Request, res: Response) => {
-        const newPost: PostsResponseType | null = await postsService.createPost(
+    async createPost(req: Request, res: Response) {
+        const newPost: PostsResponseType | null = await this.postsService.createPost(
             req.body.title,
             req.body.shortDescription,
             req.body.content,
@@ -64,18 +60,10 @@ postsRouter.post("/",
         })
 
 
-    });
+    }
 
-postsRouter.put("/:id",
-    basicAuthorization,
-    titleValidation,
-    shortDescriptionValidation,
-    contentValidation,
-    bloggerIdtValidation,
-    inputValidationPost,
-
-    async (req: Request, res: Response) => {
-        const isUpdated: boolean | null = await postsService.updatePost(
+    async updatePost(req: Request, res: Response) {
+        const isUpdated: boolean | null = await this.postsService.updatePost(
             req.params.id,
             req.body.title,
             req.body.shortDescription,
@@ -100,29 +88,25 @@ postsRouter.put("/:id",
         res.send(404)
 
 
-    });
-
-postsRouter.delete("/:id", basicAuthorization, async (req: Request, res: Response) => {
-    const isDeleted: boolean = await postsService.deletePost(req.params.id)
-
-    if (isDeleted) {
-        res.sendStatus(204)
-        return
     }
 
-    res.sendStatus(404)
+    async deletePosts(req: Request, res: Response) {
+        const isDeleted: boolean = await this.postsService.deletePost(req.params.id)
+
+        if (isDeleted) {
+            res.sendStatus(204)
+            return
+        }
+
+        res.sendStatus(404)
 
 
-});
-postsRouter.post('/:id/comments',
-    authValidationMiddleware,
-    commentValidation,
-    inputValidationComment,
+    }
 
-    async (req: Request, res: Response) => {
+    async createComment(req: Request, res: Response) {
 
 
-        const newComment: CommentResponseType | null = await postsService.createCommentsByPost(req.params.id, req.body.content, "" + req.user!.id, req.user!.login)
+        const newComment: CommentResponseType | null = await this.postsService.createCommentsByPost(req.params.id, req.body.content, "" + req.user!.id, req.user!.login)
 
         if (!newComment) {
             res.send(404)
@@ -131,19 +115,58 @@ postsRouter.post('/:id/comments',
         res.status(201).send(newComment)
 
 
-    });
-postsRouter.get('/:id/comments', async (req: Request, res: Response) => {
-    const pagenumber = req.query.PageNumber || 1;
-    const pagesize = req.query.PageSize || 10;
-    const allComment: CommentsResponseTypeWithPagination | null = await postsService.sendAllCommentsByPostId(req.params.id, +pagenumber, +pagesize)
-    if (!allComment) {
-        res.send(404)
-        return
     }
-    res.status(200).send(allComment)
+
+    async getComment(req: Request, res: Response) {
+        const pagenumber = req.query.PageNumber || 1;
+        const pagesize = req.query.PageSize || 10;
+        const allComment: CommentsResponseTypeWithPagination | null = await this.postsService.sendAllCommentsByPostId(req.params.id, +pagenumber, +pagesize)
+        if (!allComment) {
+            res.send(404)
+            return
+        }
+        res.status(200).send(allComment)
 
 
-});
+    }
+}
+
+const postsController = new PostsController()
+
+postsRouter.get("/:id", postsController.getPost.bind(postsController));
+
+postsRouter.get("/", postsController.getPosts.bind(postsController));
+
+
+postsRouter.post("/",
+
+    basicAuthorization,
+    titleValidation,
+    shortDescriptionValidation,
+    contentValidation,
+    bloggerIdtValidation,
+    inputValidationPost,
+
+    postsController.createPost.bind(postsController));
+
+postsRouter.put("/:id",
+    basicAuthorization,
+    titleValidation,
+    shortDescriptionValidation,
+    contentValidation,
+    bloggerIdtValidation,
+    inputValidationPost,
+
+    postsController.updatePost.bind(postsController));
+
+postsRouter.delete("/:id", basicAuthorization, postsController.deletePosts.bind(postsController));
+postsRouter.post('/:id/comments',
+    authValidationMiddleware,
+    commentValidation,
+    inputValidationComment,
+
+    postsController.createComment.bind(postsController));
+postsRouter.get('/:id/comments', postsController.getComment.bind(postsController));
 
 
 

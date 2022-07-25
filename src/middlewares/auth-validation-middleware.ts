@@ -1,92 +1,99 @@
 import {NextFunction, Request, Response} from "express";
 import {UserType} from "../types/user-type";
 
-import {userRepositories} from "../repositories/user-db-repositories";
-import {accessAttemptsDbRepositories} from "../repositories/access-attempts-db-repositories";
+import {UserRepositories} from "../repositories/user-db-repositories";
+import {AccessAttemptsRepositories} from "../repositories/access-attempts-db-repositories";
 import {RecordType} from "../types/traffic-type";
 import {ObjectId, WithId} from "mongodb";
 
+class AuthValidationMiddleware {
+    userRepositories: UserRepositories
+    accessAttemptsRepositories: AccessAttemptsRepositories
 
-export const registrationMiddlewares = async (req: Request, res: Response, next: NextFunction) => {
-    const checkEmail: UserType | null = await userRepositories.findLoginOrEmail(req.body.email)
-    if (checkEmail !== null) {
-        res.status(400).json({errorsMessages: [{message: "email is already used", field: "email"}]})
-        return
+    constructor() {
+        this.userRepositories = new UserRepositories()
+        this.accessAttemptsRepositories = new AccessAttemptsRepositories()
     }
 
-    const checkLogin: UserType | null = await userRepositories.findLoginOrEmail(req.body.login)
-    if (checkLogin != null) {
+    async registrationMiddlewares(req: Request, res: Response, next: NextFunction) {
+        const checkEmail: UserType | null = await this.userRepositories.findLoginOrEmail(req.body.email)
+        if (checkEmail !== null) {
+            res.status(400).json({errorsMessages: [{message: "email is already used", field: "email"}]})
+            return
+        }
 
-        res.status(400).json({errorsMessages: [{message: "login already exist", field: "login"}]})
-        return
+        const checkLogin: UserType | null = await this.userRepositories.findLoginOrEmail(req.body.login)
+        if (checkLogin != null) {
+
+            res.status(400).json({errorsMessages: [{message: "login already exist", field: "login"}]})
+            return
+        }
+        next()
     }
-    next()
-}
-export const loginAuthMiddlewares = async (req: Request, res: Response, next: NextFunction) => {
-    const user: UserType | null = await userRepositories.findLoginOrEmail(req.body.login)
+    async loginAuthMiddlewares (req: Request, res: Response, next: NextFunction) {
+    const user: UserType | null = await this.userRepositories.findLoginOrEmail(req.body.login)
     if (!user) {
-        res.status(400).json({errorsMessages: [{message: " login is wrong", field: " login"}]})
-        return
-    }
-  /*  if (!user.emailConfirmation.isConfirmed) {
-        res.status(400).json({errorsMessages: [{message: "user not confirmed", field: "user"}]})
-        return
-
-    }
-
-   */
-
-
-    next()
+    res.status(400).json({errorsMessages: [{message: " login is wrong", field: " login"}]})
+    return
 }
-export const registrationResendingMiddlewares = async (req: Request, res: Response, next: NextFunction) => {
-    const user = await userRepositories.findLoginOrEmail(req.body.email)
+/*  if (!user.emailConfirmation.isConfirmed) {
+      res.status(400).json({errorsMessages: [{message: "user not confirmed", field: "user"}]})
+      return
 
-    if (!user) {
-        res.status(400).json({errorsMessages: [{message: "user email doesnt exist", field: "email"}]})
-        return
-    }
-    if (user.emailConfirmation.isConfirmed === true) {
-        res.status(400).json({errorsMessages: [{message: "email already confirmed", field: "email"}]})
-        return
+  }
 
-    }
-    next()
+ */
+
+
+next()
 }
-export const registrationConfirmMiddlewares = async (req: Request, res: Response, next: NextFunction) => {
-
-    let user: UserType | null = await userRepositories.findUserByCode(req.body.code)
+    async registrationResendingMiddlewares(req: Request, res: Response, next: NextFunction)  {
+    const user = await this.userRepositories.findLoginOrEmail(req.body.email)
 
     if (!user) {
-        res.status(400).json({errorsMessages: [{message: " code doesnt exist", field: "code"}]})
-        return
-    }
+    res.status(400).json({errorsMessages: [{message: "user email doesnt exist", field: "email"}]})
+    return
+}
+if (user.emailConfirmation.isConfirmed === true) {
+    res.status(400).json({errorsMessages: [{message: "email already confirmed", field: "email"}]})
+    return
 
+}
+next()
+}
+    async registrationConfirmMiddlewares(req: Request, res: Response, next: NextFunction){
 
-    if (false !== user.emailConfirmation.isConfirmed) {
-        res.status(400).json({errorsMessages: [{message: "code already confirmed", field: "code"}]})
-        return
+    let user: UserType | null = await this.userRepositories.findUserByCode(req.body.code)
 
-    }
-
-    if (user.emailConfirmation.expirationDate < new Date()) {
-        res.status(400).json({errorsMessages: [{message: "code expired", field: "code"}]})
-        return
-    }
-    next()
+    if (!user) {
+    res.status(400).json({errorsMessages: [{message: " code doesnt exist", field: "code"}]})
+    return
 }
 
-export const antiDosMiddlewares = async (req: Request, res: Response, next: NextFunction) => {
+
+if (false !== user.emailConfirmation.isConfirmed) {
+    res.status(400).json({errorsMessages: [{message: "code already confirmed", field: "code"}]})
+    return
+
+}
+
+if (user.emailConfirmation.expirationDate < new Date()) {
+    res.status(400).json({errorsMessages: [{message: "code expired", field: "code"}]})
+    return
+}
+next()
+}
+    async antiDosMiddlewares(req: Request, res: Response, next: NextFunction) {
 
     const countAttempts = async (ip: string, date: Date, process: string): Promise<string> => {
 
-        const createRecord:RecordType = {
-            _id:new ObjectId(),
+        const createRecord: RecordType = {
+            _id: new ObjectId(),
             ip,
             date,
             process
         }
-        const timeRequest = await accessAttemptsDbRepositories.createRecord(createRecord)
+        const timeRequest = await this.accessAttemptsRepositories.createRecord(createRecord)
         return await countNumber(timeRequest)
 
     }
@@ -108,12 +115,21 @@ export const antiDosMiddlewares = async (req: Request, res: Response, next: Next
 
 
     if (checkIp == "too mach") {
-        res.status(429).json({errorsMessages: [{message: "too mach request", field: "request"}]})
+    res.status(429).json({errorsMessages: [{message: "too mach request", field: "request"}]})
 
-        return
-    }
+    return
+}
 
-    next()
+next()
 
 }
+}
+const authValidationMiddleware=new AuthValidationMiddleware()
+export const registrationMiddlewares = authValidationMiddleware.registrationMiddlewares.bind(authValidationMiddleware)
+export const loginAuthMiddlewares =authValidationMiddleware.loginAuthMiddlewares.bind(authValidationMiddleware)
+export const registrationResendingMiddlewares = authValidationMiddleware.registrationResendingMiddlewares.bind(authValidationMiddleware)
+export const registrationConfirmMiddlewares = authValidationMiddleware.registrationConfirmMiddlewares.bind(authValidationMiddleware)
+
+
+export const antiDosMiddlewares =authValidationMiddleware.antiDosMiddlewares.bind(authValidationMiddleware)
 

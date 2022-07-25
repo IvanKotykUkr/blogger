@@ -1,10 +1,20 @@
-import {commentsRepositories} from "../repositories/comments-db-repositories";
-import {CommentResponseType, CommentsResponseTypeWithPagination, CommentType} from "../types/commnet-type";
+import {CommentsRepositories} from "../repositories/comments-db-repositories";
+import {
+    CommentResponseType,
+    CommentsDBType,
+    CommentsResponseTypeWithPagination,
+
+} from "../types/commnet-type";
 import {ObjectId} from "mongodb";
 
+export class CommentsService {
+    commentsRepositories: CommentsRepositories
 
-export const commentsService = {
-    async convertToHex(id: string): Promise<string> {
+    constructor() {
+        this.commentsRepositories = new CommentsRepositories()
+    }
+
+    convertToHex(id: string): string {
         const hex: string =
             id.split("")
                 .reduce((hex, c) => hex += c
@@ -12,15 +22,16 @@ export const commentsService = {
                     .toString(16).padStart(2, "0"), "")
 
         return hex
-    },
+    }
+
     async sendAllCommentsByPostId(postId: ObjectId, pagenumber: number, pagesize: number): Promise<CommentsResponseTypeWithPagination> {
 
-        let totalCount: number = await commentsRepositories.commentCount(postId)
+        let totalCount: number = await this.commentsRepositories.commentCount(postId)
 
         let page: number = pagenumber
         let pageSize: number = pagesize
         let pagesCount: number = Math.ceil(totalCount / pageSize)
-        const items: CommentResponseType[] = await commentsRepositories.allCommentByPostIdPagination(postId, page, pageSize)
+        const items: CommentResponseType[] = await this.commentsRepositories.allCommentByPostIdPagination(postId, page, pageSize)
         let comment = {
             pagesCount,
             page,
@@ -29,46 +40,52 @@ export const commentsService = {
             items,
         }
         return comment
-    },
+    }
+
     async createCommentsByPost(postid: string, content: string, userid: string, userLogin: string): Promise<CommentResponseType | null> {
-        const newComment: CommentType = {
-            postId: new ObjectId(postid),
+        const newComment: CommentsDBType = {
+            _id: new ObjectId(),
+            postid: new ObjectId(postid),
             content,
-            userId:new ObjectId(userid),
+            userId: new ObjectId(userid),
             userLogin,
-            addedAt:  new Date()
+            addedAt: new Date()
         }
-        const generatedComment: CommentResponseType | null = await commentsRepositories.createComment(newComment)
+        const generatedComment: CommentResponseType | null = await this.commentsRepositories.createComment(newComment)
         if (generatedComment) {
             return generatedComment
         }
         return null
-    },
+    }
+
     async updateCommentById(id: string, content: string): Promise<boolean> {
 
-        return await commentsRepositories.updateCommentById(new ObjectId(id), content)
+        return await this.commentsRepositories.updateCommentById(new ObjectId(id), content)
 
 
-    },
+    }
+
     async deleteCommentsById(id: string): Promise<boolean> {
-        const idHex: string = await this.convertToHex(id)
+        const idHex: string = this.convertToHex(id)
         if (idHex.length !== 48) {
             return false
         }
-        return await commentsRepositories.deleteCommentsById(new ObjectId(id))
+        return await this.commentsRepositories.deleteCommentsById(new ObjectId(id))
 
-    },
+    }
 
     async findCommentsById(id: string): Promise<CommentResponseType | null> {
-        const idHex: string = await this.convertToHex(id)
+        const idHex: string = this.convertToHex(id)
         if (idHex.length !== 48) {
             return null
         }
 
-        const comment: CommentResponseType | null = await commentsRepositories.findCommentById(new ObjectId(id))
+        const comment: CommentResponseType | null = await this.commentsRepositories.findCommentById(new ObjectId(id))
         return comment
-    },
-    async deleteCommentsByPost(id: string) {
-        return await commentsRepositories.deleteCommentsByPost(new ObjectId(id))
     }
+
+    async deleteCommentsByPost(id: string): Promise<boolean> {
+        return await this.commentsRepositories.deleteCommentsByPost(new ObjectId(id))
+    }
+
 }

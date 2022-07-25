@@ -5,7 +5,7 @@ import {settings} from "../settings";
 
 import {UserFromTokenType} from "../types/user-type";
 const expired = "expired";
-export const jwtService = {
+export class JwtService {
     async createAccessToken(id:string): Promise<{ accessToken: string }> {
 
 
@@ -14,7 +14,7 @@ export const jwtService = {
         return {accessToken: access}
 
 
-    },
+    }
     async createRefreshToken(id:string): Promise<string> {
 
         const refresh: string = jwt.sign({userId: id}, settings.REFRESH_JWT_SECRET, {expiresIn: "2h"})
@@ -23,8 +23,8 @@ export const jwtService = {
         return refresh
 
 
-    },
-    async getUserIdByAccessToken(token: string): Promise<UserFromTokenType | null> {
+    }
+     getUserIdByAccessToken(token: string): UserFromTokenType | null {
         try {
 
 
@@ -36,7 +36,7 @@ export const jwtService = {
             return null
         }
 
-    },
+    }
     getUserIdByRefreshToken(token: string): UserFromTokenType | string {
         try {
 
@@ -51,6 +51,6 @@ export const jwtService = {
             return expired
         }
 
-    },
+    }
 
 }
