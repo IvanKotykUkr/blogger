@@ -29,7 +29,7 @@ export class JwtService {
 
 
             // @ts-ignore
-            return await jwt.verify(token, settings.ACCESS_JWT_SECRET)
+            return  jwt.verify(token, settings.ACCESS_JWT_SECRET)
 
 
         } catch (error) {

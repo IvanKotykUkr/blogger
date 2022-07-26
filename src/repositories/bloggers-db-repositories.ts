@@ -1,11 +1,13 @@
 import {BloggersModelClass} from "./db";
-import { ObjectId, WithId} from "mongodb";
+import {ObjectId, WithId} from "mongodb";
 import {BloggerDBType, BloggerResponseType, BloggerType} from "../types/blogger-type";
-export class BloggersRepositories{
-    reqBlogger (blogger: BloggerType){
+
+export class BloggersRepositories {
+    reqBlogger(blogger: BloggerType) {
         return {id: blogger._id, name: blogger.name, youtubeUrl: blogger.youtubeUrl}
 
     }
+
     async paginationFilter(name: string | null) {
         let filter = {}
 
@@ -14,11 +16,13 @@ export class BloggersRepositories{
         }
         return filter
     }
+
     async blooggersSeachCount(name: string | null): Promise<number> {
         const filter = await this.paginationFilter(name)
         return BloggersModelClass.countDocuments(filter)
 
     }
+
     async getBloggersSearchTerm(size: number, number: number, name: string | null): Promise<BloggerResponseType[]> {
         const filter = await this.paginationFilter(name)
 
@@ -30,6 +34,7 @@ export class BloggersRepositories{
 
         return bloggers.map(d => ({id: d._id, name: d.name, youtubeUrl: d.youtubeUrl}))
     }
+
     async findBloggersById(id: ObjectId): Promise<BloggerResponseType | null> {
         const blogger = await BloggersModelClass.findById(id);
 
@@ -39,9 +44,10 @@ export class BloggersRepositories{
         }
         return null;
     }
+
     async createBlogger(newBlogger: BloggerDBType): Promise<BloggerResponseType> {
         const bloggerInstance = new BloggersModelClass()
-        bloggerInstance._id =newBlogger._id
+        bloggerInstance._id = newBlogger._id
         bloggerInstance.name = newBlogger.name
         bloggerInstance.youtubeUrl = newBlogger.youtubeUrl
         await bloggerInstance.save()
@@ -49,6 +55,7 @@ export class BloggersRepositories{
 
         return this.reqBlogger(bloggerInstance)
     }
+
     async updateBloggers(blogger: BloggerType): Promise<boolean> {
         const bloggerInstance = await BloggersModelClass.findById(blogger._id)
         if (!bloggerInstance) return false
@@ -66,6 +73,7 @@ export class BloggersRepositories{
         return true
 
     }
+
     async deleteBloggers(id: string): Promise<boolean> {
         const bloggerInstance = await BloggersModelClass.findById(id)
         if (!bloggerInstance) return false

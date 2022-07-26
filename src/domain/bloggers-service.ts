@@ -9,17 +9,19 @@ import {
 } from "../types/blogger-type";
 import {PostsResponseType, PostsResponseTypeWithPagination} from "../types/posts-type";
 
-export class BloggersService{
-    bloggersRepositories:BloggersRepositories
-    postsService:PostsService
+export class BloggersService {
+    bloggersRepositories: BloggersRepositories
+    postsService: PostsService
 
     constructor() {
-        this.bloggersRepositories=new BloggersRepositories()
-        this.postsService=new PostsService()
+        this.bloggersRepositories = new BloggersRepositories()
+        this.postsService = new PostsService()
     }
+
     async convertToHex(id: string): Promise<string> {
         return id.split("").reduce((hex, c) => hex += c.charCodeAt(0).toString(16).padStart(2, "0"), "")
     }
+
     async getBloggers(searchnameterm: string | null, pagesize: number, pagenumber: number): Promise<BloggerResponseTypeWithPagination> {
         let page: number = pagenumber
         let pageSize: number = pagesize
@@ -34,6 +36,7 @@ export class BloggersService{
             items: itemsSearch,
         }
     }
+
     async findBloggersById(id: string): Promise<BloggerResponseType | null> {
         const idHex: string = await this.convertToHex(id)
         if (idHex.length !== 48) {
@@ -45,6 +48,7 @@ export class BloggersService{
         }
         return null;
     }
+
     async createBlogger(name: string, youtubeUrl: string): Promise<BloggerResponseType> {
         const newBlogger = new BloggerDBType(
             new ObjectId(),
@@ -54,6 +58,7 @@ export class BloggersService{
 
         return await this.bloggersRepositories.createBlogger(newBlogger)
     }
+
     async updateBloggers(id: string, name: string, youtubeUrl: string): Promise<boolean> {
         const idHex: string = await this.convertToHex(id)
         if (idHex.length !== 48) {
@@ -66,6 +71,7 @@ export class BloggersService{
         }
         return await this.bloggersRepositories.updateBloggers(blogger)
     }
+
     async deleteBloggers(id: string): Promise<boolean> {
         const idHex: string = await this.convertToHex(id)
         if (idHex.length !== 48) {
@@ -73,6 +79,7 @@ export class BloggersService{
         }
         return await this.bloggersRepositories.deleteBloggers(id)
     }
+
     async getPostsByIdBlogger(id: string, pagenumber: number, pageesize: number): Promise<PostsResponseTypeWithPagination | null> {
 
         let blogger: BloggerResponseType | null = await this.findBloggersById(id)
@@ -84,6 +91,7 @@ export class BloggersService{
         return null
 
     }
+
     async createPostByBloggerId(id: string, title: string, shortDescription: string, content: string): Promise<PostsResponseType | null> {
         let blogger: BloggerResponseType | null = await this.findBloggersById(id)
 
@@ -100,3 +108,5 @@ export class BloggersService{
 
     }
 }
+
+export const bloggersService = new BloggersService()

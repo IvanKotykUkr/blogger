@@ -135,15 +135,10 @@ authRouter.post('/login',
     loginAuthMiddlewares,
     authController.login.bind(authController));
 authRouter.post('/refresh-token',
-
-    refreshTokenValidation,
-    tokenValidationAuth,
     authRefreshTokenMiddlewares,
     authController.refreshToken.bind(authController));
 authRouter.post('/logout',
-
-    refreshTokenValidation,
-    tokenValidationAuth,
+    
     authRefreshTokenMiddlewares,
     authController.logout.bind(authController));
 authRouter.post('/registration-confirmation',

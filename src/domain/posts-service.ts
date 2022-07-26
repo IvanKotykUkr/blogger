@@ -1,5 +1,5 @@
 import {PostsRepositories} from "../repositories/posts-db-repositories";
-import {BloggersService} from "./bloggers-service";
+import {bloggersService} from "./bloggers-service";
 import {CommentsService} from "./comments-service";
 
 import {ObjectId} from "mongodb";
@@ -7,14 +7,13 @@ import {PostsDBType, PostsResponseType, PostsResponseTypeWithPagination, PostsTy
 import {BloggerResponseType} from "../types/blogger-type";
 import {CommentResponseType, CommentsResponseTypeWithPagination} from "../types/commnet-type";
 
+
 export class PostsService {
     postsRepositories: PostsRepositories
-    bloggersService: BloggersService
     commentsService: CommentsService
 
     constructor() {
         this.postsRepositories = new PostsRepositories()
-        this.bloggersService = new BloggersService()
         this.commentsService = new CommentsService()
 
     }
@@ -62,9 +61,9 @@ export class PostsService {
     }
 
     async createPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostsResponseType | null> {
-        const blogger: BloggerResponseType | null = await this.bloggersService.findBloggersById(bloggerId)
+        const blogger: BloggerResponseType | null = await bloggersService.findBloggersById(bloggerId)
         if (blogger) {
-            const newpost: PostsDBType = {
+            const newPost: PostsDBType = {
                 _id: new ObjectId(),
                 title: title,
                 shortDescription: shortDescription,
@@ -72,7 +71,7 @@ export class PostsService {
                 bloggerId: new ObjectId(bloggerId),
                 bloggerName: blogger.name,
             }
-            return await this.postsRepositories.createPost(newpost)
+            return await this.postsRepositories.createPost(newPost)
             /* return {
                  id: newpost._id,
                  title: newpost.title,
@@ -97,7 +96,7 @@ export class PostsService {
             return false
         }
 
-        let blogger: BloggerResponseType | null = await this.bloggersService.findBloggersById(bloggerId)
+        let blogger: BloggerResponseType | null = await bloggersService.findBloggersById(bloggerId)
 
 
         if (blogger) {
