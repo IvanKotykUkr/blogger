@@ -14,15 +14,19 @@ import {
 
 import {BloggerResponseType, BloggerResponseTypeWithPagination} from "../types/blogger-type";
 import {PostsResponseType, PostsResponseTypeWithPagination} from "../types/posts-type";
+import {ObjectId} from "mongodb";
+import {idValidationMiddleware} from "../middlewares/_id-validation-middleware";
 
 
 export const bloggersRouter = Router({})
 
 class BloggersController {
-    bloggersService:BloggersService
+    bloggersService: BloggersService
+
     constructor() {
-        this.bloggersService=new BloggersService()
+        this.bloggersService = new BloggersService()
     }
+
     async getBlogger(req: Request, res: Response) {
         let blogger: BloggerResponseType | null = await this.bloggersService.findBloggersById(req.params.id)
         if (!blogger) {
@@ -99,6 +103,7 @@ class BloggersController {
 const bloggersController = new BloggersController()
 
 bloggersRouter.get("/:id",
+    idValidationMiddleware,
     bloggersController.getBlogger.bind(bloggersController));
 
 bloggersRouter.get("/",
@@ -111,12 +116,15 @@ bloggersRouter.post("/",
     bloggersController.createBlogger.bind(bloggersController));
 
 bloggersRouter.put("/:id",
+    idValidationMiddleware,
     basicAuthorization,
     nameValidation,
     youtubeUrlValidation,
     inputValidationBlogger,
     bloggersController.updateBlogger.bind(bloggersController));
-bloggersRouter.delete("/:id", basicAuthorization,
+bloggersRouter.delete("/:id",
+    idValidationMiddleware,
+    basicAuthorization,
     bloggersController.deleteBlogger.bind(bloggersController));
 bloggersRouter.get('/:id/posts',
     bloggersController.getPostByBlogger.bind(bloggersController));

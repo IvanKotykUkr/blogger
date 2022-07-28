@@ -18,21 +18,21 @@ import {RecordType} from "../types/traffic-type";
 //export const trafficCollection = db.collection("traffic");
 //export const tokenCollection = db.collection("tokens")
 
- const BloggerSchema = new mongoose.Schema<BloggerDBType>({
+const BloggerSchema = new mongoose.Schema<BloggerDBType>({
         name: String,
         youtubeUrl: String,
-    /* scrId:mongoose.Types.ObjectId,
-     isHistory:Boolean,
-     changer:String,
+        /* scrId:mongoose.Types.ObjectId,
+         isHistory:Boolean,
+         changer:String,
 
 
-     */
+         */
 
     },
     {
         versionKey: false,
     });
- const PostsSchema = new mongoose.Schema<PostsDBType>({
+const PostsSchema = new mongoose.Schema<PostsDBType>({
         title: String,
         shortDescription: String,
         content: String,
@@ -42,7 +42,7 @@ import {RecordType} from "../types/traffic-type";
     {
         versionKey: false,
     });
- const UserSchema = new mongoose.Schema<UserDBType>({
+const UserSchema = new mongoose.Schema<UserDBType>({
             accountData: {
                 login: String,
                 email: String,
@@ -73,7 +73,7 @@ const CommentsSchema = new mongoose.Schema<CommentsDBType>({
     {
         versionKey: false,
     });
- const TrafficSchema = new mongoose.Schema<RecordType>({
+const TrafficSchema = new mongoose.Schema<RecordType>({
         ip: String,
         date: Date,
         process: String
@@ -81,7 +81,7 @@ const CommentsSchema = new mongoose.Schema<CommentsDBType>({
     {
         versionKey: false,
     });
- const TokenSchema = new mongoose.Schema<TokensType>({
+const TokenSchema = new mongoose.Schema<TokensType>({
         token: String
     },
     {
@@ -106,7 +106,7 @@ export async function runDb() {
         console.log("Connected successfully to mongo server")
     } catch {
         console.log("Cant connect to db")
-      //  await client.close()
+        //  await client.close()
         await mongoose.disconnect();
     }
 }

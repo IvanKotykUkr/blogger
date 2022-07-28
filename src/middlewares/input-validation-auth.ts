@@ -2,12 +2,12 @@ import {body, cookie, header, validationResult} from "express-validator";
 import {NextFunction, Request, Response} from "express";
 
 
-export const loginValidation =  body('login',)
+export const loginValidation = body('login',)
     .isString().withMessage("Should be String")
 export const passwordValidation = body("password")
     .isString().withMessage("Should be String")
     .isLength({min: 6, max: 20}).withMessage("Should be a length from 6 to 15")
-export const codeValidation=body('code')
+export const codeValidation = body('code')
     .isUUID(4).withMessage("Should be valide code ")
 export const emailValidation = body("email")
     .isEmail().withMessage("Should be valide email")

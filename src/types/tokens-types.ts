@@ -1,5 +1,5 @@
 import {WithId} from "mongodb";
 
-export type TokensType=WithId<{
-    token:string,
+export type TokensType = WithId<{
+    token: string,
 }>

@@ -11,6 +11,7 @@ import {commentValidation, inputValidationComment} from "../middlewares/input-va
 import {PostsResponseType, PostsResponseTypeWithPagination} from "../types/posts-type";
 import {CommentResponseType, CommentsResponseTypeWithPagination} from "../types/commnet-type";
 import {authMiddlewaresWithCheckOwn, authValidationMiddleware} from "../middlewares/auth-access-middlewares";
+import {idValidationMiddleware} from "../middlewares/_id-validation-middleware";
 
 
 export const postsRouter = Router({})
@@ -133,7 +134,9 @@ class PostsController {
 
 const postsController = new PostsController()
 
-postsRouter.get("/:id", postsController.getPost.bind(postsController));
+postsRouter.get("/:id",
+    idValidationMiddleware,
+    postsController.getPost.bind(postsController));
 
 postsRouter.get("/", postsController.getPosts.bind(postsController));
 
@@ -150,6 +153,7 @@ postsRouter.post("/",
     postsController.createPost.bind(postsController));
 
 postsRouter.put("/:id",
+    idValidationMiddleware,
     basicAuthorization,
     titleValidation,
     shortDescriptionValidation,
@@ -159,14 +163,19 @@ postsRouter.put("/:id",
 
     postsController.updatePost.bind(postsController));
 
-postsRouter.delete("/:id", basicAuthorization, postsController.deletePosts.bind(postsController));
+postsRouter.delete("/:id",
+    idValidationMiddleware,
+    basicAuthorization,
+    postsController.deletePosts.bind(postsController));
 postsRouter.post('/:id/comments',
     authValidationMiddleware,
     commentValidation,
     inputValidationComment,
 
     postsController.createComment.bind(postsController));
-postsRouter.get('/:id/comments', postsController.getComment.bind(postsController));
+postsRouter.get('/:id/comments',
+    idValidationMiddleware,
+    postsController.getComment.bind(postsController));
 
 
 

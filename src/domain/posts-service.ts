@@ -19,12 +19,6 @@ export class PostsService {
     }
 
 
-    async convertToHex(id: string): Promise<string> {
-        const hex: string = id.split("").reduce((hex, c) => hex += c.charCodeAt(0).toString(16).padStart(2, "0"), "")
-
-        return hex
-    }
-
     async findPosts(pagenumber: number, pagesize: number, bloggerId?: ObjectId | undefined | string): Promise<PostsResponseTypeWithPagination> {
 
 
@@ -46,10 +40,7 @@ export class PostsService {
     }
 
     async findPostsById(id: string): Promise<PostsResponseType | null> {
-        const idHex: string = await this.convertToHex(id)
-        if (idHex.length !== 48) {
-            return null
-        }
+
         const post: PostsResponseType | null = await this.postsRepositories.findPostsById(new ObjectId(id))
 
         if (post) {
@@ -91,10 +82,7 @@ export class PostsService {
                      shortDescription: string,
                      content: string,
                      bloggerId: string): Promise<boolean | null> {
-        const idHex = await this.convertToHex(id)
-        if (idHex.length !== 48) {
-            return false
-        }
+
 
         let blogger: BloggerResponseType | null = await bloggersService.findBloggersById(bloggerId)
 
@@ -110,10 +98,7 @@ export class PostsService {
 
 
     async deletePost(id: string): Promise<boolean> {
-        const idHex = await this.convertToHex(id)
-        if (idHex.length !== 48) {
-            return false
-        }
+
         const isDeleted = await this.postsRepositories.deletePost(new ObjectId(id))
         if (isDeleted) {
             return await this.commentsService.deleteCommentsByPost(id)

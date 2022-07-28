@@ -1,11 +1,14 @@
 import {TokenRepositories} from "../repositories/token-db-repositories";
+
 export class TokenService {
-    tokenRepositories:TokenRepositories
+    tokenRepositories: TokenRepositories
+
     constructor() {
-        this.tokenRepositories=new TokenRepositories()
+        this.tokenRepositories = new TokenRepositories()
     }
+
     ///save to repo
-    async saveTokenInBlacklist(token: string ) {
+    async saveTokenInBlacklist(token: string) {
 
         const result = await this.tokenRepositories.addTokenInBlacklist(token)
 

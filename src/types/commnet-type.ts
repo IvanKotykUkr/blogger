@@ -1,6 +1,7 @@
 import {ObjectId, WithId} from "mongodb";
 import {BloggerResponseType, PaginationType} from "./blogger-type";
-export type CommentsDBType=WithId<{
+
+export type CommentsDBType = WithId<{
     postid?: ObjectId,
     content: string,
     userId: ObjectId,

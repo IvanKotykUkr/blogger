@@ -138,7 +138,7 @@ authRouter.post('/refresh-token',
     authRefreshTokenMiddlewares,
     authController.refreshToken.bind(authController));
 authRouter.post('/logout',
-    
+
     authRefreshTokenMiddlewares,
     authController.logout.bind(authController));
 authRouter.post('/registration-confirmation',

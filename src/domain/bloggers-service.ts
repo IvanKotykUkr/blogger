@@ -18,9 +18,6 @@ export class BloggersService {
         this.postsService = new PostsService()
     }
 
-    async convertToHex(id: string): Promise<string> {
-        return id.split("").reduce((hex, c) => hex += c.charCodeAt(0).toString(16).padStart(2, "0"), "")
-    }
 
     async getBloggers(searchnameterm: string | null, pagesize: number, pagenumber: number): Promise<BloggerResponseTypeWithPagination> {
         let page: number = pagenumber
@@ -38,10 +35,6 @@ export class BloggersService {
     }
 
     async findBloggersById(id: string): Promise<BloggerResponseType | null> {
-        const idHex: string = await this.convertToHex(id)
-        if (idHex.length !== 48) {
-            return null
-        }
         let blogger: BloggerResponseType | null = await this.bloggersRepositories.findBloggersById(new ObjectId(id))
         if (blogger) {
             return blogger;
@@ -60,10 +53,6 @@ export class BloggersService {
     }
 
     async updateBloggers(id: string, name: string, youtubeUrl: string): Promise<boolean> {
-        const idHex: string = await this.convertToHex(id)
-        if (idHex.length !== 48) {
-            return false
-        }
         const blogger: BloggerType = {
             _id: new ObjectId(id),
             name,
@@ -73,10 +62,7 @@ export class BloggersService {
     }
 
     async deleteBloggers(id: string): Promise<boolean> {
-        const idHex: string = await this.convertToHex(id)
-        if (idHex.length !== 48) {
-            return false
-        }
+
         return await this.bloggersRepositories.deleteBloggers(id)
     }
 

@@ -6,6 +6,7 @@ import {UserRoutType} from "../types/user-type";
 import {AuthService} from "../domain/auth-service";
 import {emailValidation, inputValidationAuth} from "../middlewares/input-validation-auth";
 import {registrationMiddlewares} from "../middlewares/auth-validation-middleware";
+import {idValidationMiddleware} from "../middlewares/_id-validation-middleware";
 
 export const usersRouter = Router({})
 
@@ -63,5 +64,8 @@ usersRouter.post('/',
     registrationMiddlewares,
 
     usersController.createUser.bind(usersController));
-usersRouter.delete('/:id', basicAuthorization, usersController.deleteUser.bind(usersController))
+usersRouter.delete('/:id',
+    idValidationMiddleware,
+    basicAuthorization,
+    usersController.deleteUser.bind(usersController))
 

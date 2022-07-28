@@ -24,7 +24,7 @@ app.use('/posts', postsRouter)
 app.use('/auth', authRouter)
 app.use('/comments', commentsRouter)
 app.use('/users', usersRouter)
-app.use('/testing',testingRouter)
+app.use('/testing', testingRouter)
 
 const startApp = async () => {
     await runDb()

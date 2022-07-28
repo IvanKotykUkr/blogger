@@ -5,6 +5,7 @@ import {CommentsService} from "../domain/comments-service";
 import {commentValidation, inputValidationComment} from "../middlewares/input-validation-comments";
 import {CommentResponseType} from "../types/commnet-type";
 import {authMiddlewaresWithCheckOwn, authValidationMiddleware} from "../middlewares/auth-access-middlewares";
+import {idValidationMiddleware} from "../middlewares/_id-validation-middleware";
 
 export const commentsRouter = Router({})
 
@@ -57,6 +58,7 @@ class CommentController {
 const commentsController = new CommentController()
 
 commentsRouter.put('/:id',
+    idValidationMiddleware,
     authValidationMiddleware,
     authMiddlewaresWithCheckOwn,
     commentValidation,
@@ -64,5 +66,11 @@ commentsRouter.put('/:id',
 
 
     commentsController.updateComment.bind(commentsController));
-commentsRouter.delete('/:id', authValidationMiddleware, authMiddlewaresWithCheckOwn, commentsController.deleteComment.bind(commentsController));
-commentsRouter.get('/:id', commentsController.getComment.bind(commentsController));
+commentsRouter.delete('/:id',
+    idValidationMiddleware,
+    authValidationMiddleware,
+    authMiddlewaresWithCheckOwn,
+    commentsController.deleteComment.bind(commentsController));
+commentsRouter.get('/:id',
+    idValidationMiddleware,
+    commentsController.getComment.bind(commentsController));

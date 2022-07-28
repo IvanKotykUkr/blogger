@@ -1,10 +1,11 @@
 import {PaginationType} from "./blogger-type";
 import {ObjectId, WithId} from "mongodb";
-export type  PostsDBType=WithId<{
+
+export type  PostsDBType = WithId<{
     title: string,
     shortDescription: string,
     content: string,
-    bloggerId: ObjectId ,
+    bloggerId: ObjectId,
     bloggerName: string
 }>
 export type PostsType = {
@@ -13,11 +14,11 @@ export type PostsType = {
     title: string,
     shortDescription: string,
     content: string,
-    bloggerId: ObjectId ,
+    bloggerId: ObjectId,
     bloggerName: string
 }
 export type PostsResponseType = {
-    id?: ObjectId|string,
+    id?: ObjectId | string,
 
     title: string,
     shortDescription: string,

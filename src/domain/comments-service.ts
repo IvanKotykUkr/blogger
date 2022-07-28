@@ -14,15 +14,6 @@ export class CommentsService {
         this.commentsRepositories = new CommentsRepositories()
     }
 
-    convertToHex(id: string): string {
-        const hex: string =
-            id.split("")
-                .reduce((hex, c) => hex += c
-                    .charCodeAt(0)
-                    .toString(16).padStart(2, "0"), "")
-
-        return hex
-    }
 
     async sendAllCommentsByPostId(postId: ObjectId, pagenumber: number, pagesize: number): Promise<CommentsResponseTypeWithPagination> {
 
@@ -66,19 +57,11 @@ export class CommentsService {
     }
 
     async deleteCommentsById(id: string): Promise<boolean> {
-        const idHex: string = this.convertToHex(id)
-        if (idHex.length !== 48) {
-            return false
-        }
         return await this.commentsRepositories.deleteCommentsById(new ObjectId(id))
 
     }
 
     async findCommentsById(id: string): Promise<CommentResponseType | null> {
-        const idHex: string = this.convertToHex(id)
-        if (idHex.length !== 48) {
-            return null
-        }
 
         const comment: CommentResponseType | null = await this.commentsRepositories.findCommentById(new ObjectId(id))
         return comment

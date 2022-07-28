@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
+
 export class EmailAdapter {
     async sendEmail(email: string, subject: string, text: string) {
-
 
 
         let transport = nodemailer.createTransport({

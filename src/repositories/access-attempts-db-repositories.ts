@@ -1,9 +1,10 @@
-import { TrafficModelClass} from "./db";
+import {TrafficModelClass} from "./db";
 import {ObjectId} from "mongodb";
 import {RecordType} from "../types/traffic-type";
+
 export class AccessAttemptsRepositories {
-    async countDate(record:RecordType){
-        const ipFound = await TrafficModelClass.find({"ip": record.ip,"process":record.process}).lean()
+    async countDate(record: RecordType) {
+        const ipFound = await TrafficModelClass.find({"ip": record.ip, "process": record.process}).lean()
 
 
         return ipFound.map(val => (val.date)).slice(Math.max(ipFound.length - 6, 0))
@@ -11,18 +12,16 @@ export class AccessAttemptsRepositories {
     }
 
 
-
     async createRecord(record: RecordType) {
         const recordInstance = new TrafficModelClass
-        recordInstance._id=new ObjectId()
-        recordInstance.ip=record.ip
-        recordInstance.date=record.date,
+        recordInstance._id = new ObjectId()
+        recordInstance.ip = record.ip
+        recordInstance.date = record.date,
             recordInstance.process = record.process
         await recordInstance.save()
 
 
         return await this.countDate(recordInstance)
-
 
 
     }
