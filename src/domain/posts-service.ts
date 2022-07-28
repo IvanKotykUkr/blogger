@@ -1,16 +1,18 @@
 import {PostsRepositories} from "../repositories/posts-db-repositories";
-import {bloggersService} from "./bloggers-service";
+
 import {CommentsService} from "./comments-service";
 
 import {ObjectId} from "mongodb";
 import {PostsDBType, PostsResponseType, PostsResponseTypeWithPagination, PostsType} from "../types/posts-type";
 import {BloggerResponseType} from "../types/blogger-type";
 import {CommentResponseType, CommentsResponseTypeWithPagination} from "../types/commnet-type";
+import {bloggersService} from "../composition-root";
 
 
 export class PostsService {
     postsRepositories: PostsRepositories
     commentsService: CommentsService
+
 
     constructor() {
         this.postsRepositories = new PostsRepositories()

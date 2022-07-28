@@ -7,6 +7,7 @@ import {UserDBType} from "../types/user-type";
 import {CommentsDBType} from "../types/commnet-type";
 import {TokensType} from "../types/tokens-types";
 import {RecordType} from "../types/traffic-type";
+import {LikeDbType} from "../types/like-type";
 
 
 //export const client = new MongoClient(settings.MONGO_URL);
@@ -87,6 +88,17 @@ const TokenSchema = new mongoose.Schema<TokensType>({
     {
         versionKey: false,
     });
+const LikeSchema = new mongoose.Schema<LikeDbType>({
+        _id: ObjectId,
+        post: ObjectId,
+        status: String,
+        addedAt: Date,
+        userId: ObjectId,
+        login: String,
+    },
+    {
+        versionKey: false,
+    });
 
 
 export const BloggersModelClass = mongoose.model('Bloggers', BloggerSchema);
@@ -95,6 +107,7 @@ export const UsersModelClass = mongoose.model('Users', UserSchema);
 export const CommentsModelClass = mongoose.model('Comments', CommentsSchema);
 export const TrafficModelClass = mongoose.model('Traffic', TrafficSchema);
 export const TokensModelClass = mongoose.model('Tokens', TokenSchema);
+export const LikesModelClass = mongoose.model('Likes', LikeSchema);
 
 
 export async function runDb() {

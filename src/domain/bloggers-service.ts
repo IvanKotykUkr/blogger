@@ -10,11 +10,10 @@ import {
 import {PostsResponseType, PostsResponseTypeWithPagination} from "../types/posts-type";
 
 export class BloggersService {
-    bloggersRepositories: BloggersRepositories
+
     postsService: PostsService
 
-    constructor() {
-        this.bloggersRepositories = new BloggersRepositories()
+    constructor(protected bloggersRepositories :BloggersRepositories) {
         this.postsService = new PostsService()
     }
 
@@ -94,5 +93,3 @@ export class BloggersService {
 
     }
 }
-
-export const bloggersService = new BloggersService()
