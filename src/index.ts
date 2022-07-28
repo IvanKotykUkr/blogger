@@ -28,7 +28,6 @@ app.use('/testing',testingRouter)
 
 const startApp = async () => {
     await runDb()
-
     app.listen(port, () => {
         console.log(`server started at http://localhost:${port}`);
     });
