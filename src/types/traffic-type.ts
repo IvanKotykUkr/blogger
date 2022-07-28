@@ -1,4 +1,4 @@
-import {ObjectId, WithId} from "mongodb";
+import {WithId} from "mongodb";
 
 export type RecordType = WithId<{
     ip: string,

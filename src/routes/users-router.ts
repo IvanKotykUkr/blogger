@@ -2,7 +2,6 @@ import {Request, Response, Router} from "express";
 import {UsersService} from "../domain/users-service";
 import {basicAuthorization} from "../middlewares/basicAuth";
 import {inputValidationUser, loginValidationUser, passwordValidationUser} from "../middlewares/input-validation-users";
-import {UserRoutType} from "../types/user-type";
 import {AuthService} from "../domain/auth-service";
 import {emailValidation, inputValidationAuth} from "../middlewares/input-validation-auth";
 import {registrationMiddlewares} from "../middlewares/auth-validation-middleware";

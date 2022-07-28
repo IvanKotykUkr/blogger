@@ -1,6 +1,4 @@
-import * as QueryString from "querystring";
-import {ObjectId, WithId} from "mongodb";
-import mongoose from "mongoose";
+import {ObjectId} from "mongodb";
 
 export class BloggerDBType {
     constructor(public _id: ObjectId,

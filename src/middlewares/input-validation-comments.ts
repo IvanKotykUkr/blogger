@@ -1,4 +1,4 @@
-import {body, param, validationResult} from "express-validator";
+import {body, validationResult} from "express-validator";
 import {NextFunction, Request, Response} from "express";
 
 export const commentValidation = body('content')

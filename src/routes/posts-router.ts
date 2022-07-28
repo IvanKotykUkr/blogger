@@ -2,7 +2,8 @@ import {Request, Response, Router} from "express";
 import {PostsService} from "../domain/posts-service";
 import {
     bloggerIdtValidation,
-    contentValidation, inputValidationPost,
+    contentValidation,
+    inputValidationPost,
     shortDescriptionValidation,
     titleValidation,
 } from "../middlewares/input-validation-midlewares-posts";
@@ -10,7 +11,7 @@ import {basicAuthorization} from "../middlewares/basicAuth";
 import {commentValidation, inputValidationComment} from "../middlewares/input-validation-comments";
 import {PostsResponseType, PostsResponseTypeWithPagination} from "../types/posts-type";
 import {CommentResponseType, CommentsResponseTypeWithPagination} from "../types/commnet-type";
-import {authMiddlewaresWithCheckOwn, authValidationMiddleware} from "../middlewares/auth-access-middlewares";
+import {authValidationMiddleware} from "../middlewares/auth-access-middlewares";
 import {idValidationMiddleware} from "../middlewares/_id-validation-middleware";
 
 

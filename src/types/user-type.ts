@@ -1,6 +1,5 @@
 import {ObjectId, WithId} from "mongodb";
 import {PaginationType} from "./blogger-type";
-import {PostsResponseType} from "./posts-type";
 
 export type UserDBType = WithId<{
     accountData: AccountDataType,

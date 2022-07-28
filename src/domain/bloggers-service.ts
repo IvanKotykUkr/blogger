@@ -13,7 +13,7 @@ export class BloggersService {
 
     postsService: PostsService
 
-    constructor(protected bloggersRepositories :BloggersRepositories) {
+    constructor(protected bloggersRepositories: BloggersRepositories) {
         this.postsService = new PostsService()
     }
 

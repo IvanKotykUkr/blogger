@@ -1,9 +1,5 @@
 import {UserRepositories} from "../repositories/user-db-repositories";
-import {UserDBType, UserResponseType, UserResponseTypeWithPagination, UserRoutType, UserType} from "../types/user-type";
-import * as bcrypt from "bcrypt";
-import {AuthService} from "./auth-service";
-import {v4 as uuidv4} from "uuid";
-import add from "date-fns/add";
+import {UserResponseType, UserResponseTypeWithPagination, UserRoutType} from "../types/user-type";
 import {ObjectId} from "mongodb";
 
 export class UsersService {
@@ -15,22 +11,8 @@ export class UsersService {
 
     }
 
-    convertToHex(id: string): string {
-
-        const hex = id.split("").reduce((hex, c) => hex += c.charCodeAt(0).toString(16).padStart(2, "0"), "")
-
-        return hex
-
-    }
-
 
     async findUserById(userid: string): Promise<UserResponseType | null> {
-
-        const idHex: string = this.convertToHex(userid)
-
-        if (idHex.length !== 48) {
-            return null
-        }
 
 
         return await this.userRepositories.findUserById(new ObjectId(userid))
@@ -54,10 +36,7 @@ export class UsersService {
     }
 
     async deleteUser(id: string): Promise<boolean> {
-        const idHex: string = this.convertToHex(id)
-        if (idHex.length !== 48) {
-            return false
-        }
+
         return await this.userRepositories.deleteUserById(new ObjectId(id))
 
     }

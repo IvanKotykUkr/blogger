@@ -3,19 +3,21 @@ import {Request, Response, Router} from "express";
 
 import {JwtService} from "../aplication/jwt-service";
 import {
-
-
+    codeValidation,
+    emailValidation,
+    inputValidationAuth,
     loginValidation,
     passwordValidation,
-    inputValidationAuth, codeValidation, emailValidation, refreshTokenValidation, tokenValidationAuth,
 } from "../middlewares/input-validation-auth";
 import {AuthService} from "../domain/auth-service";
 
 import {inputValidationUser, loginValidationUser, passwordValidationUser} from "../middlewares/input-validation-users";
 import {
-    antiDosMiddlewares, loginAuthMiddlewares,
+    antiDosMiddlewares,
+    loginAuthMiddlewares,
     registrationConfirmMiddlewares,
-    registrationMiddlewares, registrationResendingMiddlewares
+    registrationMiddlewares,
+    registrationResendingMiddlewares
 } from "../middlewares/auth-validation-middleware";
 import {authRefreshTokenMiddlewares, authValidationMiddleware} from "../middlewares/auth-access-middlewares";
 import {TokenService} from "../domain/token-service";

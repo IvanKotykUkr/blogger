@@ -1,10 +1,5 @@
 import {CommentsRepositories} from "../repositories/comments-db-repositories";
-import {
-    CommentResponseType,
-    CommentsDBType,
-    CommentsResponseTypeWithPagination,
-
-} from "../types/commnet-type";
+import {CommentResponseType, CommentsDBType, CommentsResponseTypeWithPagination,} from "../types/commnet-type";
 import {ObjectId} from "mongodb";
 
 export class CommentsService {

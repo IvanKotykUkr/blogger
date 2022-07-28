@@ -5,7 +5,6 @@ import {UserFromTokenType} from "../types/user-type";
 import {JwtService} from "../aplication/jwt-service";
 import {UsersService} from "../domain/users-service";
 import {TokenService} from "../domain/token-service";
-import * as bcrypt from "bcrypt";
 
 class AuthAccessMiddlewares {
     commentsService: CommentsService

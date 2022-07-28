@@ -1,4 +1,4 @@
-import {body, cookie, header, validationResult} from "express-validator";
+import {body, cookie, validationResult} from "express-validator";
 import {NextFunction, Request, Response} from "express";
 
 

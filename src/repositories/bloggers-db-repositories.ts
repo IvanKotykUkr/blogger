@@ -1,5 +1,5 @@
 import {BloggersModelClass} from "./db";
-import {ObjectId, WithId} from "mongodb";
+import {ObjectId} from "mongodb";
 import {BloggerDBType, BloggerResponseType, BloggerType} from "../types/blogger-type";
 
 export class BloggersRepositories {

@@ -1,4 +1,4 @@
-import {MongoClient, ObjectId} from 'mongodb'
+import {ObjectId} from 'mongodb'
 import {settings} from "../settings";
 import mongoose from 'mongoose';
 import {BloggerDBType} from "../types/blogger-type";

@@ -4,7 +4,7 @@ import {UserType} from "../types/user-type";
 import {UserRepositories} from "../repositories/user-db-repositories";
 import {AccessAttemptsRepositories} from "../repositories/access-attempts-db-repositories";
 import {RecordType} from "../types/traffic-type";
-import {ObjectId, WithId} from "mongodb";
+import {ObjectId} from "mongodb";
 
 class AuthValidationMiddleware {
     userRepositories: UserRepositories
