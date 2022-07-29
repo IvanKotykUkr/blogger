@@ -3,10 +3,10 @@ import {CommentResponseType, CommentsDBType, CommentsResponseTypeWithPagination,
 import {ObjectId} from "mongodb";
 
 export class CommentsService {
-    commentsRepositories: CommentsRepositories
 
-    constructor() {
-        this.commentsRepositories = new CommentsRepositories()
+
+    constructor(protected commentsRepositories: CommentsRepositories) {
+
     }
 
 

@@ -10,13 +10,12 @@ import {bloggersService} from "../composition-root";
 
 
 export class PostsService {
-    postsRepositories: PostsRepositories
-    commentsService: CommentsService
 
 
-    constructor() {
-        this.postsRepositories = new PostsRepositories()
-        this.commentsService = new CommentsService()
+
+
+    constructor(protected postsRepositories: PostsRepositories ,protected commentsService: CommentsService) {
+
 
     }
 

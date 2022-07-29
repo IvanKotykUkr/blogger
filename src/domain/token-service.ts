@@ -1,10 +1,10 @@
 import {TokenRepositories} from "../repositories/token-db-repositories";
 
 export class TokenService {
-    tokenRepositories: TokenRepositories
 
-    constructor() {
-        this.tokenRepositories = new TokenRepositories()
+
+    constructor(protected tokenRepositories: TokenRepositories) {
+
     }
 
     ///save to repo

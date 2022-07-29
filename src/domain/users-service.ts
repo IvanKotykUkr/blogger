@@ -3,11 +3,10 @@ import {UserResponseType, UserResponseTypeWithPagination, UserRoutType} from "..
 import {ObjectId} from "mongodb";
 
 export class UsersService {
-    userRepositories: UserRepositories
 
 
-    constructor() {
-        this.userRepositories = new UserRepositories()
+
+    constructor(protected userRepositories: UserRepositories) {
 
     }
 

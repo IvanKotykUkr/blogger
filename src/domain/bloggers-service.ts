@@ -11,10 +11,9 @@ import {PostsResponseType, PostsResponseTypeWithPagination} from "../types/posts
 
 export class BloggersService {
 
-    postsService: PostsService
 
-    constructor(protected bloggersRepositories: BloggersRepositories) {
-        this.postsService = new PostsService()
+    constructor(protected bloggersRepositories: BloggersRepositories,protected postsService: PostsService) {
+
     }
 
 

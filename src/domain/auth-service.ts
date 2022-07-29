@@ -12,12 +12,9 @@ const allOk = "All ok"
 const wrongPassword = "wrong password"
 
 export class AuthService {
-    emailManager: EmailManager
-    userRepositories: UserRepositories
 
-    constructor() {
-        this.emailManager = new EmailManager()
-        this.userRepositories = new UserRepositories()
+    constructor(protected userRepositories: UserRepositories,protected emailManager: EmailManager) {
+
     }
 
     async createUser(login: string, email: string, password: string, proces: string) {
