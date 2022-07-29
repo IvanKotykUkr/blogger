@@ -5,8 +5,7 @@ import {Request, Response} from "express";
 export class UsersController {
 
 
-
-    constructor(protected usersService: UsersService,protected authService: AuthService ) {
+    constructor(protected usersService: UsersService, protected authService: AuthService) {
 
     }
 

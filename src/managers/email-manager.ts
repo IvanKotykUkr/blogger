@@ -3,7 +3,7 @@ import {EmailAdapter} from "../adapters/email-adapter";
 export class EmailManager {
 
 
-    constructor(protected  emailAdapter: EmailAdapter) {
+    constructor(protected emailAdapter: EmailAdapter) {
 
     }
 

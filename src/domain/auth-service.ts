@@ -13,7 +13,7 @@ const wrongPassword = "wrong password"
 
 export class AuthService {
 
-    constructor(protected userRepositories: UserRepositories,protected emailManager: EmailManager) {
+    constructor(protected userRepositories: UserRepositories, protected emailManager: EmailManager) {
 
     }
 

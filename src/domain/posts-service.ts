@@ -12,9 +12,7 @@ import {bloggersService} from "../composition-root";
 export class PostsService {
 
 
-
-
-    constructor(protected postsRepositories: PostsRepositories ,protected commentsService: CommentsService) {
+    constructor(protected postsRepositories: PostsRepositories, protected commentsService: CommentsService) {
 
 
     }

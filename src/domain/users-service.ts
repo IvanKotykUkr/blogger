@@ -5,7 +5,6 @@ import {ObjectId} from "mongodb";
 export class UsersService {
 
 
-
     constructor(protected userRepositories: UserRepositories) {
 
     }

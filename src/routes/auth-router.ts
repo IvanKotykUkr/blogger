@@ -22,8 +22,6 @@ import {authController} from "../composition-root";
 export const authRouter = Router({})
 
 
-
-
 authRouter.post('/login',
     antiDosMiddlewares,
     loginValidation,

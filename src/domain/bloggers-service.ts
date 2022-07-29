@@ -12,7 +12,7 @@ import {PostsResponseType, PostsResponseTypeWithPagination} from "../types/posts
 export class BloggersService {
 
 
-    constructor(protected bloggersRepositories: BloggersRepositories,protected postsService: PostsService) {
+    constructor(protected bloggersRepositories: BloggersRepositories, protected postsService: PostsService) {
 
     }
 
