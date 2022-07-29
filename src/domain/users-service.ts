@@ -13,7 +13,8 @@ export class UsersService {
     async findUserById(userid: string): Promise<UserResponseType | null> {
 
 
-        return await this.userRepositories.findUserById(new ObjectId(userid))
+
+        return this.userRepositories.findUserById(new ObjectId(userid))
 
     }
 

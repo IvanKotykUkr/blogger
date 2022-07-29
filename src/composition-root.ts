@@ -18,16 +18,19 @@ import {AuthController} from "./contoller/auth-controller";
 import {UsersService} from "./domain/users-service";
 import {UsersController} from "./contoller/users-controller";
 
-const jwtService = new JwtService()
+
+
+
+export const jwtService = new JwtService()
 
 const emailAdapter = new EmailAdapter()
 const emailManager = new EmailManager(emailAdapter)
 
 const tokenRepositories = new TokenRepositories()
-const tokenService = new TokenService(tokenRepositories)
+export const tokenService = new TokenService(tokenRepositories)
 
 const userRepositories = new UserRepositories()
-const usersService = new UsersService(userRepositories)
+export const usersService = new UsersService(userRepositories)
 
 const authService = new AuthService(userRepositories, emailManager)
 
@@ -37,7 +40,7 @@ export const usersController = new UsersController(usersService, authService)
 export const authController = new AuthController(jwtService, authService, tokenService)
 
 const commentsRepositories = new CommentsRepositories()
-const commentsService = new CommentsService(commentsRepositories)
+export const commentsService = new CommentsService(commentsRepositories)
 export const commentsController = new CommentController(commentsService)
 
 
@@ -48,5 +51,4 @@ export const postsController = new PostsController(postsService)
 const bloggersRepositories = new BloggersRepositories()
 export const bloggersService = new BloggersService(bloggersRepositories, postsService)
 export const bloggersController = new BloggersController(bloggersService)
-
 

@@ -26,6 +26,7 @@ app.use('/comments', commentsRouter)
 app.use('/users', usersRouter)
 app.use('/testing', testingRouter)
 
+
 const startApp = async () => {
     await runDb()
     app.listen(port, () => {
