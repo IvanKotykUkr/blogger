@@ -7,13 +7,15 @@ import {UserRepositories} from "../repositories/user-db-repositories";
 
 import {EmailManager} from "../managers/email-manager";
 import {ObjectId} from "mongodb";
+import {inject, injectable} from "inversify";
+import "reflect-metadata";
 
 const allOk = "All ok"
 const wrongPassword = "wrong password"
-
+@injectable()
 export class AuthService {
 
-    constructor(protected userRepositories: UserRepositories, protected emailManager: EmailManager) {
+    constructor(@inject(UserRepositories)protected userRepositories: UserRepositories,@inject(EmailManager) protected emailManager: EmailManager) {
 
     }
 

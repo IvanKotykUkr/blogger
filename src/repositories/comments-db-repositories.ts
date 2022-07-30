@@ -1,7 +1,9 @@
 import {CommentsModelClass} from "./db";
 import {ObjectId} from "mongodb";
 import {CommentResponseType, CommentsDBType, CommentType} from "../types/commnet-type";
-
+import {injectable} from "inversify";
+import "reflect-metadata";
+@injectable()
 export class CommentsRepositories {
     reqComment(comment: CommentType) {
         return {

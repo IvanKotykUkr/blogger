@@ -1,11 +1,13 @@
 import {CommentsRepositories} from "../repositories/comments-db-repositories";
 import {CommentResponseType, CommentsDBType, CommentsResponseTypeWithPagination,} from "../types/commnet-type";
 import {ObjectId} from "mongodb";
-
+import {inject, injectable} from "inversify";
+import "reflect-metadata";
+@injectable()
 export class CommentsService {
 
 
-    constructor(protected commentsRepositories: CommentsRepositories) {
+    constructor(@inject(CommentsRepositories)protected commentsRepositories: CommentsRepositories) {
 
     }
 

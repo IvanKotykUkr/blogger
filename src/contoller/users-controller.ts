@@ -1,11 +1,13 @@
 import {AuthService} from "../domain/auth-service";
 import {UsersService} from "../domain/users-service";
 import {Request, Response} from "express";
-
+import {inject, injectable} from "inversify";
+import "reflect-metadata";
+@injectable()
 export class UsersController {
 
 
-    constructor(protected usersService: UsersService, protected authService: AuthService) {
+    constructor(@inject(UsersService)protected usersService: UsersService,@inject(AuthService) protected authService: AuthService) {
 
     }
 

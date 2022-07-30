@@ -1,3 +1,5 @@
+
+import "reflect-metadata";
 import {BloggersRepositories} from "./repositories/bloggers-db-repositories";
 import {BloggersService} from "./domain/bloggers-service";
 import {BloggersController} from "./contoller/bloggers-controller";
@@ -17,8 +19,10 @@ import {TokenRepositories} from "./repositories/token-db-repositories";
 import {AuthController} from "./contoller/auth-controller";
 import {UsersService} from "./domain/users-service";
 import {UsersController} from "./contoller/users-controller";
+import {Container} from "inversify";
+import {PostsHelper} from "./domain/helpers/posts-helper";
 
-
+/*
 
 
 export const jwtService = new JwtService()
@@ -45,10 +49,39 @@ export const commentsController = new CommentController(commentsService)
 
 
 const postsRepositories = new PostsRepositories()
-const postsService = new PostsService(postsRepositories, commentsService)
+const postsService = new PostsService(postsRepositories, commentsService,bloggersService)
 export const postsController = new PostsController(postsService)
 
 const bloggersRepositories = new BloggersRepositories()
 export const bloggersService = new BloggersService(bloggersRepositories, postsService)
-export const bloggersController = new BloggersController(bloggersService)
+ const bloggersController = new BloggersController(bloggersService)
+
+
+ */
+export const container = new Container();
+container.bind(BloggersController).to(BloggersController)
+container.bind<BloggersService>(BloggersService).to(BloggersService)
+container.bind<BloggersRepositories>(BloggersRepositories).to(BloggersRepositories)
+container.bind(PostsController).to(PostsController)
+container.bind<PostsService>(PostsService).to(PostsService)
+container.bind<PostsRepositories>(PostsRepositories).to(PostsRepositories)
+container.bind(CommentController).to(CommentController)
+container.bind<CommentsService>(CommentsService).to(CommentsService)
+container.bind<CommentsRepositories>(CommentsRepositories).to(CommentsRepositories)
+container.bind(AuthController).to(AuthController)
+container.bind(UsersController).to(UsersController)
+container.bind<AuthService>(AuthService).to(AuthService)
+container.bind<UsersService>(UsersService).to(UsersService)
+container.bind<UserRepositories>(UserRepositories).to(UserRepositories)
+container.bind<TokenService>(TokenService).to(TokenService)
+container.bind<TokenRepositories>(TokenRepositories).to(TokenRepositories)
+container.bind<EmailManager>(EmailManager).to(EmailManager)
+container.bind<EmailAdapter>(EmailAdapter).to(EmailAdapter)
+container.bind<JwtService>(JwtService).to(JwtService)
+container.bind<PostsHelper>(PostsHelper).to(PostsHelper)
+
+
+
+
+
 

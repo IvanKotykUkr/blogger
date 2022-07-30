@@ -2,12 +2,15 @@ import {JwtService} from "../aplication/jwt-service";
 import {AuthService} from "../domain/auth-service";
 import {TokenService} from "../domain/token-service";
 import {Request, Response} from "express";
-
+import {inject, injectable} from "inversify";
+import "reflect-metadata";
+@injectable()
 export class AuthController {
 
 
-    constructor(protected jwtService: JwtService,
-                protected authService: AuthService, protected tokenService: TokenService) {
+    constructor(@inject(JwtService)protected jwtService: JwtService,
+                @inject(AuthService)protected authService: AuthService,
+                @inject(TokenService)protected tokenService: TokenService) {
 
 
     }

@@ -1,9 +1,11 @@
 import {TokenRepositories} from "../repositories/token-db-repositories";
-
+import {inject, injectable} from "inversify";
+import "reflect-metadata";
+@injectable()
 export class TokenService {
 
 
-    constructor(protected tokenRepositories: TokenRepositories) {
+    constructor(@inject(TokenRepositories)protected tokenRepositories: TokenRepositories) {
 
     }
 

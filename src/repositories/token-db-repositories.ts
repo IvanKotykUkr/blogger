@@ -1,5 +1,7 @@
 import {TokensModelClass} from "./db";
-
+import {injectable} from "inversify";
+import "reflect-metadata";
+@injectable()
 export class TokenRepositories {
     async addTokenInBlacklist(token: string) {
         const tokenInstance = new TokensModelClass

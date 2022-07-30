@@ -1,11 +1,13 @@
 import {UserRepositories} from "../repositories/user-db-repositories";
 import {UserResponseType, UserResponseTypeWithPagination, UserRoutType} from "../types/user-type";
 import {ObjectId} from "mongodb";
-
+import {inject, injectable} from "inversify";
+import "reflect-metadata";
+@injectable()
 export class UsersService {
 
 
-    constructor(protected userRepositories: UserRepositories) {
+    constructor(@inject(UserRepositories)protected userRepositories: UserRepositories) {
 
     }
 

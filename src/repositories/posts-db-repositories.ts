@@ -1,7 +1,9 @@
 import {PostsModelClass} from "./db";
 import {ObjectId} from "mongodb";
 import {PostsDBType, PostsResponseType, PostsType} from "../types/posts-type";
-
+import {injectable} from "inversify";
+import "reflect-metadata";
+@injectable()
 export class PostsRepositories {
     resPost(post: PostsType) {
         return {

@@ -4,9 +4,11 @@ import jwt from 'jsonwebtoken'
 import {settings} from "../settings";
 
 import {UserFromTokenType} from "../types/user-type";
+import {injectable} from "inversify";
+import "reflect-metadata";
 
 const expired = "expired";
-
+@injectable()
 export class JwtService {
     async createAccessToken(id: string): Promise<{ accessToken: string }> {
 

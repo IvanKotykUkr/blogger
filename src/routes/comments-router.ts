@@ -1,10 +1,11 @@
 import {Router} from "express";
 
-
 import {commentValidation, inputValidationComment} from "../middlewares/input-validation-comments";
 import {authMiddlewaresWithCheckOwn, authValidationMiddleware} from "../middlewares/auth-access-middlewares";
 import {idValidationMiddleware} from "../middlewares/_id-validation-middleware";
-import {commentsController} from "../composition-root";
+import {container} from "../composition-root";
+import {CommentController} from "../contoller/comment-controller";
+const commentsController= container.resolve(CommentController)
 
 export const commentsRouter = Router({})
 

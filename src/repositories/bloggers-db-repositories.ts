@@ -1,7 +1,10 @@
 import {BloggersModelClass} from "./db";
 import {ObjectId} from "mongodb";
 import {BloggerDBType, BloggerResponseType, BloggerType} from "../types/blogger-type";
-
+import {injectable} from "inversify";
+import "reflect-metadata";
+import "reflect-metadata";
+@injectable()
 export class BloggersRepositories {
     reqBlogger(blogger: BloggerType) {
         return {id: blogger._id, name: blogger.name, youtubeUrl: blogger.youtubeUrl}

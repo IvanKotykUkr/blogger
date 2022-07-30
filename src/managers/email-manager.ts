@@ -1,9 +1,11 @@
 import {EmailAdapter} from "../adapters/email-adapter";
-
+import {inject, injectable} from "inversify";
+import "reflect-metadata";
+@injectable()
 export class EmailManager {
 
 
-    constructor(protected emailAdapter: EmailAdapter) {
+    constructor(@inject(EmailAdapter)protected emailAdapter: EmailAdapter) {
 
     }
 

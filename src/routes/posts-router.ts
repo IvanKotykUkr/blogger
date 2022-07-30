@@ -10,7 +10,9 @@ import {basicAuthorization} from "../middlewares/basicAuth";
 import {commentValidation, inputValidationComment} from "../middlewares/input-validation-comments";
 import {authValidationMiddleware} from "../middlewares/auth-access-middlewares";
 import {idValidationMiddleware} from "../middlewares/_id-validation-middleware";
-import {postsController} from "../composition-root";
+import {container} from "../composition-root";
+import {PostsController} from "../contoller/posts-controller";
+const postsController=container.resolve(PostsController)
 
 
 export const postsRouter = Router({})

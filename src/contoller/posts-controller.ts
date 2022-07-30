@@ -2,11 +2,13 @@ import {PostsService} from "../domain/posts-service";
 import {Request, Response} from "express";
 import {PostsResponseType, PostsResponseTypeWithPagination} from "../types/posts-type";
 import {CommentResponseType, CommentsResponseTypeWithPagination} from "../types/commnet-type";
-
+import {inject, injectable} from "inversify";
+import "reflect-metadata";
+@injectable()
 export class PostsController {
 
 
-    constructor(protected postsService: PostsService) {
+    constructor(@inject(PostsService)protected postsService: PostsService) {
 
     }
 

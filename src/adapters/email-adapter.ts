@@ -1,5 +1,7 @@
 import nodemailer from "nodemailer";
-
+import {injectable} from "inversify";
+import "reflect-metadata";
+@injectable()
 export class EmailAdapter {
     async sendEmail(email: string, subject: string, text: string) {
 

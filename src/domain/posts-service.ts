@@ -1,3 +1,5 @@
+
+import "reflect-metadata";
 import {PostsRepositories} from "../repositories/posts-db-repositories";
 
 import {CommentsService} from "./comments-service";
@@ -6,13 +8,23 @@ import {ObjectId} from "mongodb";
 import {PostsDBType, PostsResponseType, PostsResponseTypeWithPagination} from "../types/posts-type";
 import {BloggerResponseType} from "../types/blogger-type";
 import {CommentResponseType, CommentsResponseTypeWithPagination} from "../types/commnet-type";
-import {bloggersService} from "../composition-root";
 
 
+import {inject, injectable, multiInject} from "inversify";
+import {BloggersService} from "./bloggers-service";
+import {PostsHelper} from "./helpers/posts-helper";
+import {BloggersRepositories} from "../repositories/bloggers-db-repositories";
+
+
+@injectable()
 export class PostsService {
 
 
-    constructor(protected postsRepositories: PostsRepositories, protected commentsService: CommentsService) {
+    constructor(@inject(PostsRepositories)protected postsRepositories: PostsRepositories,
+                @inject(CommentsService)protected commentsService: CommentsService,
+                @inject(PostsHelper) protected postsHelper: PostsHelper,
+                @inject(BloggersRepositories) protected bloggersRepositories:BloggersRepositories
+    ) {
 
 
     }
@@ -21,21 +33,7 @@ export class PostsService {
     async findPosts(pagenumber: number, pagesize: number, bloggerId?: ObjectId | undefined | string): Promise<PostsResponseTypeWithPagination> {
 
 
-        let totalCount: number = await this.postsRepositories.findPostsByIdBloggerCount(bloggerId)
-        let page: number = pagenumber
-        let pageSize: number = pagesize
-        let pagesCount: number = Math.ceil(totalCount / pageSize)
-
-        const items: PostsResponseType[] = await this.postsRepositories.findPostsByIdBloggerPagination(bloggerId, page, pageSize)
-        let post = {
-            pagesCount,
-            page,
-            pageSize,
-            totalCount,
-            items,
-
-        }
-        return post
+        return this.postsHelper.getPostsPagination(pagenumber,pagesize,bloggerId)
     }
 
     async findPostsById(id: string): Promise<PostsResponseType | null> {
@@ -51,28 +49,12 @@ export class PostsService {
     }
 
     async createPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostsResponseType | null> {
-        const blogger: BloggerResponseType | null = await bloggersService.findBloggersById(bloggerId)
-        if (blogger) {
-            const newPost: PostsDBType = {
-                _id: new ObjectId(),
-                title: title,
-                shortDescription: shortDescription,
-                content: content,
-                bloggerId: new ObjectId(bloggerId),
-                bloggerName: blogger.name,
-            }
-            return await this.postsRepositories.createPost(newPost)
-            /* return {
-                 id: newpost._id,
-                 title: newpost.title,
-                 shortDescription: newpost.shortDescription,
-                 content: newpost.content,
-                 bloggerId: newpost.bloggerId,
-                 bloggerName: newpost.bloggerName
-             }
+        const makedPost = await this.postsHelper.makePost(title, shortDescription, content, bloggerId)
 
-             */
-        }
+        if (makedPost) {
+            return await this.postsRepositories.createPost(makedPost)
+            }
+
         return null
     }
 
@@ -83,7 +65,7 @@ export class PostsService {
                      bloggerId: string): Promise<boolean | null> {
 
 
-        let blogger: BloggerResponseType | null = await bloggersService.findBloggersById(bloggerId)
+        let blogger: BloggerResponseType | null = await this.bloggersRepositories.findBloggersById(new ObjectId(bloggerId))
 
 
         if (blogger) {

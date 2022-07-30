@@ -1,5 +1,3 @@
-import {BloggersRepositories} from "../repositories/bloggers-db-repositories";
-import {PostsService} from "./posts-service";
 import {ObjectId} from "mongodb";
 import {
     BloggerDBType,
@@ -8,11 +6,19 @@ import {
     BloggerType
 } from "../types/blogger-type";
 import {PostsResponseType, PostsResponseTypeWithPagination} from "../types/posts-type";
+import {inject, injectable} from "inversify";
+import "reflect-metadata";
+import {BloggersRepositories} from "../repositories/bloggers-db-repositories";
+import {PostsRepositories} from "../repositories/posts-db-repositories";
+import {PostsHelper} from "./helpers/posts-helper";
 
+@injectable()
 export class BloggersService {
 
 
-    constructor(protected bloggersRepositories: BloggersRepositories, protected postsService: PostsService) {
+    constructor(@inject(BloggersRepositories) protected bloggersRepositories: BloggersRepositories,
+                @inject(PostsRepositories) protected postsRepositories: PostsRepositories,
+                @inject(PostsHelper) protected postsHelper: PostsHelper) {
 
     }
 
@@ -63,25 +69,27 @@ export class BloggersService {
 
         return await this.bloggersRepositories.deleteBloggers(id)
     }
-
     async getPostsByIdBlogger(id: string, pagenumber: number, pageesize: number): Promise<PostsResponseTypeWithPagination | null> {
 
         let blogger: BloggerResponseType | null = await this.findBloggersById(id)
 
         if (blogger) {
 
-            return await this.postsService.findPosts(pagenumber, pageesize, blogger.id)
+            return await this.postsHelper.getPostsPagination(pagenumber, pageesize, blogger.id)
         }
         return null
 
     }
 
+
+
     async createPostByBloggerId(id: string, title: string, shortDescription: string, content: string): Promise<PostsResponseType | null> {
-        let blogger: BloggerResponseType | null = await this.findBloggersById(id)
 
-        if (blogger) {
 
-            let newPosts: PostsResponseType | null = await this.postsService.createPost(title, shortDescription, content, id)
+        const makedPost = await this.postsHelper.makePost(title, shortDescription, content, id)
+        if (makedPost) {
+            let
+                newPosts: PostsResponseType | null = await this.postsRepositories.createPost(makedPost)
 
 
             return newPosts

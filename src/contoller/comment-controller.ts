@@ -1,11 +1,13 @@
 import {CommentsService} from "../domain/comments-service";
 import {Request, Response} from "express";
 import {CommentResponseType} from "../types/commnet-type";
-
+import {inject, injectable} from "inversify";
+import "reflect-metadata";
+@injectable()
 export class CommentController {
 
 
-    constructor(protected commentsService: CommentsService) {
+    constructor(@inject(CommentsService)protected commentsService: CommentsService) {
 
     }
 
