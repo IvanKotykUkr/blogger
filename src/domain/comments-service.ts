@@ -69,6 +69,8 @@ export class CommentsService {
 
         const comment: CommentResponseType | null = await this.commentsRepositories.findCommentById(new ObjectId(id))
         if (comment) {
+
+            // @ts-ignore
             return this.commentHelper.createResponseComment(comment)
         }
         return null

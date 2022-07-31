@@ -89,9 +89,10 @@ export class BloggersService {
         const makedPost = await this.postsHelper.makePost(title, shortDescription, content, id)
         if (makedPost) {
             let
-                newPosts: PostsResponseType | null = await this.postsRepositories.createPost(makedPost)
+                newPosts = await this.postsRepositories.createPost(makedPost)
 
 
+            // @ts-ignore
             return newPosts
 
         }

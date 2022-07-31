@@ -12,7 +12,7 @@ import {CommentResponseType, CommentsResponseTypeWithPagination} from "../types/
 import {inject, injectable} from "inversify";
 import {PostsHelper} from "./helpers/posts-helper";
 import {BloggersRepositories} from "../repositories/bloggers-db-repositories";
-import {ExtendedLikesInfo, LikeDbType} from "../types/like-type";
+import {LikeDbType} from "../types/like-type";
 import {ObjectId} from "mongodb";
 import {LikesRepositories} from "../repositories/likes-repositories";
 
@@ -56,29 +56,32 @@ export class PostsService {
 
         if (makedPost) {
             const post: PostsType = await this.postsRepositories.createPost(makedPost)
-            const extendedLikesInfo:ExtendedLikesInfo ={
-                likesCount:await this.likesRepositories.countLike(new ObjectId(post.id)),
-                dislikesCount:await this.likesRepositories.countDislake(new ObjectId(post.id)),
-                myStatus:await this.likesRepositories.myStatus(new ObjectId(post.id)),
-                newestLikes:await this.likesRepositories.newstLike(new ObjectId(post.id))
+            const extendedLikesInfo = {
+                likesCount: await this.likesRepositories.countLike(new ObjectId(post.id)),
+                dislikesCount: await this.likesRepositories.countDislake(new ObjectId(post.id)),
+                myStatus: await this.likesRepositories.myStatus(new ObjectId(post.id)),
+                newestLikes: await this.likesRepositories.newstLike(new ObjectId(post.id))
 
             }
 
 
+
             return {
-                id:post.id,
+                id: post.id,
 
                 title: post.title,
                 shortDescription: post.shortDescription,
                 content: post.content,
                 bloggerId: post.bloggerId,
                 bloggerName: post.bloggerName,
-                addedAt:post.addedAt,
-                likesCount:extendedLikesInfo.likesCount,
-                dislikesCount:extendedLikesInfo.dislikesCount,
-                myStatus:extendedLikesInfo.myStatus,
-                newestLikes:extendedLikesInfo.newestLikes
-
+                addedAt: post.addedAt,
+                extendedLikesInfo: {
+                    likesCount: extendedLikesInfo.likesCount,
+                    dislikesCount: extendedLikesInfo.dislikesCount,
+                    myStatus: extendedLikesInfo.myStatus,
+                    // @ts-ignore
+                    newestLikes: extendedLikesInfo.newestLikes
+                }
             }
         }
 

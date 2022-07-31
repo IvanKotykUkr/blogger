@@ -32,6 +32,8 @@ export class CommentsRepositories {
         await commentInstance.save()
 
         if (commentInstance) {
+
+            // @ts-ignore
             return this.reqComment(commentInstance)
         }
         return null
@@ -47,6 +49,7 @@ export class CommentsRepositories {
             .lean()
 
 
+        // @ts-ignore
         return comments.map(d => ({
             id: d._id,
             content: d.content,
@@ -65,6 +68,8 @@ export class CommentsRepositories {
 
 
         if (comments) {
+
+            // @ts-ignore
             return this.reqComment(comments)
         }
         return null
