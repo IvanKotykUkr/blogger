@@ -5,6 +5,7 @@ import {authMiddlewaresWithCheckOwn, authValidationMiddleware} from "../middlewa
 import {idValidationMiddleware} from "../middlewares/_id-validation-middleware";
 import {container} from "../composition-root";
 import {CommentController} from "../contoller/comment-controller";
+import {inputValidationPost, likeStatusValidation} from "../middlewares/input-validation-midlewares-posts";
 const commentsController= container.resolve(CommentController)
 
 export const commentsRouter = Router({})
@@ -27,3 +28,11 @@ commentsRouter.delete('/:id',
 commentsRouter.get('/:id',
     idValidationMiddleware,
     commentsController.getComment.bind(commentsController));
+commentsRouter.put('/:id/like-status',
+    idValidationMiddleware,
+    authValidationMiddleware,
+    likeStatusValidation,
+    inputValidationPost,
+
+
+    commentsController.updateLikeStatus.bind(commentsController));

@@ -38,7 +38,8 @@ const PostsSchema = new mongoose.Schema<PostsDBType>({
         shortDescription: String,
         content: String,
         bloggerId: ObjectId,
-        bloggerName: String
+        bloggerName: String,
+        addedAt:Date
     },
     {
         versionKey: false,

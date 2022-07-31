@@ -3,11 +3,18 @@ import {CommentResponseType, CommentsDBType, CommentsResponseTypeWithPagination,
 import {ObjectId} from "mongodb";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
+import {LikeDbType} from "../types/like-type";
+import {LikesRepositories} from "../repositories/likes-repositories";
+import {CommentHelper} from "./helpers/comment-helper";
+
 @injectable()
 export class CommentsService {
 
 
-    constructor(@inject(CommentsRepositories)protected commentsRepositories: CommentsRepositories) {
+    constructor(@inject(CommentsRepositories) protected commentsRepositories: CommentsRepositories,
+                @inject(LikesRepositories) protected likesRepositories: LikesRepositories,
+                @inject(CommentHelper) protected commentHelper:CommentHelper
+    ) {
 
     }
 
@@ -61,11 +68,31 @@ export class CommentsService {
     async findCommentsById(id: string): Promise<CommentResponseType | null> {
 
         const comment: CommentResponseType | null = await this.commentsRepositories.findCommentById(new ObjectId(id))
-        return comment
+        if (comment) {
+            return this.commentHelper.createResponseComment(comment)
+        }
+        return null
     }
 
     async deleteCommentsByPost(id: string): Promise<boolean> {
         return await this.commentsRepositories.deleteCommentsByPost(new ObjectId(id))
     }
 
+    async updateLikeStatus(likeStatus: string, postid: ObjectId, userId: ObjectId, login: string) {
+        const like: LikeDbType = {
+            _id: new ObjectId(),
+            post: postid,
+            status: likeStatus,
+            addedAt: new Date(),
+            userId,
+            login
+
+        }
+        return this.likesRepositories.createLike(like)
+
+
+        return true
+
+
+    }
 }

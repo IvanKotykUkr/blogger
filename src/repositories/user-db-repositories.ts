@@ -47,7 +47,7 @@ export class UserRepositories {
 
     async findUserById(_id: ObjectId): Promise<UserResponseType | null> {
 
-        let user = await UsersModelClass.findOne(_id)
+        let user = await UsersModelClass.findById(_id)
 
         if (user) {
             return {

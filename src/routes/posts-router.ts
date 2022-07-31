@@ -2,7 +2,7 @@ import {Router} from "express";
 import {
     bloggerIdtValidation,
     contentValidation,
-    inputValidationPost,
+    inputValidationPost, likeStatusValidation,
     shortDescriptionValidation,
     titleValidation,
 } from "../middlewares/input-validation-midlewares-posts";
@@ -52,6 +52,7 @@ postsRouter.delete("/:id",
     basicAuthorization,
     postsController.deletePosts.bind(postsController));
 postsRouter.post('/:id/comments',
+    idValidationMiddleware,
     authValidationMiddleware,
     commentValidation,
     inputValidationComment,
@@ -60,6 +61,14 @@ postsRouter.post('/:id/comments',
 postsRouter.get('/:id/comments',
     idValidationMiddleware,
     postsController.getComment.bind(postsController));
+postsRouter.put('/:id/like-status',
+    idValidationMiddleware,
+    authValidationMiddleware,
+    likeStatusValidation,
+    inputValidationPost,
+
+
+    postsController.updateLikeStatus.bind(postsController));
 
 
 

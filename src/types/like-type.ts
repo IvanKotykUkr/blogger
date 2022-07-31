@@ -1,4 +1,5 @@
-import {ObjectId} from "mongoose";
+import {ObjectId} from "mongodb";
+
 
 export class LikeDbType {
     constructor(
@@ -10,4 +11,19 @@ export class LikeDbType {
         public login: string,
     ) {
     }
+}
+
+export type ExtendedLikesInfo = {
+    likesCount: number,
+    dislikesCount: number,
+    myStatus: string,
+    newestLikes: [
+        {
+            addedAt?: Date,
+            userId?: string,
+            login?: string
+        }
+    ]
+
+
 }

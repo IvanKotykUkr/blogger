@@ -29,7 +29,9 @@ export const authValidationMiddleware = async (req: Request, res: Response, next
         res.status(401).json({errorsMessages: [{message: "Should be valide JWT Token", field: "token"}]})
         return
     }
+
     req.user = await usersService.findUserById(user.userId)
+
     if (req.user === null) {
         res.status(401).json({errorsMessages: [{message: "there is no user", field: "token"}]})
         return

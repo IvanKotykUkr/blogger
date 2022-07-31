@@ -1,29 +1,31 @@
-
 import "reflect-metadata";
 import {PostsRepositories} from "../repositories/posts-db-repositories";
 
 import {CommentsService} from "./comments-service";
 
-import {ObjectId} from "mongodb";
-import {PostsDBType, PostsResponseType, PostsResponseTypeWithPagination} from "../types/posts-type";
+
+import {PostsResponseType, PostsResponseTypeWithPagination, PostsType} from "../types/posts-type";
 import {BloggerResponseType} from "../types/blogger-type";
 import {CommentResponseType, CommentsResponseTypeWithPagination} from "../types/commnet-type";
 
 
-import {inject, injectable, multiInject} from "inversify";
-import {BloggersService} from "./bloggers-service";
+import {inject, injectable} from "inversify";
 import {PostsHelper} from "./helpers/posts-helper";
 import {BloggersRepositories} from "../repositories/bloggers-db-repositories";
+import {ExtendedLikesInfo, LikeDbType} from "../types/like-type";
+import {ObjectId} from "mongodb";
+import {LikesRepositories} from "../repositories/likes-repositories";
 
 
 @injectable()
 export class PostsService {
 
 
-    constructor(@inject(PostsRepositories)protected postsRepositories: PostsRepositories,
-                @inject(CommentsService)protected commentsService: CommentsService,
+    constructor(@inject(PostsRepositories) protected postsRepositories: PostsRepositories,
+                @inject(CommentsService) protected commentsService: CommentsService,
                 @inject(PostsHelper) protected postsHelper: PostsHelper,
-                @inject(BloggersRepositories) protected bloggersRepositories:BloggersRepositories
+                @inject(BloggersRepositories) protected bloggersRepositories: BloggersRepositories,
+                @inject(LikesRepositories) protected likesRepositories: LikesRepositories
     ) {
 
 
@@ -33,15 +35,16 @@ export class PostsService {
     async findPosts(pagenumber: number, pagesize: number, bloggerId?: ObjectId | undefined | string): Promise<PostsResponseTypeWithPagination> {
 
 
-        return this.postsHelper.getPostsPagination(pagenumber,pagesize,bloggerId)
+        return this.postsHelper.getPostsPagination(pagenumber, pagesize, bloggerId)
     }
 
     async findPostsById(id: string): Promise<PostsResponseType | null> {
 
-        const post: PostsResponseType | null = await this.postsRepositories.findPostsById(new ObjectId(id))
+        const post: PostsType | null = await this.postsRepositories.findPostsById(new ObjectId(id))
 
         if (post) {
-            return post;
+
+            return this.postsHelper.makePostResponse(post);
         }
         return null;
 
@@ -52,8 +55,32 @@ export class PostsService {
         const makedPost = await this.postsHelper.makePost(title, shortDescription, content, bloggerId)
 
         if (makedPost) {
-            return await this.postsRepositories.createPost(makedPost)
+            const post: PostsType = await this.postsRepositories.createPost(makedPost)
+            const extendedLikesInfo:ExtendedLikesInfo ={
+                likesCount:await this.likesRepositories.countLike(new ObjectId(post.id)),
+                dislikesCount:await this.likesRepositories.countDislake(new ObjectId(post.id)),
+                myStatus:await this.likesRepositories.myStatus(new ObjectId(post.id)),
+                newestLikes:await this.likesRepositories.newstLike(new ObjectId(post.id))
+
             }
+
+
+            return {
+                id:post.id,
+
+                title: post.title,
+                shortDescription: post.shortDescription,
+                content: post.content,
+                bloggerId: post.bloggerId,
+                bloggerName: post.bloggerName,
+                addedAt:post.addedAt,
+                likesCount:extendedLikesInfo.likesCount,
+                dislikesCount:extendedLikesInfo.dislikesCount,
+                myStatus:extendedLikesInfo.myStatus,
+                newestLikes:extendedLikesInfo.newestLikes
+
+            }
+        }
 
         return null
     }
@@ -110,6 +137,24 @@ export class PostsService {
         }
         return null
 
+
+    }
+
+    async updateLikeStatus(likeStatus: string, postid: ObjectId, userId: ObjectId, login: string) {
+
+        const like: LikeDbType = {
+            _id: new ObjectId(),
+            post: postid,
+            status: likeStatus,
+            addedAt: new Date(),
+            userId,
+            login
+
+        }
+        return this.likesRepositories.createLike(like)
+
+
+        return true
 
     }
 }

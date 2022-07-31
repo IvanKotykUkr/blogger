@@ -4,6 +4,7 @@ import {PostsResponseType, PostsResponseTypeWithPagination} from "../types/posts
 import {CommentResponseType, CommentsResponseTypeWithPagination} from "../types/commnet-type";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
+import {ObjectId} from "mongodb";
 @injectable()
 export class PostsController {
 
@@ -117,6 +118,15 @@ export class PostsController {
         }
         res.status(200).send(allComment)
 
+
+    }
+    async updateLikeStatus (req: Request, res: Response){
+        const isUpdated = await this.postsService.updateLikeStatus(req.body.likeStatus,new ObjectId(req.params.id),req.user.id,req.user.login)
+        if (isUpdated) {
+            res.sendStatus(204)
+            return
+        }
+        res.sendStatus(404)
 
     }
 }

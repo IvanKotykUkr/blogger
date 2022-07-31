@@ -21,6 +21,8 @@ import {UsersService} from "./domain/users-service";
 import {UsersController} from "./contoller/users-controller";
 import {Container} from "inversify";
 import {PostsHelper} from "./domain/helpers/posts-helper";
+import {LikesRepositories} from "./repositories/likes-repositories";
+import {CommentHelper} from "./domain/helpers/comment-helper";
 
 /*
 
@@ -79,6 +81,8 @@ container.bind<EmailManager>(EmailManager).to(EmailManager)
 container.bind<EmailAdapter>(EmailAdapter).to(EmailAdapter)
 container.bind<JwtService>(JwtService).to(JwtService)
 container.bind<PostsHelper>(PostsHelper).to(PostsHelper)
+container.bind<LikesRepositories>(LikesRepositories).to(LikesRepositories)
+container.bind<CommentHelper>(CommentHelper).to(CommentHelper)
 
 
 

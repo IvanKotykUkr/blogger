@@ -1,20 +1,22 @@
-import {PostsModelClass} from "./db";
+import {LikesModelClass, PostsModelClass} from "./db";
 import {ObjectId} from "mongodb";
 import {PostsDBType, PostsResponseType, PostsType} from "../types/posts-type";
 import {injectable} from "inversify";
 import "reflect-metadata";
 @injectable()
 export class PostsRepositories {
-    resPost(post: PostsType) {
+    resPost(post: PostsDBType):PostsType {
+
         return {
             id: post._id,
             title: post.title,
             shortDescription: post.shortDescription,
             content: post.content,
             bloggerId: post.bloggerId,
-            bloggerName: post.bloggerName
-        }
+            bloggerName: post.bloggerName,
+            addedAt: post.addedAt,
 
+        }
     }
 
     async paginationFilter(bloggerId: undefined | string | ObjectId) {
@@ -30,7 +32,7 @@ export class PostsRepositories {
         return PostsModelClass.countDocuments(filter)
     }
 
-    async findPostsByIdBloggerPagination(bloggerId: undefined | string | ObjectId, number: number, size: number): Promise<PostsResponseType[]> {
+    async findPostsByIdBloggerPagination(bloggerId: undefined | string | ObjectId, number: number, size: number) {
         const filter = await this.paginationFilter(bloggerId)
 
         const posts = await PostsModelClass.find(filter)
@@ -44,16 +46,16 @@ export class PostsRepositories {
             shortDescription: p.shortDescription,
             content: p.content,
             bloggerId: p.bloggerId,
-            bloggerName: p.bloggerName
+            bloggerName: p.bloggerName,
+            addedAt:p.addedAt
         }))
 
     }
 
-    async findPostsById(_id: ObjectId): Promise<PostsResponseType | null> {
+    async findPostsById(_id: ObjectId): Promise<PostsType | null> {
 
 
-        const post = await PostsModelClass.findOne(
-            _id)
+        const post = await PostsModelClass.findById(_id)
 
         if (post) {
 
@@ -64,8 +66,7 @@ export class PostsRepositories {
 
     }
 
-    async createPost(newPost: PostsDBType): Promise<PostsResponseType> {
-
+    async createPost(newPost: PostsDBType): Promise<PostsType> {
 
         const postsInstance = new PostsModelClass
         postsInstance._id = newPost._id,
@@ -74,6 +75,7 @@ export class PostsRepositories {
         postsInstance.content = newPost.content
         postsInstance.bloggerId = newPost.bloggerId
         postsInstance.bloggerName = newPost.bloggerName
+        postsInstance.addedAt=new Date()
         await postsInstance.save()
         return this.resPost(postsInstance)
 
