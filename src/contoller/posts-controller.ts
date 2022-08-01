@@ -1,7 +1,7 @@
 import {PostsService} from "../domain/posts-service";
 import {Request, Response} from "express";
 import {PostsResponseType, PostsResponseTypeWithPagination} from "../types/posts-type";
-import {CommentResponseType, CommentsResponseTypeWithPagination} from "../types/commnet-type";
+import {CommentResponseType, CommentsResponseTypeWithPagination, NewCommentType} from "../types/commnet-type";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
 import {ObjectId} from "mongodb";
@@ -97,7 +97,7 @@ export class PostsController {
     async createComment(req: Request, res: Response) {
 
 
-        const newComment: CommentResponseType | null = await this.postsService.createCommentsByPost(req.params.id, req.body.content, "" + req.user!.id, req.user!.login)
+        const newComment: NewCommentType | null = await this.postsService.createCommentsByPost(req.params.id, req.body.content, "" + req.user!.id, req.user!.login)
 
         if (!newComment) {
             res.send(404)

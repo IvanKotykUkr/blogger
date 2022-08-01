@@ -18,6 +18,7 @@ export type CommentType = {
     addedAt: Date
 }
 
+
 export type CommentResponseType = {
     id?: ObjectId | string,
     postid?: ObjectId | string,
@@ -25,10 +26,21 @@ export type CommentResponseType = {
     userId: ObjectId | string | undefined,
     userLogin: string,
     addedAt: Date
-    likesInfo:{
-        likesCount:number,
-        dislikesCount:number,
-        myStatus:string
-    }
+    likesInfo:LikesInfo
 }
-export type CommentsResponseTypeWithPagination = PaginationType<CommentResponseType>
+export type NewCommentType= {
+    id?: ObjectId | string,
+    postid?: ObjectId | string,
+    content: string,
+    userId: ObjectId | string | undefined,
+    userLogin: string,
+    addedAt: Date
+}
+export type LikesInfo= {
+
+    likesCount:number,
+    dislikesCount:number,
+    myStatus:string
+
+}
+export type CommentsResponseTypeWithPagination = PaginationType<NewCommentType>

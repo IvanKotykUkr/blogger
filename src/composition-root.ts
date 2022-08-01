@@ -23,6 +23,7 @@ import {Container} from "inversify";
 import {PostsHelper} from "./domain/helpers/posts-helper";
 import {LikesRepositories} from "./repositories/likes-repositories";
 import {CommentHelper} from "./domain/helpers/comment-helper";
+import {LikeHelper} from "./domain/helpers/like-helper";
 
 /*
 
@@ -83,6 +84,7 @@ container.bind<JwtService>(JwtService).to(JwtService)
 container.bind<PostsHelper>(PostsHelper).to(PostsHelper)
 container.bind<LikesRepositories>(LikesRepositories).to(LikesRepositories)
 container.bind<CommentHelper>(CommentHelper).to(CommentHelper)
+container.bind<LikeHelper>(LikeHelper).to(LikeHelper)
 
 
 

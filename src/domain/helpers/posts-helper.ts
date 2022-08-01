@@ -1,16 +1,23 @@
-import {PostsDBType, PostsResponseType, PostsResponseTypeWithPagination, PostsType} from "../../types/posts-type";
+import {
+    newestlike, NewResponseType,
+    PostsDBType,
+    PostsResponseType,
+    PostsResponseTypeWithPagination,
+    PostsType
+} from "../../types/posts-type";
 import {BloggerResponseType} from "../../types/blogger-type";
 import {ObjectId} from "mongodb";
 import {inject, injectable} from "inversify";
 import {BloggersRepositories} from "../../repositories/bloggers-db-repositories";
 import {PostsRepositories} from "../../repositories/posts-db-repositories";
 import {LikesRepositories} from "../../repositories/likes-repositories";
+import {LikeHelper} from "./like-helper";
 
 @injectable()
 export class PostsHelper {
     constructor(@inject(BloggersRepositories) protected bloggersRepositories: BloggersRepositories,
                 @inject(PostsRepositories) protected postsRepositories: PostsRepositories,
-                @inject(LikesRepositories) protected likesRepositories: LikesRepositories) {
+                @inject(LikeHelper) protected likeHelper:LikeHelper) {
     }
 
     async makePost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostsDBType | null> {
@@ -38,16 +45,43 @@ export class PostsHelper {
         let pageSize: number = pagesize
         let pagesCount: number = Math.ceil(totalCount / pageSize)
 
-        const items = await this.postsRepositories.findPostsByIdBloggerPagination(bloggerId, page, pageSize)
+        const itemsFromDb = await this.postsRepositories.findPostsByIdBloggerPagination(bloggerId, page, pageSize)
+       const mapItems = async ()=>{return Promise.all(itemsFromDb.map(
+
+           async p => ({
+               id: p._id,
+               title:  p.title,
+               shortDescription: p.shortDescription,
+               content: p.content,
+               bloggerId: p.bloggerId,
+               bloggerName:p.bloggerName,
+               addedAt: p.addedAt,
+               extendedLikesInfo:  {
+
+                 likesCount:await this.likeHelper.likesCount(p._id),
+                   dislikesCount:await this.likeHelper.dislikesCount(p._id),
+                   myStatus:await this.likeHelper.myStatus(p._id),
+                   newestLikes: await this.likeHelper.newestLikes(p._id),
+               }
+
+           })))}
+
+
+
+
+
+
 
         let post = {
             pagesCount,
             page,
             pageSize,
             totalCount,
-            items,
+            items:await mapItems(),
 
         }
+
+
 
         // @ts-ignore
         return post
@@ -55,10 +89,6 @@ export class PostsHelper {
 
     async makePostResponse(post: PostsType): Promise<PostsResponseType> {
 
-        const likesCount =await this.likesRepositories.countLike(new ObjectId(post.id))
-        const dislikesCount =await this.likesRepositories.countDislake(new ObjectId(post.id))
-        const myStatus = await this.likesRepositories.myStatus(new ObjectId(post.id))
-        const newestLikes = await this.likesRepositories.newstLike(new ObjectId(post.id))
 
 
 
@@ -71,11 +101,11 @@ export class PostsHelper {
             bloggerName: post.bloggerName,
             addedAt: post.addedAt,
             extendedLikesInfo:{
-                likesCount: likesCount,
-                dislikesCount: dislikesCount,
-                myStatus: myStatus,
+                likesCount: await this.likeHelper.likesCount(new ObjectId(post.id)),
+                dislikesCount: await this.likeHelper.dislikesCount(new ObjectId(post.id)),
+                myStatus: await this.likeHelper.myStatus(new ObjectId(post.id)),
                 // @ts-ignore
-                newestLikes: newestLikes
+                newestLikes: await this.likeHelper.newestLikes(new ObjectId(post.id))
             }
         }
     }

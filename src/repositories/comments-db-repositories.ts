@@ -1,6 +1,6 @@
 import {CommentsModelClass} from "./db";
 import {ObjectId} from "mongodb";
-import {CommentResponseType, CommentsDBType, CommentType} from "../types/commnet-type";
+import {CommentResponseType, CommentsDBType, CommentType, NewCommentType} from "../types/commnet-type";
 import {injectable} from "inversify";
 import "reflect-metadata";
 @injectable()
@@ -21,7 +21,7 @@ export class CommentsRepositories {
         return result
     }
 
-    async createComment(comment: CommentsDBType): Promise<CommentResponseType | null> {
+    async createComment(comment: CommentsDBType): Promise<NewCommentType | null> {
         const commentInstance = new CommentsModelClass
         commentInstance.id = comment._id
         commentInstance.postid = comment.postid
@@ -33,7 +33,7 @@ export class CommentsRepositories {
 
         if (commentInstance) {
 
-            // @ts-ignore
+
             return this.reqComment(commentInstance)
         }
         return null
@@ -41,7 +41,7 @@ export class CommentsRepositories {
 
     }
 
-    async allCommentByPostIdPagination(post: ObjectId, number: number, size: number): Promise<CommentResponseType[]> {
+    async allCommentByPostIdPagination(post: ObjectId, number: number, size: number){
 
         const comments = await CommentsModelClass.find({postid: post})
             .skip(number > 0 ? ((number - 1) * size) : 0)
@@ -49,8 +49,9 @@ export class CommentsRepositories {
             .lean()
 
 
-        // @ts-ignore
-        return comments.map(d => ({
+
+        return comments
+            /*.map(d => ({
             id: d._id,
             content: d.content,
             userId: d.userId,
@@ -58,10 +59,12 @@ export class CommentsRepositories {
             addedAt: d.addedAt
         }))
 
+             */
+
 
     }
 
-    async findCommentById(_id: ObjectId): Promise<CommentResponseType | null> {
+    async findCommentById(_id: ObjectId): Promise<NewCommentType | null> {
 
         const comments = await CommentsModelClass
             .findOne({_id})
@@ -69,7 +72,6 @@ export class CommentsRepositories {
 
         if (comments) {
 
-            // @ts-ignore
             return this.reqComment(comments)
         }
         return null

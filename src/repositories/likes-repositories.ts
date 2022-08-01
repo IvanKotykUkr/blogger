@@ -2,6 +2,7 @@ import {injectable} from "inversify";
 import {LikeDbType} from "../types/like-type";
 import {LikesModelClass} from "./db";
 import {ObjectId} from "mongodb";
+import {newestlike} from "../types/posts-type";
 
 @injectable()
 export class LikesRepositories {
@@ -21,8 +22,8 @@ export class LikesRepositories {
     }
 
     async countLike(post: ObjectId):Promise<number> {
-        return LikesModelClass.countDocuments({post,status:"Like"})
 
+        return  LikesModelClass.countDocuments({post,status:"Like"})
     }
 
     async countDislake(post: ObjectId) {

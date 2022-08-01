@@ -39,17 +39,21 @@ export class PostsRepositories {
             .skip(number > 0 ? ((number - 1) * size) : 0)
             .limit(size)
             .lean()
-
-        return posts.map(p => ({
+        return posts
+       /* return posts.map(p => ({
             id: p._id,
             title: p.title,
             shortDescription: p.shortDescription,
             content: p.content,
             bloggerId: p.bloggerId,
             bloggerName: p.bloggerName,
-            addedAt:p.addedAt
+            addedAt:p.addedAt,
+
+
         }))
 
+
+        */
     }
 
     async findPostsById(_id: ObjectId): Promise<PostsType | null> {

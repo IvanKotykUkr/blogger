@@ -92,8 +92,8 @@ export class BloggersService {
                 newPosts = await this.postsRepositories.createPost(makedPost)
 
 
-            // @ts-ignore
-            return newPosts
+
+            return this.postsHelper.makePostResponse(newPosts)
 
         }
         return null

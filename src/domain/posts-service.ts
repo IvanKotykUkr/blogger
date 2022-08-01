@@ -6,7 +6,7 @@ import {CommentsService} from "./comments-service";
 
 import {PostsResponseType, PostsResponseTypeWithPagination, PostsType} from "../types/posts-type";
 import {BloggerResponseType} from "../types/blogger-type";
-import {CommentResponseType, CommentsResponseTypeWithPagination} from "../types/commnet-type";
+import {CommentResponseType, CommentsResponseTypeWithPagination, NewCommentType} from "../types/commnet-type";
 
 
 import {inject, injectable} from "inversify";
@@ -15,6 +15,7 @@ import {BloggersRepositories} from "../repositories/bloggers-db-repositories";
 import {LikeDbType} from "../types/like-type";
 import {ObjectId} from "mongodb";
 import {LikesRepositories} from "../repositories/likes-repositories";
+import {CommentHelper} from "./helpers/comment-helper";
 
 
 @injectable()
@@ -22,10 +23,10 @@ export class PostsService {
 
 
     constructor(@inject(PostsRepositories) protected postsRepositories: PostsRepositories,
-                @inject(CommentsService) protected commentsService: CommentsService,
                 @inject(PostsHelper) protected postsHelper: PostsHelper,
                 @inject(BloggersRepositories) protected bloggersRepositories: BloggersRepositories,
-                @inject(LikesRepositories) protected likesRepositories: LikesRepositories
+                @inject(LikesRepositories) protected likesRepositories: LikesRepositories,
+                @inject(CommentHelper) protected  commentHelper:CommentHelper,
     ) {
 
 
@@ -56,33 +57,9 @@ export class PostsService {
 
         if (makedPost) {
             const post: PostsType = await this.postsRepositories.createPost(makedPost)
-            const extendedLikesInfo = {
-                likesCount: await this.likesRepositories.countLike(new ObjectId(post.id)),
-                dislikesCount: await this.likesRepositories.countDislake(new ObjectId(post.id)),
-                myStatus: await this.likesRepositories.myStatus(new ObjectId(post.id)),
-                newestLikes: await this.likesRepositories.newstLike(new ObjectId(post.id))
-
-            }
 
 
-
-            return {
-                id: post.id,
-
-                title: post.title,
-                shortDescription: post.shortDescription,
-                content: post.content,
-                bloggerId: post.bloggerId,
-                bloggerName: post.bloggerName,
-                addedAt: post.addedAt,
-                extendedLikesInfo: {
-                    likesCount: extendedLikesInfo.likesCount,
-                    dislikesCount: extendedLikesInfo.dislikesCount,
-                    myStatus: extendedLikesInfo.myStatus,
-                    // @ts-ignore
-                    newestLikes: extendedLikesInfo.newestLikes
-                }
-            }
+            return this.postsHelper.makePostResponse(post)
         }
 
         return null
@@ -112,7 +89,7 @@ export class PostsService {
 
         const isDeleted = await this.postsRepositories.deletePost(new ObjectId(id))
         if (isDeleted) {
-            return await this.commentsService.deleteCommentsByPost(id)
+            return await this.commentHelper.deleteCommentsByPost(id)
         }
         return false
 
@@ -120,11 +97,11 @@ export class PostsService {
     }
 
 
-    async createCommentsByPost(postid: string, content: string, userid: string, userLogin: string): Promise<CommentResponseType | null> {
+    async createCommentsByPost(postid: string, content: string, userid: string, userLogin: string): Promise<NewCommentType | null> {
         let post = await this.findPostsById(postid)
 
         if (post) {
-            let newComment: CommentResponseType | null = await this.commentsService.createCommentsByPost(postid, content, userid, userLogin)
+            let newComment: NewCommentType| null = await this.commentHelper.createComment(postid, content, userid, userLogin)
             return newComment
         }
         return null
@@ -135,7 +112,7 @@ export class PostsService {
         let post: PostsResponseType | null = await this.findPostsById(postid)
 
         if (post) {
-            let allComments: CommentsResponseTypeWithPagination = await this.commentsService.sendAllCommentsByPostId(new ObjectId(postid), pagenumber, pagesize)
+            let allComments: CommentsResponseTypeWithPagination = await this.commentHelper.sendAllComments(new ObjectId(postid), pagenumber, pagesize)
             return allComments
         }
         return null

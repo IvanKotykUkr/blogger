@@ -1,5 +1,10 @@
 import {CommentsRepositories} from "../repositories/comments-db-repositories";
-import {CommentResponseType, CommentsDBType, CommentsResponseTypeWithPagination,} from "../types/commnet-type";
+import {
+    CommentResponseType,
+    CommentsDBType,
+    CommentsResponseTypeWithPagination,
+    NewCommentType,
+} from "../types/commnet-type";
 import {ObjectId} from "mongodb";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
@@ -19,14 +24,14 @@ export class CommentsService {
     }
 
 
-    async sendAllCommentsByPostId(postId: ObjectId, pagenumber: number, pagesize: number): Promise<CommentsResponseTypeWithPagination> {
+   /* async sendAllCommentsByPostId(postId: ObjectId, pagenumber: number, pagesize: number): Promise<CommentsResponseTypeWithPagination> {
 
         let totalCount: number = await this.commentsRepositories.commentCount(postId)
 
         let page: number = pagenumber
         let pageSize: number = pagesize
         let pagesCount: number = Math.ceil(totalCount / pageSize)
-        const items: CommentResponseType[] = await this.commentsRepositories.allCommentByPostIdPagination(postId, page, pageSize)
+        const items: NewCommentType[] = await this.commentsRepositories.allCommentByPostIdPagination(postId, page, pageSize)
         let comment = {
             pagesCount,
             page,
@@ -37,7 +42,9 @@ export class CommentsService {
         return comment
     }
 
-    async createCommentsByPost(postid: string, content: string, userid: string, userLogin: string): Promise<CommentResponseType | null> {
+
+    */
+    async createNewComment(postid: string, content: string, userid: string, userLogin: string): Promise<NewCommentType | null> {
         const newComment: CommentsDBType = {
             _id: new ObjectId(),
             postid: new ObjectId(postid),
@@ -46,9 +53,9 @@ export class CommentsService {
             userLogin,
             addedAt: new Date()
         }
-        const generatedComment: CommentResponseType | null = await this.commentsRepositories.createComment(newComment)
+        const generatedComment: NewCommentType|null = await this.commentsRepositories.createComment(newComment)
         if (generatedComment) {
-            return generatedComment
+            return this.commentHelper.createResponseComment(generatedComment)
         }
         return null
     }
@@ -67,19 +74,19 @@ export class CommentsService {
 
     async findCommentsById(id: string): Promise<CommentResponseType | null> {
 
-        const comment: CommentResponseType | null = await this.commentsRepositories.findCommentById(new ObjectId(id))
+        const comment: NewCommentType | null = await this.commentsRepositories.findCommentById(new ObjectId(id))
         if (comment) {
 
-            // @ts-ignore
+
             return this.commentHelper.createResponseComment(comment)
         }
         return null
     }
-
+/*
     async deleteCommentsByPost(id: string): Promise<boolean> {
         return await this.commentsRepositories.deleteCommentsByPost(new ObjectId(id))
     }
-
+*/
     async updateLikeStatus(likeStatus: string, postid: ObjectId, userId: ObjectId, login: string) {
         const like: LikeDbType = {
             _id: new ObjectId(),

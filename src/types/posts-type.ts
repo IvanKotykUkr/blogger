@@ -53,9 +53,9 @@ type NewPost<T>={
     myStatus: string,
     newestLikes:T[]
 }
-type newestlike={
+export type newestlike={
     addedAt?: Date,
-    userId?: string,
+    userId?: ObjectId,
     login?: string
 }
 export type NewResponseType=NewPost<newestlike>
@@ -71,4 +71,4 @@ export type Post={
 }
 
 
-export type PostsResponseTypeWithPagination = PaginationType<PostsResponseType>;
+export type PostsResponseTypeWithPagination = PaginationType<NewPost<newestlike>>;
