@@ -119,18 +119,20 @@ export class PostsService {
     }
 
     async updateLikeStatus(likeStatus: string, postid: ObjectId, userId: ObjectId, login: string) {
+        let post: PostsResponseType | null = await this.findPostsById(postid)
+        if (post) {
+            const like: LikeDbType = {
+                _id: new ObjectId(),
+                post: postid,
+                status: likeStatus,
+                addedAt: new Date(),
+                userId,
+                login
 
-        const like: LikeDbType = {
-            _id: new ObjectId(),
-            post: postid,
-            status: likeStatus,
-            addedAt: new Date(),
-            userId,
-            login
-
+            }
+            return this.likesRepositories.createLike(like)
         }
-        return this.likesRepositories.createLike(like)
-
+        return null
 
 
 

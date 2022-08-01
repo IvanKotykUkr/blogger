@@ -5,7 +5,11 @@ import {authMiddlewaresWithCheckOwn, authValidationMiddleware} from "../middlewa
 import {idValidationMiddleware} from "../middlewares/_id-validation-middleware";
 import {container} from "../composition-root";
 import {CommentController} from "../contoller/comment-controller";
-import {inputValidationPost, likeStatusValidation} from "../middlewares/input-validation-midlewares-posts";
+import {
+    inputValidationLikeStatus,
+    likeOrDislakeValidation,
+    likeStatusValidation
+} from "../middlewares/likestatus-input-validation";
 
 const commentsController = container.resolve(CommentController)
 
@@ -33,7 +37,8 @@ commentsRouter.put('/:id/like-status',
     idValidationMiddleware,
     authValidationMiddleware,
     likeStatusValidation,
-    inputValidationPost,
+    inputValidationLikeStatus,
+    likeOrDislakeValidation,
 
 
     commentsController.updateLikeStatus.bind(commentsController));

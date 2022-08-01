@@ -80,24 +80,22 @@ export class CommentsService {
         return null
     }
 
-    /*
-        async deleteCommentsByPost(id: string): Promise<boolean> {
-            return await this.commentsRepositories.deleteCommentsByPost(new ObjectId(id))
-        }
-    */
+
     async updateLikeStatus(likeStatus: string, postid: ObjectId, userId: ObjectId, login: string) {
-        const like: LikeDbType = {
-            _id: new ObjectId(),
-            post: postid,
-            status: likeStatus,
-            addedAt: new Date(),
-            userId,
-            login
+        const comment: NewCommentType | null = await this.commentsRepositories.findCommentById(new ObjectId(postid))
+        if (comment) {
+            const like: LikeDbType = {
+                _id: new ObjectId(),
+                post: postid,
+                status: likeStatus,
+                addedAt: new Date(),
+                userId,
+                login
 
+            }
+            return this.likesRepositories.createLike(like)
         }
-        return this.likesRepositories.createLike(like)
-
-
+        return null
 
 
     }

@@ -16,9 +16,6 @@ export const contentValidation = body('content')
 export const bloggerIdtValidation = body('bloggerId')
     .trim(undefined)
     .isString().withMessage("Should be String")
-export const likeStatusValidation = body('likeStatus')
-    .trim(undefined)
-    .isString().withMessage("Should be String")
 
 export const inputValidationPost = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);

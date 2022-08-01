@@ -3,7 +3,6 @@ import {
     bloggerIdtValidation,
     contentValidation,
     inputValidationPost,
-    likeStatusValidation,
     shortDescriptionValidation,
     titleValidation,
 } from "../middlewares/input-validation-midlewares-posts";
@@ -13,6 +12,11 @@ import {authValidationMiddleware} from "../middlewares/auth-access-middlewares";
 import {idValidationMiddleware} from "../middlewares/_id-validation-middleware";
 import {container} from "../composition-root";
 import {PostsController} from "../contoller/posts-controller";
+import {
+    inputValidationLikeStatus,
+    likeOrDislakeValidation,
+    likeStatusValidation
+} from "../middlewares/likestatus-input-validation";
 
 const postsController = container.resolve(PostsController)
 
@@ -67,7 +71,8 @@ postsRouter.put('/:id/like-status',
     idValidationMiddleware,
     authValidationMiddleware,
     likeStatusValidation,
-    inputValidationPost,
+    inputValidationLikeStatus,
+    likeOrDislakeValidation,
 
 
     postsController.updateLikeStatus.bind(postsController));
