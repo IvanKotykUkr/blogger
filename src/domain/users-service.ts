@@ -1,22 +1,24 @@
 import {UserRepositories} from "../repositories/user-db-repositories";
-import {UserResponseType, UserResponseTypeWithPagination, UserRoutType} from "../types/user-type";
+import {UserDBType, UserResponseType, UserResponseTypeWithPagination, UserRoutType} from "../types/user-type";
 import {ObjectId} from "mongodb";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
+import {UserHelper} from "./helpers/user-helper";
 
 @injectable()
 export class UsersService {
 
 
-    constructor(@inject(UserRepositories) protected userRepositories: UserRepositories) {
+    constructor(@inject(UserRepositories) protected userRepositories: UserRepositories,
+                @inject(UserHelper) protected userHelper: UserHelper) {
 
     }
 
 
-    async findUserById(userid: string): Promise<UserResponseType | null> {
+    async findUserById(userid: ObjectId): Promise<UserResponseType | null> {
 
 
-        return this.userRepositories.findUserById(new ObjectId(userid))
+        return this.userRepositories.findUserById(userid)
 
     }
 
@@ -36,48 +38,20 @@ export class UsersService {
         return users
     }
 
-    async deleteUser(id: string): Promise<boolean> {
+    async deleteUser(id: ObjectId): Promise<boolean> {
 
-        return await this.userRepositories.deleteUserById(new ObjectId(id))
+        return await this.userRepositories.deleteUserById(id)
 
     }
 
-    /*async createUserByUser(login: string, email: string, password: string, ip: string): Promise<UserRoutType | null> {
-        const passwordSalt = await bcrypt.genSalt(10)
-        const passwordHash = await this.authService.generateHash(password, passwordSalt)
 
-        const newUser: UserDBType = {
-            _id: new ObjectId(),
-            accountData: {
-                login,
-                email,
-                passwordHash,
-                passwordSalt,
-                createdAt: new Date()
-            },
-            emailConfirmation: {
-                confirmationCode: uuidv4(),
-                expirationDate: add(new Date(),
-                    {
-                        hours: 1,
-                        minutes: 2
+    async createUser(login: string, email: string, password: string): Promise<UserRoutType | null> {
 
-                    }),
-                isConfirmed: false
-
-            }
-
-        }
+        const newUser: UserDBType = await this.userHelper.makeUser(login, email, password)
         const generatedUser = await this.userRepositories.createUser(newUser)
-
         if (generatedUser) {
-
             return {id: generatedUser._id, login: newUser.accountData.login}
         }
-
         return null
-
     }
-
-     */
 }

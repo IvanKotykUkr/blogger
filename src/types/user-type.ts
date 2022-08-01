@@ -24,7 +24,7 @@ export type UserRoutType = {
 
 }
 export type UserFromTokenType = {
-    userId: string,
+    userId: ObjectId,
     iat: number,
     exp: number
 }

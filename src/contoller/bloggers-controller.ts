@@ -4,6 +4,7 @@ import {BloggerResponseType, BloggerResponseTypeWithPagination} from "../types/b
 import {PostsResponseType, PostsResponseTypeWithPagination} from "../types/posts-type";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
+import {ObjectId} from "mongodb";
 
 @injectable()
 export class BloggersController {
@@ -14,7 +15,7 @@ export class BloggersController {
     }
 
     async getBlogger(req: Request, res: Response) {
-        let blogger: BloggerResponseType | null = await this.bloggersService.findBloggersById(req.params.id)
+        let blogger: BloggerResponseType | null = await this.bloggersService.findBloggersById(new ObjectId(req.params.id))
         if (!blogger) {
             res.sendStatus(404)
             return
@@ -36,7 +37,7 @@ export class BloggersController {
     }
 
     async updateBlogger(req: Request, res: Response) {
-        const isUpdated: boolean = await this.bloggersService.updateBloggers(req.params.id, req.body.name, req.body.youtubeUrl)
+        const isUpdated: boolean = await this.bloggersService.updateBloggers(new ObjectId(req.params.id), req.body.name, req.body.youtubeUrl)
         if (isUpdated) {
             res.status(204).json(isUpdated)
             return
@@ -47,7 +48,7 @@ export class BloggersController {
     }
 
     async deleteBlogger(req: Request, res: Response) {
-        const isDeleted: boolean = await this.bloggersService.deleteBloggers(req.params.id)
+        const isDeleted: boolean = await this.bloggersService.deleteBloggers(new ObjectId(req.params.id))
         if (isDeleted) {
             res.sendStatus(204)
             return
@@ -60,7 +61,7 @@ export class BloggersController {
     async getPostByBlogger(req: Request, res: Response) {
         const pagenumber = req.query.PageNumber || 1;
         const pagesize = req.query.PageSize || 10;
-        let bloggerPosts: PostsResponseTypeWithPagination | null = await this.bloggersService.getPostsByIdBlogger(req.params.id, +pagenumber, +pagesize)
+        let bloggerPosts: PostsResponseTypeWithPagination | null = await this.bloggersService.getPostsByIdBlogger(new ObjectId(req.params.id), +pagenumber, +pagesize)
         if (bloggerPosts) {
             res.send(bloggerPosts)
             return
@@ -72,7 +73,7 @@ export class BloggersController {
 
     async createPostByBloger(req: Request, res: Response) {
         let newPosts: PostsResponseType | null = await this.bloggersService.createPostByBloggerId
-        (req.params.id,
+        (new ObjectId(req.params.id),
             req.body.title,
             req.body.shortDescription,
             req.body.content)

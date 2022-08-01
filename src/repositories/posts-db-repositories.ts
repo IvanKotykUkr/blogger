@@ -23,7 +23,7 @@ export class PostsRepositories {
     async paginationFilter(bloggerId: undefined | string | ObjectId) {
         let filter = {}
         if (bloggerId) {
-            return filter = {bloggerId: new ObjectId(bloggerId)}
+            return  {bloggerId: new ObjectId(bloggerId)}
         }
         return filter
     }
@@ -33,28 +33,14 @@ export class PostsRepositories {
         return PostsModelClass.countDocuments(filter)
     }
 
-    async findPostsByIdBloggerPagination(bloggerId: undefined | string | ObjectId, number: number, size: number) {
+    async findPostsByIdBloggerPagination(bloggerId: undefined | string | ObjectId, number: number, size: number): Promise<PostsDBType[]> {
         const filter = await this.paginationFilter(bloggerId)
 
-        const posts = await PostsModelClass.find(filter)
+        return  PostsModelClass.find(filter)
             .skip(number > 0 ? ((number - 1) * size) : 0)
             .limit(size)
             .lean()
-        return posts
-        /* return posts.map(p => ({
-             id: p._id,
-             title: p.title,
-             shortDescription: p.shortDescription,
-             content: p.content,
-             bloggerId: p.bloggerId,
-             bloggerName: p.bloggerName,
-             addedAt:p.addedAt,
 
-
-         }))
-
-
-         */
     }
 
     async findPostsById(_id: ObjectId): Promise<PostsType | null> {

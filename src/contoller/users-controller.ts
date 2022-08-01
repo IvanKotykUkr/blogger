@@ -1,14 +1,14 @@
-import {AuthService} from "../domain/auth-service";
 import {UsersService} from "../domain/users-service";
 import {Request, Response} from "express";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
+import {ObjectId} from "mongodb";
 
 @injectable()
 export class UsersController {
 
 
-    constructor(@inject(UsersService) protected usersService: UsersService, @inject(AuthService) protected authService: AuthService) {
+    constructor(@inject(UsersService) protected usersService: UsersService) {
 
     }
 
@@ -21,8 +21,7 @@ export class UsersController {
     }
 
     async createUser(req: Request, res: Response) {
-        const proces = "create"
-        const newUser = await this.authService.createUser(req.body.login, req.body.email, req.body.password, proces)
+        const newUser = await this.usersService.createUser(req.body.login, req.body.email, req.body.password)
         if (newUser === null) {
             res.sendStatus(400)
             return
@@ -31,7 +30,7 @@ export class UsersController {
     }
 
     async deleteUser(req: Request, res: Response) {
-        const isDeleted: boolean = await this.usersService.deleteUser(req.params.id);
+        const isDeleted: boolean = await this.usersService.deleteUser(new ObjectId(req.params.id));
         if (isDeleted) {
             res.sendStatus(204)
             return

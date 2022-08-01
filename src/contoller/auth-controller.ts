@@ -72,8 +72,7 @@ export class AuthController {
     }
 
     async registration(req: Request, res: Response) {
-        const proces = ""
-        const user = await this.authService.createUser(req.body.login, req.body.email, req.body.password, proces)
+        const user = await this.authService.createUser(req.body.login, req.body.email, req.body.password)
 
         if (user === "All ok") {
             res.status(204).json({message: "Successfully Registered", status: 204})

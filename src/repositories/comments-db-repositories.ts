@@ -18,8 +18,8 @@ export class CommentsRepositories {
     }
 
     async commentCount(post: ObjectId): Promise<number> {
-        const result: number = await CommentsModelClass.countDocuments({postid: post})
-        return result
+       return CommentsModelClass.countDocuments({postid: post})
+
     }
 
     async createComment(comment: CommentsDBType): Promise<NewCommentType | null> {
@@ -42,24 +42,15 @@ export class CommentsRepositories {
 
     }
 
-    async allCommentByPostIdPagination(post: ObjectId, number: number, size: number) {
+    async allCommentByPostIdPagination(post: ObjectId, number: number, size: number): Promise<CommentsDBType[]> {
 
-        const comments = await CommentsModelClass.find({postid: post})
+        return  CommentsModelClass.find({postid: post})
             .skip(number > 0 ? ((number - 1) * size) : 0)
             .limit(size)
             .lean()
 
 
-        return comments
-        /*.map(d => ({
-        id: d._id,
-        content: d.content,
-        userId: d.userId,
-        userLogin: d.userLogin,
-        addedAt: d.addedAt
-    }))
 
-         */
 
 
     }

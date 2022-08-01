@@ -15,7 +15,7 @@ export class BloggersRepositories {
         let filter = {}
 
         if (name) {
-            return filter = {name: {$regex: name}}
+            return  {name: {$regex: name}}
         }
         return filter
     }
@@ -77,7 +77,7 @@ export class BloggersRepositories {
 
     }
 
-    async deleteBloggers(id: string): Promise<boolean> {
+    async deleteBloggers(id: ObjectId): Promise<boolean> {
         const bloggerInstance = await BloggersModelClass.findById(id)
         if (!bloggerInstance) return false
 

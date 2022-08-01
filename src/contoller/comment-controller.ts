@@ -15,7 +15,7 @@ export class CommentController {
 
     async updateComment(req: Request, res: Response) {
 
-        const isUpdated: boolean = await this.commentsService.updateCommentById(req.params.id, req.body.content)
+        const isUpdated: boolean = await this.commentsService.updateCommentById(new ObjectId(req.params.id), req.body.content)
         if (isUpdated) {
             res.status(204).json(isUpdated)
             return
@@ -27,7 +27,7 @@ export class CommentController {
     }
 
     async deleteComment(req: Request, res: Response) {
-        const isDeleted: boolean = await this.commentsService.deleteCommentsById(req.params.id)
+        const isDeleted: boolean = await this.commentsService.deleteCommentsById(new ObjectId(req.params.id))
         if (isDeleted) {
             res.sendStatus(204)
             return
@@ -39,7 +39,7 @@ export class CommentController {
     }
 
     async getComment(req: Request, res: Response) {
-        const comment: CommentResponseType | null = await this.commentsService.findCommentsById(req.params.id)
+        const comment: CommentResponseType | null = await this.commentsService.findCommentsById(new ObjectId(req.params.id))
 
         if (!comment) {
             res.sendStatus(404)

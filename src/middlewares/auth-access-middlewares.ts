@@ -8,6 +8,7 @@ import {CommentsService} from "../domain/comments-service";
 import {JwtService} from "../aplication/jwt-service";
 import {UsersService} from "../domain/users-service";
 import {TokenService} from "../domain/token-service";
+import {ObjectId} from "mongodb";
 
 const commentsService = container.resolve(CommentsService)
 const jwtService = container.resolve(JwtService)
@@ -40,7 +41,7 @@ export const authValidationMiddleware = async (req: Request, res: Response, next
     next()
 }
 export const authMiddlewaresWithCheckOwn = async (req: Request, res: Response, next: NextFunction) => {
-    const comment: CommentResponseType | null = await commentsService.findCommentsById(req.params.id)
+    const comment: CommentResponseType | null = await commentsService.findCommentsById(new ObjectId(req.params.id))
     if (!comment) {
         res.status(404).json({errorsMessages: [{message: "no comment", field: "id"}]})
         return
@@ -62,7 +63,7 @@ export const authRefreshTokenMiddlewares = async (req: Request, res: Response, n
 
 
     const alreadyUsed = await tokenService.checkToken(refreshToken)
-    if (alreadyUsed === true) {
+    if (alreadyUsed) {
         res.clearCookie("refreshToken")
         res.status(401).json({errorsMessages: [{message: "alreadyUsed", field: "refreshToken"}]})
         return

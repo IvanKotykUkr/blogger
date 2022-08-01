@@ -13,7 +13,7 @@ export class PostsHelper {
                 @inject(LikeHelper) protected likeHelper: LikeHelper) {
     }
 
-    async makePost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostsDBType | null> {
+    async makePost(title: string, shortDescription: string, content: string, bloggerId: ObjectId): Promise<PostsDBType | null> {
         const blogger: BloggerResponseType | null = await this.bloggersRepositories.findBloggersById(new ObjectId(bloggerId))
         if (blogger) {
             const newPost: PostsDBType = {
@@ -38,7 +38,7 @@ export class PostsHelper {
         let pageSize: number = pagesize
         let pagesCount: number = Math.ceil(totalCount / pageSize)
 
-        const itemsFromDb = await this.postsRepositories.findPostsByIdBloggerPagination(bloggerId, page, pageSize)
+        const itemsFromDb: PostsDBType[] = await this.postsRepositories.findPostsByIdBloggerPagination(bloggerId, page, pageSize)
         const mapItems = async () => {
             return Promise.all(itemsFromDb.map(
                 async p => ({
@@ -71,7 +71,6 @@ export class PostsHelper {
         }
 
 
-        // @ts-ignore
         return post
     }
 
@@ -90,7 +89,6 @@ export class PostsHelper {
                 likesCount: await this.likeHelper.likesCount(new ObjectId(post.id)),
                 dislikesCount: await this.likeHelper.dislikesCount(new ObjectId(post.id)),
                 myStatus: await this.likeHelper.myStatus(new ObjectId(post.id)),
-                // @ts-ignore
                 newestLikes: await this.likeHelper.newestLikes(new ObjectId(post.id))
             }
         }

@@ -23,43 +23,9 @@ import {PostsHelper} from "./domain/helpers/posts-helper";
 import {LikesRepositories} from "./repositories/likes-repositories";
 import {CommentHelper} from "./domain/helpers/comment-helper";
 import {LikeHelper} from "./domain/helpers/like-helper";
+import {BloggerHelper} from "./domain/helpers/blogger-helper";
+import {UserHelper} from "./domain/helpers/user-helper";
 
-/*
-
-
-export const jwtService = new JwtService()
-
-const emailAdapter = new EmailAdapter()
-const emailManager = new EmailManager(emailAdapter)
-
-const tokenRepositories = new TokenRepositories()
-export const tokenService = new TokenService(tokenRepositories)
-
-const userRepositories = new UserRepositories()
-export const usersService = new UsersService(userRepositories)
-
-const authService = new AuthService(userRepositories, emailManager)
-
-export const usersController = new UsersController(usersService, authService)
-
-
-export const authController = new AuthController(jwtService, authService, tokenService)
-
-const commentsRepositories = new CommentsRepositories()
-export const commentsService = new CommentsService(commentsRepositories)
-export const commentsController = new CommentController(commentsService)
-
-
-const postsRepositories = new PostsRepositories()
-const postsService = new PostsService(postsRepositories, commentsService,bloggersService)
-export const postsController = new PostsController(postsService)
-
-const bloggersRepositories = new BloggersRepositories()
-export const bloggersService = new BloggersService(bloggersRepositories, postsService)
- const bloggersController = new BloggersController(bloggersService)
-
-
- */
 export const container = new Container();
 container.bind(BloggersController).to(BloggersController)
 container.bind<BloggersService>(BloggersService).to(BloggersService)
@@ -84,6 +50,8 @@ container.bind<PostsHelper>(PostsHelper).to(PostsHelper)
 container.bind<LikesRepositories>(LikesRepositories).to(LikesRepositories)
 container.bind<CommentHelper>(CommentHelper).to(CommentHelper)
 container.bind<LikeHelper>(LikeHelper).to(LikeHelper)
+container.bind<BloggerHelper>(BloggerHelper).to(BloggerHelper)
+container.bind<UserHelper>(UserHelper).to(UserHelper)
 
 
 

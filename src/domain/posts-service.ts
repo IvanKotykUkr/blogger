@@ -37,7 +37,7 @@ export class PostsService {
         return this.postsHelper.getPostsPagination(pagenumber, pagesize, bloggerId)
     }
 
-    async findPostsById(id: string): Promise<PostsResponseType | null> {
+    async findPostsById(id: ObjectId): Promise<PostsResponseType | null> {
 
         const post: PostsType | null = await this.postsRepositories.findPostsById(new ObjectId(id))
 
@@ -50,7 +50,7 @@ export class PostsService {
 
     }
 
-    async createPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostsResponseType | null> {
+    async createPost(title: string, shortDescription: string, content: string, bloggerId: ObjectId): Promise<PostsResponseType | null> {
         const makedPost = await this.postsHelper.makePost(title, shortDescription, content, bloggerId)
 
         if (makedPost) {
@@ -63,18 +63,18 @@ export class PostsService {
         return null
     }
 
-    async updatePost(id: string,
+    async updatePost(id: ObjectId,
                      title: string,
                      shortDescription: string,
                      content: string,
-                     bloggerId: string): Promise<boolean | null> {
+                     bloggerId: ObjectId): Promise<boolean | null> {
 
 
-        let blogger: BloggerResponseType | null = await this.bloggersRepositories.findBloggersById(new ObjectId(bloggerId))
+        let blogger: BloggerResponseType | null = await this.bloggersRepositories.findBloggersById(bloggerId)
 
 
         if (blogger) {
-            return await this.postsRepositories.updatePost(new ObjectId(id), title, shortDescription, content, new ObjectId(bloggerId), blogger.name)
+            return await this.postsRepositories.updatePost(id, title, shortDescription, content, bloggerId, blogger.name)
         }
 
 
@@ -83,9 +83,9 @@ export class PostsService {
     }
 
 
-    async deletePost(id: string): Promise<boolean> {
+    async deletePost(id: ObjectId): Promise<boolean> {
 
-        const isDeleted = await this.postsRepositories.deletePost(new ObjectId(id))
+        const isDeleted = await this.postsRepositories.deletePost(id)
         if (isDeleted) {
             return await this.commentHelper.deleteCommentsByPost(id)
         }
@@ -95,7 +95,7 @@ export class PostsService {
     }
 
 
-    async createCommentsByPost(postid: string, content: string, userid: string, userLogin: string): Promise<NewCommentType | null> {
+    async createCommentsByPost(postid: ObjectId, content: string, userid: ObjectId, userLogin: string): Promise<NewCommentType | null> {
         let post = await this.findPostsById(postid)
 
         if (post) {
@@ -106,7 +106,7 @@ export class PostsService {
 
     }
 
-    async sendAllCommentsByPostId(postid: string, pagenumber: number, pagesize: number): Promise<CommentsResponseTypeWithPagination | null> {
+    async sendAllCommentsByPostId(postid: ObjectId, pagenumber: number, pagesize: number): Promise<CommentsResponseTypeWithPagination | null> {
         let post: PostsResponseType | null = await this.findPostsById(postid)
 
         if (post) {
@@ -132,7 +132,7 @@ export class PostsService {
         return this.likesRepositories.createLike(like)
 
 
-        return true
+
 
     }
 }

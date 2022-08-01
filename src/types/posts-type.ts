@@ -1,6 +1,13 @@
-import {PaginationType} from "./blogger-type";
 import {ObjectId, WithId} from "mongodb";
 
+type NewPaginationType<D> = {
+    pagesCount: number,
+    page: number,
+    pageSize: number,
+    totalCount: number,
+    items: D[],
+
+}
 export type  PostsDBType = WithId<{
     title: string,
     shortDescription: string,
@@ -31,15 +38,15 @@ export type PostsResponseType = {
         likesCount: number,
         dislikesCount: number,
         myStatus: string,
-        newestLikes: [{
+        newestLikes: Array<{
             addedAt?: Date,
-            userId?: string,
+            userId?: ObjectId,
             login?: string
-        }]
+        }>
 
     }
 }
-type NewPost<T> = {
+type NewPost = {
     id?: ObjectId | string,
     title: string,
     shortDescription: string,
@@ -50,14 +57,14 @@ type NewPost<T> = {
     likesCount: number,
     dislikesCount: number,
     myStatus: string,
-    newestLikes: T[]
+    newestLikes: Array<NewestLike>
 }
-export type newestlike = {
-    addedAt?: Date,
-    userId?: ObjectId,
-    login?: string
+export type NewestLike = {
+    addedAt: Date,
+    userId: ObjectId,
+    login: string
 }
-export type NewResponseType = NewPost<newestlike>
+export type NewResponseType = NewPost
 export type Post = {
     id?: ObjectId | string,
 
@@ -70,4 +77,4 @@ export type Post = {
 }
 
 
-export type PostsResponseTypeWithPagination = PaginationType<NewPost<newestlike>>;
+export type PostsResponseTypeWithPagination = NewPaginationType<PostsResponseType>;

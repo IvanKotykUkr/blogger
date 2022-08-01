@@ -38,8 +38,8 @@ export class BloggersService {
         }
     }
 
-    async findBloggersById(id: string): Promise<BloggerResponseType | null> {
-        let blogger: BloggerResponseType | null = await this.bloggersRepositories.findBloggersById(new ObjectId(id))
+    async findBloggersById(id: ObjectId): Promise<BloggerResponseType | null> {
+        let blogger: BloggerResponseType | null = await this.bloggersRepositories.findBloggersById(id)
         if (blogger) {
             return blogger;
         }
@@ -56,7 +56,7 @@ export class BloggersService {
         return await this.bloggersRepositories.createBlogger(newBlogger)
     }
 
-    async updateBloggers(id: string, name: string, youtubeUrl: string): Promise<boolean> {
+    async updateBloggers(id: ObjectId, name: string, youtubeUrl: string): Promise<boolean> {
         const blogger: BloggerType = {
             _id: new ObjectId(id),
             name,
@@ -65,12 +65,12 @@ export class BloggersService {
         return await this.bloggersRepositories.updateBloggers(blogger)
     }
 
-    async deleteBloggers(id: string): Promise<boolean> {
+    async deleteBloggers(id: ObjectId): Promise<boolean> {
 
         return await this.bloggersRepositories.deleteBloggers(id)
     }
 
-    async getPostsByIdBlogger(id: string, pagenumber: number, pageesize: number): Promise<PostsResponseTypeWithPagination | null> {
+    async getPostsByIdBlogger(id: ObjectId, pagenumber: number, pageesize: number): Promise<PostsResponseTypeWithPagination | null> {
 
         let blogger: BloggerResponseType | null = await this.findBloggersById(id)
 
@@ -83,7 +83,7 @@ export class BloggersService {
     }
 
 
-    async createPostByBloggerId(id: string, title: string, shortDescription: string, content: string): Promise<PostsResponseType | null> {
+    async createPostByBloggerId(id: ObjectId, title: string, shortDescription: string, content: string): Promise<PostsResponseType | null> {
 
 
         const makedPost = await this.postsHelper.makePost(title, shortDescription, content, id)

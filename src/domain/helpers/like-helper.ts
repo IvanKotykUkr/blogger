@@ -1,6 +1,6 @@
 import {inject, injectable} from "inversify";
 import {ObjectId} from "mongodb";
-import {newestlike} from "../../types/posts-type";
+import {NewestLike} from "../../types/posts-type";
 import {LikesRepositories} from "../../repositories/likes-repositories";
 
 @injectable()
@@ -23,7 +23,7 @@ export class LikeHelper {
         return this.likesRepositories.myStatus(id)
     }
 
-    async newestLikes(id: ObjectId): Promise<newestlike[]> {
+    async newestLikes(id: ObjectId): Promise<NewestLike[]> {
 
         return this.likesRepositories.newstLike(id)
     }

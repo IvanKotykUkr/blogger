@@ -15,7 +15,7 @@ export class PostsController {
     }
 
     async getPost(req: Request, res: Response) {
-        const post: PostsResponseType | null = await this.postsService.findPostsById(req.params.id)
+        const post: PostsResponseType | null = await this.postsService.findPostsById(new ObjectId(req.params.id))
         if (!post) {
             res.sendStatus(404)
             return
@@ -56,7 +56,7 @@ export class PostsController {
 
     async updatePost(req: Request, res: Response) {
         const isUpdated: boolean | null = await this.postsService.updatePost(
-            req.params.id,
+            new ObjectId(req.params.id),
             req.body.title,
             req.body.shortDescription,
             req.body.content,
@@ -83,7 +83,7 @@ export class PostsController {
     }
 
     async deletePosts(req: Request, res: Response) {
-        const isDeleted: boolean = await this.postsService.deletePost(req.params.id)
+        const isDeleted: boolean = await this.postsService.deletePost(new ObjectId(req.params.id))
 
         if (isDeleted) {
             res.sendStatus(204)
@@ -98,7 +98,7 @@ export class PostsController {
     async createComment(req: Request, res: Response) {
 
 
-        const newComment: NewCommentType | null = await this.postsService.createCommentsByPost(req.params.id, req.body.content, "" + req.user!.id, req.user!.login)
+        const newComment: NewCommentType | null = await this.postsService.createCommentsByPost(new ObjectId(req.params.id), req.body.content, new ObjectId(req.user!.id), req.user!.login)
 
         if (!newComment) {
             res.send(404)
@@ -112,7 +112,7 @@ export class PostsController {
     async getComment(req: Request, res: Response) {
         const pagenumber = req.query.PageNumber || 1;
         const pagesize = req.query.PageSize || 10;
-        const allComment: CommentsResponseTypeWithPagination | null = await this.postsService.sendAllCommentsByPostId(req.params.id, +pagenumber, +pagesize)
+        const allComment: CommentsResponseTypeWithPagination | null = await this.postsService.sendAllCommentsByPostId(new ObjectId(req.params.id), +pagenumber, +pagesize)
         if (!allComment) {
             res.send(404)
             return
@@ -123,7 +123,7 @@ export class PostsController {
     }
 
     async updateLikeStatus(req: Request, res: Response) {
-        const isUpdated = await this.postsService.updateLikeStatus(req.body.likeStatus, new ObjectId(req.params.id), req.user.id, req.user.login)
+        const isUpdated = await this.postsService.updateLikeStatus(req.body.likeStatus, new ObjectId(req.params.id), new ObjectId(req.user.id), req.user.login)
         if (isUpdated) {
             res.sendStatus(204)
             return

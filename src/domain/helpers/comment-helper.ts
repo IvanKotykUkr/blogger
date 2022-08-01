@@ -16,17 +16,17 @@ export class CommentHelper {
                 @inject(CommentsRepositories) protected commentsRepositories: CommentsRepositories) {
     }
 
-    async createComment(postid: string, content: string, userid: string, userLogin: string): Promise<NewCommentType | null> {
+    async createComment(postid: ObjectId, content: string, userid: ObjectId, userLogin: string): Promise<NewCommentType | null> {
         const newComment: CommentsDBType = {
             _id: new ObjectId(),
-            postid: new ObjectId(postid),
+            postid: postid,
             content,
-            userId: new ObjectId(userid),
+            userId: userid,
             userLogin,
             addedAt: new Date()
         }
         const generatedComment: NewCommentType | null = await this.commentsRepositories.createComment(newComment)
-        if (generatedComment) {
+        if (generatedComment !== null) {
             return this.createResponseComment(generatedComment)
         }
         return null
@@ -39,7 +39,7 @@ export class CommentHelper {
         let page: number = pagenumber
         let pageSize: number = pagesize
         let pagesCount: number = Math.ceil(totalCount / pageSize)
-        const itemsFromDb = await this.commentsRepositories.allCommentByPostIdPagination(postId, page, pageSize)
+        const itemsFromDb: CommentsDBType[] = await this.commentsRepositories.allCommentByPostIdPagination(postId, page, pageSize)
         const mapItems = async () => {
             return Promise.all(itemsFromDb.map(
                 async d => ({
@@ -67,33 +67,28 @@ export class CommentHelper {
             items: await mapItems(),
         }
 
-        // @ts-ignore
         return comment
     }
 
-    async deleteCommentsByPost(id: string): Promise<boolean> {
-        return await this.commentsRepositories.deleteCommentsByPost(new ObjectId(id))
+    async deleteCommentsByPost(id: ObjectId): Promise<boolean> {
+        return await this.commentsRepositories.deleteCommentsByPost(id)
     }
 
     async createResponseComment(comment: NewCommentType): Promise<CommentResponseType | null> {
 
-        if (comment) {
 
-
-            return {
-                id: comment.id,
-                content: comment.content,
-                userId: comment.userId,
-                userLogin: comment.userLogin,
-                addedAt: comment.addedAt,
-                likesInfo: {
-                    likesCount: await this.likeHelper.likesCount(new ObjectId(comment.id)),
-                    dislikesCount: await this.likeHelper.dislikesCount(new ObjectId(comment.id)),
-                    myStatus: await this.likeHelper.myStatus(new ObjectId(comment.id)),
-                }
+        return {
+            id: comment.id,
+            content: comment.content,
+            userId: comment.userId,
+            userLogin: comment.userLogin,
+            addedAt: comment.addedAt,
+            likesInfo: {
+                likesCount: await this.likeHelper.likesCount(new ObjectId(comment.id)),
+                dislikesCount: await this.likeHelper.dislikesCount(new ObjectId(comment.id)),
+                myStatus: await this.likeHelper.myStatus(new ObjectId(comment.id)),
             }
         }
-        return null
     }
 
 
