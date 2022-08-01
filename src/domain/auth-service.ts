@@ -12,10 +12,11 @@ import "reflect-metadata";
 
 const allOk = "All ok"
 const wrongPassword = "wrong password"
+
 @injectable()
 export class AuthService {
 
-    constructor(@inject(UserRepositories)protected userRepositories: UserRepositories,@inject(EmailManager) protected emailManager: EmailManager) {
+    constructor(@inject(UserRepositories) protected userRepositories: UserRepositories, @inject(EmailManager) protected emailManager: EmailManager) {
 
     }
 

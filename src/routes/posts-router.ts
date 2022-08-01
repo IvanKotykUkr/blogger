@@ -2,7 +2,8 @@ import {Router} from "express";
 import {
     bloggerIdtValidation,
     contentValidation,
-    inputValidationPost, likeStatusValidation,
+    inputValidationPost,
+    likeStatusValidation,
     shortDescriptionValidation,
     titleValidation,
 } from "../middlewares/input-validation-midlewares-posts";
@@ -12,7 +13,8 @@ import {authValidationMiddleware} from "../middlewares/auth-access-middlewares";
 import {idValidationMiddleware} from "../middlewares/_id-validation-middleware";
 import {container} from "../composition-root";
 import {PostsController} from "../contoller/posts-controller";
-const postsController=container.resolve(PostsController)
+
+const postsController = container.resolve(PostsController)
 
 
 export const postsRouter = Router({})

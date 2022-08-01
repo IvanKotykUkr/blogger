@@ -3,17 +3,17 @@ import {UserResponseType, UserResponseTypeWithPagination, UserRoutType} from "..
 import {ObjectId} from "mongodb";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
+
 @injectable()
 export class UsersService {
 
 
-    constructor(@inject(UserRepositories)protected userRepositories: UserRepositories) {
+    constructor(@inject(UserRepositories) protected userRepositories: UserRepositories) {
 
     }
 
 
     async findUserById(userid: string): Promise<UserResponseType | null> {
-
 
 
         return this.userRepositories.findUserById(new ObjectId(userid))

@@ -1,11 +1,12 @@
-import {LikesModelClass, PostsModelClass} from "./db";
+import {PostsModelClass} from "./db";
 import {ObjectId} from "mongodb";
-import {PostsDBType, PostsResponseType, PostsType} from "../types/posts-type";
+import {PostsDBType, PostsType} from "../types/posts-type";
 import {injectable} from "inversify";
 import "reflect-metadata";
+
 @injectable()
 export class PostsRepositories {
-    resPost(post: PostsDBType):PostsType {
+    resPost(post: PostsDBType): PostsType {
 
         return {
             id: post._id,
@@ -40,20 +41,20 @@ export class PostsRepositories {
             .limit(size)
             .lean()
         return posts
-       /* return posts.map(p => ({
-            id: p._id,
-            title: p.title,
-            shortDescription: p.shortDescription,
-            content: p.content,
-            bloggerId: p.bloggerId,
-            bloggerName: p.bloggerName,
-            addedAt:p.addedAt,
+        /* return posts.map(p => ({
+             id: p._id,
+             title: p.title,
+             shortDescription: p.shortDescription,
+             content: p.content,
+             bloggerId: p.bloggerId,
+             bloggerName: p.bloggerName,
+             addedAt:p.addedAt,
 
 
-        }))
+         }))
 
 
-        */
+         */
     }
 
     async findPostsById(_id: ObjectId): Promise<PostsType | null> {
@@ -79,7 +80,7 @@ export class PostsRepositories {
         postsInstance.content = newPost.content
         postsInstance.bloggerId = newPost.bloggerId
         postsInstance.bloggerName = newPost.bloggerName
-        postsInstance.addedAt=new Date()
+        postsInstance.addedAt = new Date()
         await postsInstance.save()
         return this.resPost(postsInstance)
 

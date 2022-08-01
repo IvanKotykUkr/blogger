@@ -6,7 +6,6 @@ import {
     NewCommentType
 } from "../../types/commnet-type";
 import {ObjectId} from "mongodb";
-import {LikesRepositories} from "../../repositories/likes-repositories";
 import {CommentsRepositories} from "../../repositories/comments-db-repositories";
 import {LikeHelper} from "./like-helper";
 
@@ -14,8 +13,9 @@ import {LikeHelper} from "./like-helper";
 export class CommentHelper {
 
     constructor(@inject(LikeHelper) protected likeHelper: LikeHelper,
-                @inject(CommentsRepositories) protected commentsRepositories:CommentsRepositories) {
+                @inject(CommentsRepositories) protected commentsRepositories: CommentsRepositories) {
     }
+
     async createComment(postid: string, content: string, userid: string, userLogin: string): Promise<NewCommentType | null> {
         const newComment: CommentsDBType = {
             _id: new ObjectId(),
@@ -25,12 +25,13 @@ export class CommentHelper {
             userLogin,
             addedAt: new Date()
         }
-        const generatedComment: NewCommentType|null = await this.commentsRepositories.createComment(newComment)
+        const generatedComment: NewCommentType | null = await this.commentsRepositories.createComment(newComment)
         if (generatedComment) {
             return this.createResponseComment(generatedComment)
         }
         return null
     }
+
     async sendAllComments(postId: ObjectId, pagenumber: number, pagesize: number): Promise<CommentsResponseTypeWithPagination> {
 
         let totalCount: number = await this.commentsRepositories.commentCount(postId)
@@ -39,26 +40,23 @@ export class CommentHelper {
         let pageSize: number = pagesize
         let pagesCount: number = Math.ceil(totalCount / pageSize)
         const itemsFromDb = await this.commentsRepositories.allCommentByPostIdPagination(postId, page, pageSize)
-        const mapItems = async ()=>{return Promise.all(itemsFromDb.map(
+        const mapItems = async () => {
+            return Promise.all(itemsFromDb.map(
+                async d => ({
+                    id: d._id,
+                    content: d.content,
+                    userId: d.userId,
+                    userLogin: d.userLogin,
+                    addedAt: d.addedAt,
+                    likesInfo: {
+                        likesCount: await this.likeHelper.likesCount(d._id),
+                        dislikesCount: await this.likeHelper.dislikesCount(d._id),
+                        myStatus: await this.likeHelper.myStatus(d._id),
 
-            async d => ({
-                id: d._id,
-                content: d.content,
-                userId: d.userId,
-                userLogin: d.userLogin,
-                addedAt: d.addedAt,
-                likesInfo:  {
-                    likesCount:await this.likeHelper.likesCount(d._id),
-                    dislikesCount:await this.likeHelper.dislikesCount(d._id),
-                    myStatus:await this.likeHelper.myStatus(d._id),
+                    }
 
-                }
-
-            })))}
-
-
-
-
+                })))
+        }
 
 
         let comment = {
@@ -66,16 +64,18 @@ export class CommentHelper {
             page,
             pageSize,
             totalCount,
-            items:await mapItems(),
+            items: await mapItems(),
         }
 
         // @ts-ignore
         return comment
     }
+
     async deleteCommentsByPost(id: string): Promise<boolean> {
         return await this.commentsRepositories.deleteCommentsByPost(new ObjectId(id))
     }
-    async createResponseComment(comment: NewCommentType):Promise<CommentResponseType|null> {
+
+    async createResponseComment(comment: NewCommentType): Promise<CommentResponseType | null> {
 
         if (comment) {
 
@@ -89,7 +89,7 @@ export class CommentHelper {
                 likesInfo: {
                     likesCount: await this.likeHelper.likesCount(new ObjectId(comment.id)),
                     dislikesCount: await this.likeHelper.dislikesCount(new ObjectId(comment.id)),
-                    myStatus:await this.likeHelper.myStatus(new ObjectId(comment.id)),
+                    myStatus: await this.likeHelper.myStatus(new ObjectId(comment.id)),
                 }
             }
         }

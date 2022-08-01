@@ -1,12 +1,10 @@
 import "reflect-metadata";
 import {PostsRepositories} from "../repositories/posts-db-repositories";
 
-import {CommentsService} from "./comments-service";
-
 
 import {PostsResponseType, PostsResponseTypeWithPagination, PostsType} from "../types/posts-type";
 import {BloggerResponseType} from "../types/blogger-type";
-import {CommentResponseType, CommentsResponseTypeWithPagination, NewCommentType} from "../types/commnet-type";
+import {CommentsResponseTypeWithPagination, NewCommentType} from "../types/commnet-type";
 
 
 import {inject, injectable} from "inversify";
@@ -26,7 +24,7 @@ export class PostsService {
                 @inject(PostsHelper) protected postsHelper: PostsHelper,
                 @inject(BloggersRepositories) protected bloggersRepositories: BloggersRepositories,
                 @inject(LikesRepositories) protected likesRepositories: LikesRepositories,
-                @inject(CommentHelper) protected  commentHelper:CommentHelper,
+                @inject(CommentHelper) protected commentHelper: CommentHelper,
     ) {
 
 
@@ -101,7 +99,7 @@ export class PostsService {
         let post = await this.findPostsById(postid)
 
         if (post) {
-            let newComment: NewCommentType| null = await this.commentHelper.createComment(postid, content, userid, userLogin)
+            let newComment: NewCommentType | null = await this.commentHelper.createComment(postid, content, userid, userLogin)
             return newComment
         }
         return null

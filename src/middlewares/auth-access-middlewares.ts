@@ -8,10 +8,11 @@ import {CommentsService} from "../domain/comments-service";
 import {JwtService} from "../aplication/jwt-service";
 import {UsersService} from "../domain/users-service";
 import {TokenService} from "../domain/token-service";
-const commentsService=container.resolve(CommentsService)
-const jwtService=container.resolve(JwtService)
-const usersService=container.resolve(UsersService)
-const tokenService=container.resolve(TokenService)
+
+const commentsService = container.resolve(CommentsService)
+const jwtService = container.resolve(JwtService)
+const usersService = container.resolve(UsersService)
+const tokenService = container.resolve(TokenService)
 
 export const authValidationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.headers.authorization) {
@@ -58,7 +59,6 @@ export const authRefreshTokenMiddlewares = async (req: Request, res: Response, n
         res.status(401).json({errorsMessages: [{message: "token", field: "cookie"}]})
         return
     }
-
 
 
     const alreadyUsed = await tokenService.checkToken(refreshToken)

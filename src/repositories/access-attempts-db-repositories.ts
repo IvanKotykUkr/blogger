@@ -3,6 +3,7 @@ import {ObjectId} from "mongodb";
 import {RecordType} from "../types/traffic-type";
 import {injectable} from "inversify";
 import "reflect-metadata";
+
 @injectable()
 export class AccessAttemptsRepositories {
     async countDate(record: RecordType) {

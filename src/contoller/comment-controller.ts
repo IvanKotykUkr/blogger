@@ -4,11 +4,12 @@ import {CommentResponseType} from "../types/commnet-type";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
 import {ObjectId} from "mongodb";
+
 @injectable()
 export class CommentController {
 
 
-    constructor(@inject(CommentsService)protected commentsService: CommentsService) {
+    constructor(@inject(CommentsService) protected commentsService: CommentsService) {
 
     }
 
@@ -49,8 +50,8 @@ export class CommentController {
 
     }
 
-    async updateLikeStatus (req: Request, res: Response){
-        const isUpdated = await this.commentsService.updateLikeStatus(req.body.likeStatus,new ObjectId(req.params.id),req.user.id,req.user.login)
+    async updateLikeStatus(req: Request, res: Response) {
+        const isUpdated = await this.commentsService.updateLikeStatus(req.body.likeStatus, new ObjectId(req.params.id), req.user.id, req.user.login)
         if (isUpdated) {
             res.sendStatus(204)
             return

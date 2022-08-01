@@ -1,6 +1,5 @@
 import {PaginationType} from "./blogger-type";
 import {ObjectId, WithId} from "mongodb";
-import {ExtendedLikesInfo} from "./like-type";
 
 export type  PostsDBType = WithId<{
     title: string,
@@ -8,7 +7,7 @@ export type  PostsDBType = WithId<{
     content: string,
     bloggerId: ObjectId,
     bloggerName: string
-    addedAt:Date
+    addedAt: Date
 }>
 export type PostsType = {
     id?: ObjectId | string,
@@ -18,7 +17,7 @@ export type PostsType = {
     content: string,
     bloggerId: ObjectId | string,
     bloggerName: string,
-    addedAt:Date
+    addedAt: Date
 }
 export type PostsResponseType = {
     id?: ObjectId | string,
@@ -27,7 +26,7 @@ export type PostsResponseType = {
     content: string,
     bloggerId: ObjectId | string,
     bloggerName: string,
-    addedAt:Date,
+    addedAt: Date,
     extendedLikesInfo: {
         likesCount: number,
         dislikesCount: number,
@@ -40,26 +39,26 @@ export type PostsResponseType = {
 
     }
 }
-type NewPost<T>={
+type NewPost<T> = {
     id?: ObjectId | string,
     title: string,
     shortDescription: string,
     content: string,
     bloggerId: ObjectId | string,
     bloggerName: string,
-    addedAt:Date,
+    addedAt: Date,
     likesCount: number,
     dislikesCount: number,
     myStatus: string,
-    newestLikes:T[]
+    newestLikes: T[]
 }
-export type newestlike={
+export type newestlike = {
     addedAt?: Date,
     userId?: ObjectId,
     login?: string
 }
-export type NewResponseType=NewPost<newestlike>
-export type Post={
+export type NewResponseType = NewPost<newestlike>
+export type Post = {
     id?: ObjectId | string,
 
     title: string,
@@ -67,7 +66,7 @@ export type Post={
     content: string,
     bloggerId: ObjectId | string,
     bloggerName: string,
-    addedAt:Date
+    addedAt: Date
 }
 
 

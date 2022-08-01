@@ -6,7 +6,8 @@ import {registrationMiddlewares} from "../middlewares/auth-validation-middleware
 import {idValidationMiddleware} from "../middlewares/_id-validation-middleware";
 import {container} from "../composition-root";
 import {UsersController} from "../contoller/users-controller";
-const usersController=container.resolve(UsersController)
+
+const usersController = container.resolve(UsersController)
 
 export const usersRouter = Router({})
 

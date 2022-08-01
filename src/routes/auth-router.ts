@@ -18,7 +18,8 @@ import {
 import {authRefreshTokenMiddlewares, authValidationMiddleware} from "../middlewares/auth-access-middlewares";
 import {container} from "../composition-root";
 import {AuthController} from "../contoller/auth-controller";
-const authController=container.resolve(AuthController)
+
+const authController = container.resolve(AuthController)
 
 
 export const authRouter = Router({})

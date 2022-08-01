@@ -6,7 +6,8 @@ import {idValidationMiddleware} from "../middlewares/_id-validation-middleware";
 import {container} from "../composition-root";
 import {CommentController} from "../contoller/comment-controller";
 import {inputValidationPost, likeStatusValidation} from "../middlewares/input-validation-midlewares-posts";
-const commentsController= container.resolve(CommentController)
+
+const commentsController = container.resolve(CommentController)
 
 export const commentsRouter = Router({})
 

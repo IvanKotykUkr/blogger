@@ -1,8 +1,9 @@
 import {CommentsModelClass} from "./db";
 import {ObjectId} from "mongodb";
-import {CommentResponseType, CommentsDBType, CommentType, NewCommentType} from "../types/commnet-type";
+import {CommentsDBType, CommentType, NewCommentType} from "../types/commnet-type";
 import {injectable} from "inversify";
 import "reflect-metadata";
+
 @injectable()
 export class CommentsRepositories {
     reqComment(comment: CommentType) {
@@ -41,7 +42,7 @@ export class CommentsRepositories {
 
     }
 
-    async allCommentByPostIdPagination(post: ObjectId, number: number, size: number){
+    async allCommentByPostIdPagination(post: ObjectId, number: number, size: number) {
 
         const comments = await CommentsModelClass.find({postid: post})
             .skip(number > 0 ? ((number - 1) * size) : 0)
@@ -49,17 +50,16 @@ export class CommentsRepositories {
             .lean()
 
 
-
         return comments
-            /*.map(d => ({
-            id: d._id,
-            content: d.content,
-            userId: d.userId,
-            userLogin: d.userLogin,
-            addedAt: d.addedAt
-        }))
+        /*.map(d => ({
+        id: d._id,
+        content: d.content,
+        userId: d.userId,
+        userLogin: d.userLogin,
+        addedAt: d.addedAt
+    }))
 
-             */
+         */
 
 
     }

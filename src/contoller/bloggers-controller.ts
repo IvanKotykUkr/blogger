@@ -4,12 +4,12 @@ import {BloggerResponseType, BloggerResponseTypeWithPagination} from "../types/b
 import {PostsResponseType, PostsResponseTypeWithPagination} from "../types/posts-type";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
-import "reflect-metadata";
+
 @injectable()
 export class BloggersController {
 
 
-    constructor(@inject(BloggersService)protected bloggersService: BloggersService) {
+    constructor(@inject(BloggersService) protected bloggersService: BloggersService) {
 
     }
 

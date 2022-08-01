@@ -5,21 +5,25 @@ import {LikesRepositories} from "../../repositories/likes-repositories";
 
 @injectable()
 export class LikeHelper {
-    constructor(@inject(LikesRepositories) protected likesRepositories:LikesRepositories ) {
+    constructor(@inject(LikesRepositories) protected likesRepositories: LikesRepositories) {
     }
-    async likesCount(id:ObjectId):Promise<number>{
+
+    async likesCount(id: ObjectId): Promise<number> {
 
         return this.likesRepositories.countLike(id)
     }
-    async dislikesCount(id:ObjectId):Promise<number>{
+
+    async dislikesCount(id: ObjectId): Promise<number> {
 
         return this.likesRepositories.countDislake(id)
     }
-    async myStatus(id:ObjectId):Promise<string>{
+
+    async myStatus(id: ObjectId): Promise<string> {
 
         return this.likesRepositories.myStatus(id)
     }
-    async newestLikes(id:ObjectId):Promise<newestlike[]>{
+
+    async newestLikes(id: ObjectId): Promise<newestlike[]> {
 
         return this.likesRepositories.newstLike(id)
     }

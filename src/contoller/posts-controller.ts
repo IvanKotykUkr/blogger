@@ -1,15 +1,16 @@
 import {PostsService} from "../domain/posts-service";
 import {Request, Response} from "express";
 import {PostsResponseType, PostsResponseTypeWithPagination} from "../types/posts-type";
-import {CommentResponseType, CommentsResponseTypeWithPagination, NewCommentType} from "../types/commnet-type";
+import {CommentsResponseTypeWithPagination, NewCommentType} from "../types/commnet-type";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
 import {ObjectId} from "mongodb";
+
 @injectable()
 export class PostsController {
 
 
-    constructor(@inject(PostsService)protected postsService: PostsService) {
+    constructor(@inject(PostsService) protected postsService: PostsService) {
 
     }
 
@@ -120,8 +121,9 @@ export class PostsController {
 
 
     }
-    async updateLikeStatus (req: Request, res: Response){
-        const isUpdated = await this.postsService.updateLikeStatus(req.body.likeStatus,new ObjectId(req.params.id),req.user.id,req.user.login)
+
+    async updateLikeStatus(req: Request, res: Response) {
+        const isUpdated = await this.postsService.updateLikeStatus(req.body.likeStatus, new ObjectId(req.params.id), req.user.id, req.user.login)
         if (isUpdated) {
             res.sendStatus(204)
             return

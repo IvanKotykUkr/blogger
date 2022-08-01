@@ -69,6 +69,7 @@ export class BloggersService {
 
         return await this.bloggersRepositories.deleteBloggers(id)
     }
+
     async getPostsByIdBlogger(id: string, pagenumber: number, pageesize: number): Promise<PostsResponseTypeWithPagination | null> {
 
         let blogger: BloggerResponseType | null = await this.findBloggersById(id)
@@ -82,7 +83,6 @@ export class BloggersService {
     }
 
 
-
     async createPostByBloggerId(id: string, title: string, shortDescription: string, content: string): Promise<PostsResponseType | null> {
 
 
@@ -90,7 +90,6 @@ export class BloggersService {
         if (makedPost) {
             let
                 newPosts = await this.postsRepositories.createPost(makedPost)
-
 
 
             return this.postsHelper.makePostResponse(newPosts)
