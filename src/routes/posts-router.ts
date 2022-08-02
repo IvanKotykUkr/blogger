@@ -26,9 +26,10 @@ export const postsRouter = Router({})
 
 postsRouter.get("/:id",
     idValidationMiddleware,
+     authValidationMiddleware,
     postsController.getPost.bind(postsController));
 
-postsRouter.get("/", postsController.getPosts.bind(postsController));
+postsRouter.get("/",authValidationMiddleware, postsController.getPosts.bind(postsController));
 
 
 postsRouter.post("/",
@@ -66,6 +67,7 @@ postsRouter.post('/:id/comments',
     postsController.createComment.bind(postsController));
 postsRouter.get('/:id/comments',
     idValidationMiddleware,
+    authValidationMiddleware,
     postsController.getComment.bind(postsController));
 postsRouter.put('/:id/like-status',
     idValidationMiddleware,

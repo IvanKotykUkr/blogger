@@ -6,6 +6,7 @@ import "reflect-metadata";
 import {LikeDbType} from "../types/like-type";
 import {LikesRepositories} from "../repositories/likes-repositories";
 import {CommentHelper} from "./helpers/comment-helper";
+import {LikeHelper} from "./helpers/like-helper";
 
 @injectable()
 export class CommentsService {
@@ -13,7 +14,8 @@ export class CommentsService {
 
     constructor(@inject(CommentsRepositories) protected commentsRepositories: CommentsRepositories,
                 @inject(LikesRepositories) protected likesRepositories: LikesRepositories,
-                @inject(CommentHelper) protected commentHelper: CommentHelper
+                @inject(CommentHelper) protected commentHelper: CommentHelper,
+                @inject(LikeHelper) protected likeHelper:LikeHelper,
     ) {
 
     }
@@ -84,16 +86,9 @@ export class CommentsService {
     async updateLikeStatus(likeStatus: string, postid: ObjectId, userId: ObjectId, login: string) {
         const comment: NewCommentType | null = await this.commentsRepositories.findCommentById(new ObjectId(postid))
         if (comment) {
-            const like: LikeDbType = {
-                _id: new ObjectId(),
-                post: postid,
-                status: likeStatus,
-                addedAt: new Date(),
-                userId,
-                login
+            return this.likeHelper.createLike(likeStatus,postid,userId,login)
 
-            }
-            return this.likesRepositories.createLike(like)
+
         }
         return null
 

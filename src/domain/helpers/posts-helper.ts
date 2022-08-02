@@ -30,7 +30,7 @@ export class PostsHelper {
         return null
     }
 
-    async getPostsPagination(pagenumber: number, pagesize: number, bloggerId?: ObjectId | undefined | string): Promise<PostsResponseTypeWithPagination> {
+    async getPostsPagination(pagenumber: number, pagesize: number, userId:ObjectId,bloggerId?: ObjectId | undefined ): Promise<PostsResponseTypeWithPagination> {
 
 
         let totalCount: number = await this.postsRepositories.findPostsByIdBloggerCount(bloggerId)
@@ -53,7 +53,7 @@ export class PostsHelper {
 
                         likesCount: await this.likeHelper.likesCount(p._id),
                         dislikesCount: await this.likeHelper.dislikesCount(p._id),
-                        myStatus: await this.likeHelper.myStatus(p._id),
+                        myStatus: await this.likeHelper.myStatus(userId,p._id),
                         newestLikes: await this.likeHelper.newestLikes(p._id),
                     }
 
@@ -74,7 +74,7 @@ export class PostsHelper {
         return post
     }
 
-    async makePostResponse(post: PostsType): Promise<PostsResponseType> {
+    async makePostResponse(post: PostsType,userId?:ObjectId): Promise<PostsResponseType> {
 
 
         return {
@@ -88,7 +88,7 @@ export class PostsHelper {
             extendedLikesInfo: {
                 likesCount: await this.likeHelper.likesCount(new ObjectId(post.id)),
                 dislikesCount: await this.likeHelper.dislikesCount(new ObjectId(post.id)),
-                myStatus: await this.likeHelper.myStatus(new ObjectId(post.id)),
+                myStatus: await this.likeHelper.myStatus(new ObjectId(userId),new ObjectId(post.id)),
                 newestLikes: await this.likeHelper.newestLikes(new ObjectId(post.id))
             }
         }

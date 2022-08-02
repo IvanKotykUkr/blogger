@@ -61,7 +61,7 @@ export class BloggersController {
     async getPostByBlogger(req: Request, res: Response) {
         const pagenumber = req.query.PageNumber || 1;
         const pagesize = req.query.PageSize || 10;
-        let bloggerPosts: PostsResponseTypeWithPagination | null = await this.bloggersService.getPostsByIdBlogger(new ObjectId(req.params.id), +pagenumber, +pagesize)
+        let bloggerPosts: PostsResponseTypeWithPagination | null = await this.bloggersService.getPostsByIdBlogger(new ObjectId(req.params.id), +pagenumber, +pagesize,new ObjectId(  req.user.id))
         if (bloggerPosts) {
             res.send(bloggerPosts)
             return

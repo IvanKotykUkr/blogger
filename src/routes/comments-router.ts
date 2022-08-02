@@ -32,6 +32,7 @@ commentsRouter.delete('/:id',
     commentsController.deleteComment.bind(commentsController));
 commentsRouter.get('/:id',
     idValidationMiddleware,
+    authValidationMiddleware,
     commentsController.getComment.bind(commentsController));
 commentsRouter.put('/:id/like-status',
     idValidationMiddleware,

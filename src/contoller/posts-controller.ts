@@ -15,7 +15,8 @@ export class PostsController {
     }
 
     async getPost(req: Request, res: Response) {
-        const post: PostsResponseType | null = await this.postsService.findPostsById(new ObjectId(req.params.id))
+        const post: PostsResponseType | null = await this.postsService.findPostById(new ObjectId(req.params.id),
+          new ObjectId(  req.user.id))
         if (!post) {
             res.sendStatus(404)
             return
@@ -29,7 +30,7 @@ export class PostsController {
     async getPosts(req: Request, res: Response) {
         const pagenumber = req.query.PageNumber || 1;
         const pagesize = req.query.PageSize || 10;
-        const posts: PostsResponseTypeWithPagination = await this.postsService.findPosts(+pagenumber, +pagesize)
+        const posts: PostsResponseTypeWithPagination = await this.postsService.findPosts(+pagenumber, +pagesize, new ObjectId(  req.user.id))
         res.status(200).send(posts)
     }
 
@@ -38,7 +39,7 @@ export class PostsController {
             req.body.title,
             req.body.shortDescription,
             req.body.content,
-            req.body.bloggerId)
+           new ObjectId(req.body.bloggerId))
         if (newPost) {
             res.status(201).send(newPost)
             return
@@ -112,7 +113,7 @@ export class PostsController {
     async getComment(req: Request, res: Response) {
         const pagenumber = req.query.PageNumber || 1;
         const pagesize = req.query.PageSize || 10;
-        const allComment: CommentsResponseTypeWithPagination | null = await this.postsService.sendAllCommentsByPostId(new ObjectId(req.params.id), +pagenumber, +pagesize)
+        const allComment: CommentsResponseTypeWithPagination | null = await this.postsService.sendAllCommentsByPostId(new ObjectId(req.params.id), +pagenumber, +pagesize ,new ObjectId(  req.user.id))
         if (!allComment) {
             res.send(404)
             return

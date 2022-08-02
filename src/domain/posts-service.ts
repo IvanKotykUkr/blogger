@@ -14,6 +14,7 @@ import {LikeDbType} from "../types/like-type";
 import {ObjectId} from "mongodb";
 import {LikesRepositories} from "../repositories/likes-repositories";
 import {CommentHelper} from "./helpers/comment-helper";
+import {LikeHelper} from "./helpers/like-helper";
 
 
 @injectable()
@@ -25,25 +26,26 @@ export class PostsService {
                 @inject(BloggersRepositories) protected bloggersRepositories: BloggersRepositories,
                 @inject(LikesRepositories) protected likesRepositories: LikesRepositories,
                 @inject(CommentHelper) protected commentHelper: CommentHelper,
+                @inject(LikeHelper) protected likeHelper:LikeHelper,
     ) {
 
 
     }
 
 
-    async findPosts(pagenumber: number, pagesize: number, bloggerId?: ObjectId | undefined | string): Promise<PostsResponseTypeWithPagination> {
+    async findPosts(pagenumber: number, pagesize: number,userId:ObjectId): Promise<PostsResponseTypeWithPagination> {
 
 
-        return this.postsHelper.getPostsPagination(pagenumber, pagesize, bloggerId)
+        return this.postsHelper.getPostsPagination(pagenumber, pagesize,userId)
     }
 
-    async findPostsById(id: ObjectId): Promise<PostsResponseType | null> {
+    async findPostById(id: ObjectId,userId?:ObjectId): Promise<PostsResponseType | null> {
 
         const post: PostsType | null = await this.postsRepositories.findPostsById(new ObjectId(id))
 
         if (post) {
-
-            return this.postsHelper.makePostResponse(post);
+            console.log(userId)
+            return this.postsHelper.makePostResponse(post,userId);
         }
         return null;
 
@@ -96,7 +98,7 @@ export class PostsService {
 
 
     async createCommentsByPost(postid: ObjectId, content: string, userid: ObjectId, userLogin: string): Promise<NewCommentType | null> {
-        let post = await this.findPostsById(postid)
+        let post = await this.findPostById(postid)
 
         if (post) {
             let newComment: NewCommentType | null = await this.commentHelper.createComment(postid, content, userid, userLogin)
@@ -106,11 +108,11 @@ export class PostsService {
 
     }
 
-    async sendAllCommentsByPostId(postid: ObjectId, pagenumber: number, pagesize: number): Promise<CommentsResponseTypeWithPagination | null> {
-        let post: PostsResponseType | null = await this.findPostsById(postid)
+    async sendAllCommentsByPostId(postid: ObjectId, pagenumber: number, pagesize: number,userId:ObjectId): Promise<CommentsResponseTypeWithPagination | null> {
+        let post: PostsResponseType | null = await this.findPostById(postid)
 
         if (post) {
-            let allComments: CommentsResponseTypeWithPagination = await this.commentHelper.sendAllComments(new ObjectId(postid), pagenumber, pagesize)
+            let allComments: CommentsResponseTypeWithPagination = await this.commentHelper.sendAllComments(new ObjectId(postid), pagenumber, pagesize,userId)
             return allComments
         }
         return null
@@ -119,18 +121,12 @@ export class PostsService {
     }
 
     async updateLikeStatus(likeStatus: string, postid: ObjectId, userId: ObjectId, login: string) {
-        let post: PostsResponseType | null = await this.findPostsById(postid)
-        if (post) {
-            const like: LikeDbType = {
-                _id: new ObjectId(),
-                post: postid,
-                status: likeStatus,
-                addedAt: new Date(),
-                userId,
-                login
+        let post: PostsResponseType | null = await this.findPostById(postid)
 
-            }
-            return this.likesRepositories.createLike(like)
+        if (post) {
+            return this.likeHelper.createLike(likeStatus,postid,userId,login)
+
+
         }
         return null
 
