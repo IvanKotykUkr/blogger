@@ -71,13 +71,12 @@ export class CommentsService {
 
     }
 
-    async findCommentsById(id: ObjectId): Promise<CommentResponseType | null> {
+    async findCommentsById(id: ObjectId,userId?:ObjectId): Promise<CommentResponseType | null> {
 
         const comment: NewCommentType | null = await this.commentsRepositories.findCommentById(new ObjectId(id))
         if (comment) {
 
-
-            return this.commentHelper.createResponseComment(comment)
+            return this.commentHelper.createResponseComment(comment,new ObjectId(userId))
         }
         return null
     }

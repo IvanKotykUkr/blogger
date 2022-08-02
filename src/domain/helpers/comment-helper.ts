@@ -51,7 +51,7 @@ export class CommentHelper {
                     likesInfo: {
                         likesCount: await this.likeHelper.likesCount(d._id),
                         dislikesCount: await this.likeHelper.dislikesCount(d._id),
-                        myStatus: await this.likeHelper.myStatus(userId),
+                        myStatus: await this.likeHelper.myStatus(d._id,userId),
 
                     }
 
@@ -74,7 +74,7 @@ export class CommentHelper {
         return await this.commentsRepositories.deleteCommentsByPost(id)
     }
 
-    async createResponseComment(comment: NewCommentType): Promise<CommentResponseType | null> {
+    async createResponseComment(comment: NewCommentType,userId?:ObjectId): Promise<CommentResponseType | null> {
 
 
         return {
@@ -86,7 +86,7 @@ export class CommentHelper {
             likesInfo: {
                 likesCount: await this.likeHelper.likesCount(new ObjectId(comment.id)),
                 dislikesCount: await this.likeHelper.dislikesCount(new ObjectId(comment.id)),
-                myStatus: await this.likeHelper.myStatus(new ObjectId(comment.id)),
+                myStatus: await this.likeHelper.myStatus(new ObjectId(userId),new ObjectId(comment.id)),
             }
         }
     }
