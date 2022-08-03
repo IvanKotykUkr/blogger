@@ -103,7 +103,7 @@ export class PostsController {
         const newComment: NewCommentType | null = await this.postsService.createCommentsByPost(new ObjectId(req.params.id), req.body.content, new ObjectId(req.user!.id), req.user!.login)
 
         if (!newComment) {
-            console.log("Not create coment")
+
             res.send(404)
             return
         }
@@ -133,7 +133,7 @@ export class PostsController {
             res.sendStatus(204)
             return
         }
-        console.log("Didnd updated like status")
+
         res.sendStatus(404)
 
     }
