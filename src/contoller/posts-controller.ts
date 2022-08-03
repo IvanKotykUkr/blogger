@@ -112,6 +112,7 @@ export class PostsController {
     }
 
     async getComment(req: Request, res: Response) {
+        console.log("Here "+new ObjectId(req.params.id))
         const pagenumber = req.query.PageNumber || 1;
         const pagesize = req.query.PageSize || 10;
         const allComment: CommentsResponseTypeWithPagination | null = await this.postsService.sendAllCommentsByPostId(new ObjectId(req.params.id), +pagenumber, +pagesize ,new ObjectId(  req.user.id))

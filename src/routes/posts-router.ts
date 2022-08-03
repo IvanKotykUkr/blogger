@@ -68,7 +68,7 @@ postsRouter.post('/:id/comments',
 
     postsController.createComment.bind(postsController));
 postsRouter.get('/:id/comments',
-    //idValidationMiddleware,
+    idValidationMiddleware,
     authForLikeMiddleware,
     postsController.getComment.bind(postsController));
 postsRouter.put('/:id/like-status',
