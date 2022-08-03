@@ -116,6 +116,7 @@ export class PostsController {
         const pagesize = req.query.PageSize || 10;
         const allComment: CommentsResponseTypeWithPagination | null = await this.postsService.sendAllCommentsByPostId(new ObjectId(req.params.id), +pagenumber, +pagesize ,new ObjectId(  req.user.id))
         if (!allComment) {
+            console.log("Didnt find comments")
             res.send(404)
             return
         }
