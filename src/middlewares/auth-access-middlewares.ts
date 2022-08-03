@@ -38,14 +38,14 @@ export const authValidationMiddleware = async (req: Request, res: Response, next
         res.status(401).json({errorsMessages: [{message: "there is no user", field: "token"}]})
         return
     }
-    console.log(req.user)
     next()
 }
 export const authForLikeMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.headers.authorization) {
-        req.user = {
-            id:new ObjectId()
+          req.user ={
+            id: new ObjectId()
         }
+        next()
         return
     }
     const token: string = req.headers.authorization.split(' ')[1]
@@ -61,7 +61,7 @@ export const authForLikeMiddleware = async (req: Request, res: Response, next: N
         res.status(401).json({errorsMessages: [{message: "there is no user", field: "token"}]})
         return
     }
-    console.log(req.user)
+
     next()
 }
 export const authMiddlewaresWithCheckOwn = async (req: Request, res: Response, next: NextFunction) => {
@@ -74,6 +74,7 @@ export const authMiddlewaresWithCheckOwn = async (req: Request, res: Response, n
         res.sendStatus(403).json({errorsMessages: [{message: "not your own", field: "user"}]})
         return
     }
+
     next()
 }
 export const authRefreshTokenMiddlewares = async (req: Request, res: Response, next: NextFunction) => {

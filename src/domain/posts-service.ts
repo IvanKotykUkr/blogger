@@ -44,7 +44,7 @@ export class PostsService {
         const post: PostsType | null = await this.postsRepositories.findPostsById(new ObjectId(id))
 
         if (post) {
-            console.log(userId)
+
             return this.postsHelper.makePostResponse(post,userId);
         }
         return null;

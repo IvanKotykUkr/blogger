@@ -1,7 +1,11 @@
 import {Router} from "express";
 
 import {commentValidation, inputValidationComment} from "../middlewares/input-validation-comments";
-import {authMiddlewaresWithCheckOwn, authValidationMiddleware} from "../middlewares/auth-access-middlewares";
+import {
+    authForLikeMiddleware,
+    authMiddlewaresWithCheckOwn,
+    authValidationMiddleware
+} from "../middlewares/auth-access-middlewares";
 import {idValidationMiddleware} from "../middlewares/_id-validation-middleware";
 import {container} from "../composition-root";
 import {CommentController} from "../contoller/comment-controller";
@@ -32,7 +36,7 @@ commentsRouter.delete('/:id',
     commentsController.deleteComment.bind(commentsController));
 commentsRouter.get('/:id',
     idValidationMiddleware,
-    authValidationMiddleware,
+    authForLikeMiddleware,
     commentsController.getComment.bind(commentsController));
 commentsRouter.put('/:id/like-status',
     idValidationMiddleware,

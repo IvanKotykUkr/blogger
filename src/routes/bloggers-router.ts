@@ -14,7 +14,7 @@ import {
 import {idValidationMiddleware} from "../middlewares/_id-validation-middleware";
 import {container} from "../composition-root";
 import {BloggersController} from "../contoller/bloggers-controller";
-import {authValidationMiddleware} from "../middlewares/auth-access-middlewares";
+import {authForLikeMiddleware, authValidationMiddleware} from "../middlewares/auth-access-middlewares";
 
 const bloggersController = container.resolve(BloggersController)
 
@@ -48,7 +48,7 @@ bloggersRouter.delete("/:id",
     bloggersController.deleteBlogger.bind(bloggersController));
 bloggersRouter.get('/:id/posts',
     idValidationMiddleware,
-    authValidationMiddleware,
+    authForLikeMiddleware,
     bloggersController.getPostByBlogger.bind(bloggersController));
 bloggersRouter.post('/:id/posts',
     idValidationMiddleware,
