@@ -39,7 +39,7 @@ export class LikesRepositories {
     }
 
     async newstLike(post: ObjectId) {
-        const likeInstance = await LikesModelClass.find({$and: [{post}, {status:"Like"}]})
+        const likeInstance = await LikesModelClass.find({$and: [{post}, {status: "Like"}]})
             .sort({addedAt: -1})
             .limit(3)
             .lean()
@@ -49,21 +49,40 @@ export class LikesRepositories {
     async findLike(post: ObjectId, userId: ObjectId, status: string) {
         const likeInstance = await LikesModelClass.findOne({$and: [{post}, {userId}]})
         if (!likeInstance) return false
-        if (likeInstance && status !== "None") {
-            return true
+        if (likeInstance) {
+            likeInstance.status = status
+            await likeInstance.save()
+
+            return likeInstance
         }
-        await likeInstance.deleteOne()
-        return true
-        /*
-                if (likeInstance) {
-                    likeInstance.status = status
-                    await likeInstance.save()
-
-                    return likeInstance
-                }
-
-         */
 
 
     }
+
+
+    /* async findLike(post: ObjectId, userId: ObjectId, status: string) {
+         const likeInstance = await LikesModelClass.findOne({$and: [{post}, {userId}]})
+         if (!likeInstance) return false
+         if (likeInstance && status !== "None") {
+             return true
+         }
+         await likeInstance.deleteOne()
+         return true
+
+                 if (likeInstance) {
+                     likeInstance.status = status
+                     await likeInstance.save()
+
+                     return likeInstance
+                 }
+
+
+
+
+
+     }
+
+     */
+
+
 }
