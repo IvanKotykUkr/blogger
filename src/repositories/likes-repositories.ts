@@ -22,14 +22,14 @@ export class LikesRepositories {
 
     async countLike(post: ObjectId): Promise<number> {
 
-        return  LikesModelClass.countDocuments({post, status: "Like"})
+        return LikesModelClass.countDocuments({post, status: "Like"})
     }
 
     async countDislake(post: ObjectId) {
         return LikesModelClass.countDocuments({post, status: "Dislike"})
     }
 
-    async myStatus(userId: ObjectId,post:ObjectId) {
+    async myStatus(userId: ObjectId, post: ObjectId) {
 
         const status: LikeDbType | null = await LikesModelClass.findOne({$and: [{post}, {userId}]})
         if (status) {
@@ -48,15 +48,22 @@ export class LikesRepositories {
 
     async findLike(post: ObjectId, userId: ObjectId, status: string) {
         const likeInstance = await LikesModelClass.findOne({$and: [{post}, {userId}]})
-
-
-        if (likeInstance) {
-            likeInstance.status = status
-            await likeInstance.save()
-
-            return likeInstance
+        if (!likeInstance) return false
+        if (likeInstance && status !== "None") {
+            return true
         }
-        return false
+        await likeInstance.deleteOne()
+        return true
+        /*
+                if (likeInstance) {
+                    likeInstance.status = status
+                    await likeInstance.save()
+
+                    return likeInstance
+                }
+
+         */
+
 
     }
 }
