@@ -39,7 +39,7 @@ export class LikesRepositories {
     }
 
     async newstLike(post: ObjectId) {
-        const likeInstance = await LikesModelClass.find({post})
+        const likeInstance = await LikesModelClass.find({$and: [{post}, {status:"Like"}]})
             .sort({addedAt: -1})
             .limit(3)
             .lean()
