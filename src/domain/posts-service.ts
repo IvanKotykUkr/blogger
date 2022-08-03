@@ -41,7 +41,7 @@ export class PostsService {
 
     async findPostById(id: ObjectId,userId?:ObjectId): Promise<PostsResponseType | null> {
 
-        const post: PostsType | null = await this.postsRepositories.findPostsById(new ObjectId(id))
+        const post: PostsType | null = await this.postsRepositories.findPostsById(id)
 
         if (post) {
 

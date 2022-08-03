@@ -103,6 +103,7 @@ export class PostsController {
         const newComment: NewCommentType | null = await this.postsService.createCommentsByPost(new ObjectId(req.params.id), req.body.content, new ObjectId(req.user!.id), req.user!.login)
 
         if (!newComment) {
+
             res.send(404)
             return
         }
@@ -112,12 +113,12 @@ export class PostsController {
     }
 
     async getComment(req: Request, res: Response) {
-        console.log("Here "+new ObjectId(req.params.id))
+
         const pagenumber = req.query.PageNumber || 1;
         const pagesize = req.query.PageSize || 10;
         const allComment: CommentsResponseTypeWithPagination | null = await this.postsService.sendAllCommentsByPostId(new ObjectId(req.params.id), +pagenumber, +pagesize ,new ObjectId(  req.user.id))
         if (!allComment) {
-            console.log("Didnt find comments")
+
             res.send(404)
             return
         }
@@ -132,6 +133,7 @@ export class PostsController {
             res.sendStatus(204)
             return
         }
+        console.log("Didnt find posts")
         res.sendStatus(404)
 
     }
