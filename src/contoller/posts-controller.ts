@@ -15,7 +15,6 @@ export class PostsController {
     }
 
     async getPost(req: Request, res: Response) {
-        console.log("new   "+req.user)
         const post: PostsResponseType | null = await this.postsService.findPostById(new ObjectId(req.params.id),
           new ObjectId(  req.user.id))
 
