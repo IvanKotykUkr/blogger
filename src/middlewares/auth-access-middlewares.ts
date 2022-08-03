@@ -38,6 +38,30 @@ export const authValidationMiddleware = async (req: Request, res: Response, next
         res.status(401).json({errorsMessages: [{message: "there is no user", field: "token"}]})
         return
     }
+    console.log(req.user)
+    next()
+}
+export const authForLikeMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.headers.authorization) {
+        req.user = {
+            id:new ObjectId()
+        }
+        return
+    }
+    const token: string = req.headers.authorization.split(' ')[1]
+    const user: UserFromTokenType | null = await jwtService.getUserIdByAccessToken(token)
+    if (!user) {
+        res.status(401).json({errorsMessages: [{message: "Should be valide JWT Token", field: "token"}]})
+        return
+    }
+
+    req.user = await usersService.findUserById(user.userId)
+
+    if (req.user === null) {
+        res.status(401).json({errorsMessages: [{message: "there is no user", field: "token"}]})
+        return
+    }
+    console.log(req.user)
     next()
 }
 export const authMiddlewaresWithCheckOwn = async (req: Request, res: Response, next: NextFunction) => {
