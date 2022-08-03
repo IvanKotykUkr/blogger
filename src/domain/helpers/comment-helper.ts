@@ -40,6 +40,7 @@ export class CommentHelper {
         let pageSize: number = pagesize
         let pagesCount: number = Math.ceil(totalCount / pageSize)
         const itemsFromDb: CommentsDBType[] = await this.commentsRepositories.allCommentByPostIdPagination(postId, page, pageSize)
+
         const mapItems = async () => {
             return Promise.all(itemsFromDb.map(
                 async d => ({
@@ -51,7 +52,7 @@ export class CommentHelper {
                     likesInfo: {
                         likesCount: await this.likeHelper.likesCount(d._id),
                         dislikesCount: await this.likeHelper.dislikesCount(d._id),
-                        myStatus: await this.likeHelper.myStatus(d._id,userId),
+                        myStatus: await this.likeHelper.myStatus(userId,d._id),
 
                     }
 
