@@ -18,7 +18,7 @@ export class CommentsRepositories {
     }
 
     async commentCount(post: ObjectId): Promise<number> {
-       return CommentsModelClass.countDocuments({postid: post})
+        return CommentsModelClass.countDocuments({postid: post})
 
     }
 
@@ -44,13 +44,10 @@ export class CommentsRepositories {
 
     async allCommentByPostIdPagination(post: ObjectId, number: number, size: number): Promise<CommentsDBType[]> {
 
-        return  CommentsModelClass.find({postid: post})
+        return CommentsModelClass.find({postid: post})
             .skip(number > 0 ? ((number - 1) * size) : 0)
             .limit(size)
             .lean()
-
-
-
 
 
     }

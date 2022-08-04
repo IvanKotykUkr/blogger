@@ -15,7 +15,7 @@ export class BloggersRepositories {
         let filter = {}
 
         if (name) {
-            return  {name: {$regex: name}}
+            return {name: {$regex: name}}
         }
         return filter
     }

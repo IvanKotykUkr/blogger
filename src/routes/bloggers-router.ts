@@ -14,7 +14,7 @@ import {
 import {idValidationMiddleware} from "../middlewares/_id-validation-middleware";
 import {container} from "../composition-root";
 import {BloggersController} from "../contoller/bloggers-controller";
-import {authForLikeMiddleware, authValidationMiddleware} from "../middlewares/auth-access-middlewares";
+import {authForLikeMiddleware} from "../middlewares/auth-access-middlewares";
 
 const bloggersController = container.resolve(BloggersController)
 

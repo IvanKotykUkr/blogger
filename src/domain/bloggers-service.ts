@@ -70,13 +70,13 @@ export class BloggersService {
         return await this.bloggersRepositories.deleteBloggers(id)
     }
 
-    async getPostsByIdBlogger(id: ObjectId, pagenumber: number, pageesize: number,userId:ObjectId): Promise<PostsResponseTypeWithPagination | null> {
+    async getPostsByIdBlogger(id: ObjectId, pagenumber: number, pageesize: number, userId: ObjectId): Promise<PostsResponseTypeWithPagination | null> {
 
         let blogger: BloggerResponseType | null = await this.findBloggersById(id)
 
         if (blogger) {
 
-            return await this.postsHelper.getPostsPagination(pagenumber, pageesize, userId,blogger.id)
+            return await this.postsHelper.getPostsPagination(pagenumber, pageesize, userId, blogger.id)
         }
         return null
 

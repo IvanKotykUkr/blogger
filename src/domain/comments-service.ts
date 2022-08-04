@@ -3,7 +3,6 @@ import {CommentResponseType, NewCommentType,} from "../types/commnet-type";
 import {ObjectId} from "mongodb";
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
-import {LikeDbType} from "../types/like-type";
 import {LikesRepositories} from "../repositories/likes-repositories";
 import {CommentHelper} from "./helpers/comment-helper";
 import {LikeHelper} from "./helpers/like-helper";
@@ -15,7 +14,7 @@ export class CommentsService {
     constructor(@inject(CommentsRepositories) protected commentsRepositories: CommentsRepositories,
                 @inject(LikesRepositories) protected likesRepositories: LikesRepositories,
                 @inject(CommentHelper) protected commentHelper: CommentHelper,
-                @inject(LikeHelper) protected likeHelper:LikeHelper,
+                @inject(LikeHelper) protected likeHelper: LikeHelper,
     ) {
 
     }
@@ -71,12 +70,12 @@ export class CommentsService {
 
     }
 
-    async findCommentsById(id: ObjectId,userId?:ObjectId): Promise<CommentResponseType | null> {
+    async findCommentsById(id: ObjectId, userId?: ObjectId): Promise<CommentResponseType | null> {
 
         const comment: NewCommentType | null = await this.commentsRepositories.findCommentById(new ObjectId(id))
         if (comment) {
 
-            return this.commentHelper.createResponseComment(comment,new ObjectId(userId))
+            return this.commentHelper.createResponseComment(comment, new ObjectId(userId))
         }
         return null
     }
@@ -85,7 +84,7 @@ export class CommentsService {
     async updateLikeStatus(likeStatus: string, postid: ObjectId, userId: ObjectId, login: string) {
         const comment: NewCommentType | null = await this.commentsRepositories.findCommentById(new ObjectId(postid))
         if (comment) {
-            return this.likeHelper.createLike(likeStatus,postid,userId,login)
+            return this.likeHelper.createLike(likeStatus, postid, userId, login)
 
 
         }

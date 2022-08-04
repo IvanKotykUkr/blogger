@@ -19,7 +19,7 @@ export class AuthController {
     resToken(accessToken: { accessToken: string }, refreshToken: string, res: Response) {
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-             secure: true,
+            secure: true,
         });
 
         return res.status(200).send(accessToken)

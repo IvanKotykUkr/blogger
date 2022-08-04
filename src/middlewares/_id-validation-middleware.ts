@@ -9,7 +9,7 @@ class IdValidation {
 
         const idHex: string = convertToHex(req.params.id)
         if (idHex.length !== 48) {
-            console.log("eror here wrong id "+req.params.id)
+            console.log("eror here wrong id " + req.params.id)
 
             res.status(404).json({errorsMessages: [{message: "wrong id", field: "id"}]})
             return

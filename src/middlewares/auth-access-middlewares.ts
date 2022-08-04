@@ -42,7 +42,7 @@ export const authValidationMiddleware = async (req: Request, res: Response, next
 }
 export const authForLikeMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.headers.authorization) {
-          req.user ={
+        req.user = {
             id: new ObjectId()
         }
         next()

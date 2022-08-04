@@ -20,10 +20,10 @@ export class LikeHelper {
         return this.likesRepositories.countDislake(id)
     }
 
-    async myStatus(id: ObjectId,post:ObjectId): Promise<string> {
+    async myStatus(id: ObjectId, post: ObjectId): Promise<string> {
 
 
-        return this.likesRepositories.myStatus(id,post)
+        return this.likesRepositories.myStatus(id, post)
     }
 
     async newestLikes(id: ObjectId): Promise<NewestLike[]> {
@@ -32,23 +32,23 @@ export class LikeHelper {
         return this.likesRepositories.newstLike(id)
     }
 
-   async createLike(likeStatus: string, postid: ObjectId, userId: ObjectId, login: string) {
+    async createLike(likeStatus: string, postid: ObjectId, userId: ObjectId, login: string) {
 
-       const alreadyLiked= await this.likesRepositories.findLike(postid,userId,likeStatus)
-       if (alreadyLiked){
+        const alreadyLiked = await this.likesRepositories.findLike(postid, userId, likeStatus)
+        if (alreadyLiked) {
 
-           return alreadyLiked
-       }
+            return alreadyLiked
+        }
 
-       const like: LikeDbType = {
-           _id: new ObjectId(),
-           post: postid,
-           status: likeStatus,
-           addedAt: new Date(),
-           userId,
-           login
-       }
+        const like: LikeDbType = {
+            _id: new ObjectId(),
+            post: postid,
+            status: likeStatus,
+            addedAt: new Date(),
+            userId,
+            login
+        }
 
-       return this.likesRepositories.createLike(like)
+        return this.likesRepositories.createLike(like)
     }
 }

@@ -32,7 +32,7 @@ export class CommentHelper {
         return null
     }
 
-    async sendAllComments(postId: ObjectId, pagenumber: number, pagesize: number,userId:ObjectId): Promise<CommentsResponseTypeWithPagination> {
+    async sendAllComments(postId: ObjectId, pagenumber: number, pagesize: number, userId: ObjectId): Promise<CommentsResponseTypeWithPagination> {
 
         let totalCount: number = await this.commentsRepositories.commentCount(postId)
 
@@ -52,7 +52,7 @@ export class CommentHelper {
                     likesInfo: {
                         likesCount: await this.likeHelper.likesCount(d._id),
                         dislikesCount: await this.likeHelper.dislikesCount(d._id),
-                        myStatus: await this.likeHelper.myStatus(userId,d._id),
+                        myStatus: await this.likeHelper.myStatus(userId, d._id),
 
                     }
 
@@ -75,7 +75,7 @@ export class CommentHelper {
         return await this.commentsRepositories.deleteCommentsByPost(id)
     }
 
-    async createResponseComment(comment: NewCommentType,userId?:ObjectId): Promise<CommentResponseType | null> {
+    async createResponseComment(comment: NewCommentType, userId?: ObjectId): Promise<CommentResponseType | null> {
 
 
         return {
@@ -87,7 +87,7 @@ export class CommentHelper {
             likesInfo: {
                 likesCount: await this.likeHelper.likesCount(new ObjectId(comment.id)),
                 dislikesCount: await this.likeHelper.dislikesCount(new ObjectId(comment.id)),
-                myStatus: await this.likeHelper.myStatus(new ObjectId(userId),new ObjectId(comment.id)),
+                myStatus: await this.likeHelper.myStatus(new ObjectId(userId), new ObjectId(comment.id)),
             }
         }
     }

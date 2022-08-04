@@ -39,7 +39,7 @@ export class CommentController {
     }
 
     async getComment(req: Request, res: Response) {
-        const comment: CommentResponseType | null = await this.commentsService.findCommentsById(new ObjectId(req.params.id),new ObjectId(req.user.id))
+        const comment: CommentResponseType | null = await this.commentsService.findCommentsById(new ObjectId(req.params.id), new ObjectId(req.user.id))
 
         if (!comment) {
             res.sendStatus(404)

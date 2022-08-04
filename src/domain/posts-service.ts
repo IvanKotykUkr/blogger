@@ -10,7 +10,6 @@ import {CommentsResponseTypeWithPagination, NewCommentType} from "../types/commn
 import {inject, injectable} from "inversify";
 import {PostsHelper} from "./helpers/posts-helper";
 import {BloggersRepositories} from "../repositories/bloggers-db-repositories";
-import {LikeDbType} from "../types/like-type";
 import {ObjectId} from "mongodb";
 import {LikesRepositories} from "../repositories/likes-repositories";
 import {CommentHelper} from "./helpers/comment-helper";
@@ -26,26 +25,26 @@ export class PostsService {
                 @inject(BloggersRepositories) protected bloggersRepositories: BloggersRepositories,
                 @inject(LikesRepositories) protected likesRepositories: LikesRepositories,
                 @inject(CommentHelper) protected commentHelper: CommentHelper,
-                @inject(LikeHelper) protected likeHelper:LikeHelper,
+                @inject(LikeHelper) protected likeHelper: LikeHelper,
     ) {
 
 
     }
 
 
-    async findPosts(pagenumber: number, pagesize: number,userId:ObjectId): Promise<PostsResponseTypeWithPagination> {
+    async findPosts(pagenumber: number, pagesize: number, userId: ObjectId): Promise<PostsResponseTypeWithPagination> {
 
 
-        return this.postsHelper.getPostsPagination(pagenumber, pagesize,userId)
+        return this.postsHelper.getPostsPagination(pagenumber, pagesize, userId)
     }
 
-    async findPostById(id: ObjectId,userId?:ObjectId): Promise<PostsResponseType | null> {
+    async findPostById(id: ObjectId, userId?: ObjectId): Promise<PostsResponseType | null> {
 
         const post: PostsType | null = await this.postsRepositories.findPostsById(id)
 
         if (post) {
 
-            return this.postsHelper.makePostResponse(post,userId);
+            return this.postsHelper.makePostResponse(post, userId);
         }
         return null;
 
@@ -108,11 +107,11 @@ export class PostsService {
 
     }
 
-    async sendAllCommentsByPostId(postid: ObjectId, pagenumber: number, pagesize: number,userId:ObjectId): Promise<CommentsResponseTypeWithPagination | null> {
+    async sendAllCommentsByPostId(postid: ObjectId, pagenumber: number, pagesize: number, userId: ObjectId): Promise<CommentsResponseTypeWithPagination | null> {
         let post: PostsResponseType | null = await this.findPostById(postid)
 
         if (post) {
-            let allComments: CommentsResponseTypeWithPagination = await this.commentHelper.sendAllComments(new ObjectId(postid), pagenumber, pagesize,userId)
+            let allComments: CommentsResponseTypeWithPagination = await this.commentHelper.sendAllComments(new ObjectId(postid), pagenumber, pagesize, userId)
             return allComments
         }
         return null
@@ -124,12 +123,11 @@ export class PostsService {
         let post: PostsResponseType | null = await this.findPostById(postid)
 
         if (post) {
-            return this.likeHelper.createLike(likeStatus,postid,userId,login)
+            return this.likeHelper.createLike(likeStatus, postid, userId, login)
 
 
         }
         return null
-
 
 
     }

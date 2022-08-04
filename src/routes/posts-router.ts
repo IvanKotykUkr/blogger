@@ -24,14 +24,13 @@ const postsController = container.resolve(PostsController)
 export const postsRouter = Router({})
 
 
-
 postsRouter.get("/:id",
     idValidationMiddleware,
     authForLikeMiddleware,
 
     postsController.getPost.bind(postsController));
 
-postsRouter.get("/",authForLikeMiddleware, postsController.getPosts.bind(postsController));
+postsRouter.get("/", authForLikeMiddleware, postsController.getPosts.bind(postsController));
 
 
 postsRouter.post("/",
