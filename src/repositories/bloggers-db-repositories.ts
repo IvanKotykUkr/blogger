@@ -20,7 +20,7 @@ export class BloggersRepositories {
         return filter
     }
 
-    async blooggersSeachCount(name: string | null): Promise<number> {
+    async bloggersSearchCount(name: string | null): Promise<number> {
         const filter = await this.paginationFilter(name)
         return BloggersModelClass.countDocuments(filter)
 
@@ -58,6 +58,8 @@ export class BloggersRepositories {
 
         return this.reqBlogger(bloggerInstance)
     }
+
+
 
     async updateBloggers(blogger: BloggerType): Promise<boolean> {
         const bloggerInstance = await BloggersModelClass.findById(blogger._id)

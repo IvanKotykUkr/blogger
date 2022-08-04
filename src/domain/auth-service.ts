@@ -41,7 +41,7 @@ export class AuthService {
                 }
 
             }
-            return allOk
+            return generatedUser
         }
 
         return null

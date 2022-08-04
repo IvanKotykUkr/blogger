@@ -5,7 +5,7 @@ import "reflect-metadata";
 @injectable()
 export class EmailAdapter {
     async sendEmail(email: string, subject: string, text: string) {
-
+        console.log("2")
 
         let transport = nodemailer.createTransport({
             service: "gmail",

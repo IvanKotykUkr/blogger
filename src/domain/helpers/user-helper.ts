@@ -7,7 +7,7 @@ import add from "date-fns/add";
 
 @injectable()
 export class UserHelper {
-    async makeUser(login: string, email: string, password: string) {
+    async makeUser(login: string, email: string, password: string):Promise<UserDBType> {
         const passwordSalt: string = await bcrypt.genSalt(10)
         const passwordHash: string = await this.generateHash(password, passwordSalt)
 

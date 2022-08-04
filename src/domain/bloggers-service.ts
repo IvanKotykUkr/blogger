@@ -26,7 +26,7 @@ export class BloggersService {
     async getBloggers(searchnameterm: string | null, pagesize: number, pagenumber: number): Promise<BloggerResponseTypeWithPagination> {
         let page: number = pagenumber
         let pageSize: number = pagesize
-        let totalCountSearch: number = await this.bloggersRepositories.blooggersSeachCount(searchnameterm)
+        let totalCountSearch: number = await this.bloggersRepositories.bloggersSearchCount(searchnameterm)
         let pagesCountSearch: number = Math.ceil(totalCountSearch / pageSize)
         const itemsSearch: BloggerResponseType[] = await this.bloggersRepositories.getBloggersSearchTerm(pageSize, page, searchnameterm)
         return {
