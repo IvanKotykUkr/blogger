@@ -35,13 +35,16 @@ export class BloggersRepositories {
             .lean()
 
 
+
         return bloggers.map(d => ({id: d._id, name: d.name, youtubeUrl: d.youtubeUrl}))
     }
 
     async findBloggersById(id: ObjectId): Promise<BloggerResponseType | null> {
+
         const blogger = await BloggersModelClass.findById(id);
 
         if (blogger) {
+
 
             return this.reqBlogger(blogger)
         }
@@ -64,14 +67,6 @@ export class BloggersRepositories {
     async updateBloggers(blogger: BloggerType): Promise<boolean> {
         const bloggerInstance = await BloggersModelClass.findById(blogger._id)
         if (!bloggerInstance) return false
-        /*  const old=bloggerInstance.name
-          const old2=bloggerInstance.youtubeUrl
-          const history=new BloggersModelClass({isHistory:true,srcId:bloggerInstance._id,changer:'Ivan',old,old2})
-
-          await history.save()
-
-
-         */
         bloggerInstance.name = blogger.name
         bloggerInstance.youtubeUrl = blogger.youtubeUrl
         await bloggerInstance.save()
