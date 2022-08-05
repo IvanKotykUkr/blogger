@@ -1,9 +1,8 @@
 import {MongoMemoryServer} from "mongodb-memory-server";
-import mongoose, {Schema} from "mongoose";
+import mongoose from "mongoose";
 import {BloggersRepositories} from "./bloggers-db-repositories";
 import {ObjectId} from "mongodb";
 import {BloggerDBType} from "../types/blogger-type";
-import {isNumberObject} from "util/types";
 import {BloggersModelClass} from "./db";
 
 
@@ -21,7 +20,7 @@ describe("test for blogger repository", () => {
         await mongoServer.stop()
     })
     const bloggersRepositories = new BloggersRepositories()
-    const newBlogger:BloggerDBType = {
+    const newBlogger: BloggerDBType = {
         _id: new ObjectId(),
         name: "Vasya",
         youtubeUrl: "https://www.youtube.com/watch?v=6dU184lSnsk"
@@ -37,19 +36,17 @@ describe("test for blogger repository", () => {
         });
 
 
-
-
     })
     describe("test for paginationFilter", () => {
         it("should create paginationFilter", async () => {
 
             const result = await bloggersRepositories.paginationFilter("vasya")
-           expect(result).toStrictEqual({"name": {"$regex": "vasya"}})
+            expect(result).toStrictEqual({"name": {"$regex": "vasya"}})
         });
         it("should return {}", async () => {
 
             const result = await bloggersRepositories.paginationFilter(null)
-           expect(result).toStrictEqual({})
+            expect(result).toStrictEqual({})
         });
 
 
@@ -66,9 +63,9 @@ describe("test for blogger repository", () => {
             expect(result).toBe(0)
         });
         it("should return o", async () => {
-           await BloggersModelClass.insertMany({
-               name: "Olya",
-               youtubeUrl: "https://www.youtube.com/watch?v=6dU184lSnsk"
+            await BloggersModelClass.insertMany({
+                name: "Olya",
+                youtubeUrl: "https://www.youtube.com/watch?v=6dU184lSnsk"
 
             })
             const result = await bloggersRepositories.bloggersSearchCount("Vasya")
@@ -87,19 +84,19 @@ describe("test for blogger repository", () => {
                 youtubeUrl: "https://www.youtube.com/watch?v=6dU184lSnsk"
 
             })
-            const result = await bloggersRepositories.getBloggersSearchTerm(3,3,"Olya")
+            const result = await bloggersRepositories.getBloggersSearchTerm(3, 3, "Olya")
             expect(result).toStrictEqual([])
         });
         it("should return {} ", async () => {
 
-            const result = await bloggersRepositories.getBloggersSearchTerm(5,5,"N")
+            const result = await bloggersRepositories.getBloggersSearchTerm(5, 5, "N")
             expect(result).toStrictEqual([])
         });
 
 
     })
     describe("test for blogger findBloggersById", () => {
-        const oldBloger={
+        const oldBloger = {
             _id: new ObjectId('62d1d784431342239445bc1a'),
             name: "Olya",
             youtubeUrl: "https://www.youtube.com/watch?v=6dU184lSnsk"
@@ -116,7 +113,7 @@ describe("test for blogger repository", () => {
 
             const result = await bloggersRepositories.findBloggersById(new ObjectId())
             expect(result).toBeNull()
-               });
+        });
     })
     describe("test for blogger createBlogger", () => {
 
@@ -132,25 +129,21 @@ describe("test for blogger repository", () => {
         });
 
 
-
-
-
-
     })
     describe("test for blogger updateBloggers", () => {
-        const oldBloger={
+        const oldBloger = {
             _id: new ObjectId('62d1d784431342239445bc1a'),
             name: "Olya",
             youtubeUrl: "https://www.youtube.com/watch?v=6dU184lSnsk"
 
         }
-        const newBlogger={
+        const newBlogger = {
             _id: new ObjectId('62d1d784431342239445bc1a'),
             name: "Vasya",
             youtubeUrl: "https://www.youtube.com/watch?v=6dU184lSnsk"
 
         }
-        const differentBlogger={
+        const differentBlogger = {
             _id: new ObjectId('62d1d784431342239445bc3a'),
             name: "Petya",
             youtubeUrl: "https://www.youtube.com/watch?v=6dU184lSnsk"
@@ -169,14 +162,14 @@ describe("test for blogger repository", () => {
         });
     })
     describe("test for blogger deleteBloggers", () => {
-        const oldBloger={
+        const oldBloger = {
             _id: new ObjectId('62d1d784431342239445bc1a'),
             name: "Olya",
             youtubeUrl: "https://www.youtube.com/watch?v=6dU184lSnsk"
 
         }
 
-        const differentBlogger={
+        const differentBlogger = {
             _id: new ObjectId('62d1d784431342239445bc3a'),
             name: "Petya",
             youtubeUrl: "https://www.youtube.com/watch?v=6dU184lSnsk"
@@ -194,6 +187,7 @@ describe("test for blogger repository", () => {
             expect(result).toBeTruthy()
         });
         it("should return false ", async () => {
+
 
             const result = await bloggersRepositories.deleteBloggers(oldBloger._id)
             expect(result).toBeFalsy()
