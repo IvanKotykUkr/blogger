@@ -33,10 +33,10 @@ export class CommentsRepositories {
         commentInstance.addedAt = comment.addedAt
         await commentInstance.save()
 
-       // if (commentInstance) {
+        // if (commentInstance) {
 
 
-            return this.reqComment(commentInstance)
+        return this.reqComment(commentInstance)
         //}
         //return null
 

@@ -1,13 +1,5 @@
 import "reflect-metadata";
 
-import {UserHelper} from "./helpers/user-helper";
-import {MongoMemoryServer} from "mongodb-memory-server";
-import mongoose from "mongoose";
-import {AuthService} from "./auth-service";
-import {UserRepositories} from "../repositories/user-db-repositories";
-import {EmailManager} from "../managers/email-manager";
-import {EmailAdapter} from "../adapters/email-adapter";
-
 jest.setTimeout(60_0000)
 /*
 describe("integration test for AuthService ", () => {

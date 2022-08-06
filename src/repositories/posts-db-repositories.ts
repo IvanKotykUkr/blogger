@@ -39,7 +39,7 @@ export class PostsRepositories {
 
         return PostsModelClass.find(filter)
             .skip((number - 1) * size)
-           // .skip(number > 0 ? ((number - 1) * size) : 0)
+            // .skip(number > 0 ? ((number - 1) * size) : 0)
             .limit(size)
             .lean()
 

@@ -34,7 +34,7 @@ export class LikeHelper {
 
     async createLike(likeStatus: string, postid: ObjectId, userId: ObjectId, login: string) {
 
-        const alreadyLiked:LikeDbType|boolean = await this.likesRepositories.findLike(postid, userId, likeStatus)
+        const alreadyLiked: LikeDbType | boolean = await this.likesRepositories.findLike(postid, userId, likeStatus)
         if (alreadyLiked) {
 
             return alreadyLiked

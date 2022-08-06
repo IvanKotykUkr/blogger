@@ -35,7 +35,6 @@ export class BloggersRepositories {
             .lean()
 
 
-
         return bloggers.map(d => ({id: d._id, name: d.name, youtubeUrl: d.youtubeUrl}))
     }
 
@@ -61,7 +60,6 @@ export class BloggersRepositories {
 
         return this.reqBlogger(bloggerInstance)
     }
-
 
 
     async updateBloggers(blogger: BloggerType): Promise<boolean> {

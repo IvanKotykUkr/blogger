@@ -115,33 +115,37 @@ describe("test for likes repositories", () => {
 
         });
     })
-   describe("test for  newstLike", () => {
-       it("should ", async () => {
-           const result = await likesRepositories.newstLike(enazerLike.post)
-           expect(result).toStrictEqual([{"addedAt":newLike.addedAt, "login": "Login", "userId": newLike.userId}, {"addedAt":enazerLike.addedAt, "login": "Login", "userId":enazerLike.userId}]
-       )
+    describe("test for  newstLike", () => {
+        it("should ", async () => {
+            const result = await likesRepositories.newstLike(enazerLike.post)
+            expect(result).toStrictEqual([{
+                    "addedAt": newLike.addedAt,
+                    "login": "Login",
+                    "userId": newLike.userId
+                }, {"addedAt": enazerLike.addedAt, "login": "Login", "userId": enazerLike.userId}]
+            )
 
-       });
+        });
 
-   })
-      describe("test for  findLike", () => {
-          it("should ", async () => {
+    })
+    describe("test for  findLike", () => {
+        it("should ", async () => {
 
-              const result = await likesRepositories.findLike(newLike.userId, newLike.post,newLike.status)
-              expect(result).toBeFalsy()
+            const result = await likesRepositories.findLike(newLike.userId, newLike.post, newLike.status)
+            expect(result).toBeFalsy()
 
-          });
-          it("should ", async () => {
-              const result = await likesRepositories.findLike(newDislike.userId, newDislike.post,newDislike.status)
-              expect(result).toBeFalsy()
+        });
+        it("should ", async () => {
+            const result = await likesRepositories.findLike(newDislike.userId, newDislike.post, newDislike.status)
+            expect(result).toBeFalsy()
 
-          });
-          it("should ", async () => {
-              const result = await likesRepositories.findLike(newDislike.userId, enazerLike.post,newDislike.status)
-              expect(result).toBeFalsy()
+        });
+        it("should ", async () => {
+            const result = await likesRepositories.findLike(newDislike.userId, enazerLike.post, newDislike.status)
+            expect(result).toBeFalsy()
 
-          });
-      })
+        });
+    })
 
 
 })

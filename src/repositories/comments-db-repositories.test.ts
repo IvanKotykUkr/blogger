@@ -25,7 +25,7 @@ describe("test for acccces attempts", () => {
         userLogin: 'string',
         addedAt: new Date('1995-12-17T03:24:00')
     }
-   const newXComment = {
+    const newXComment = {
         _id: new ObjectId("62ed67b5bbf342ea571a0ea5"),
         postId: new ObjectId("62ed67b5bbf342ea571a0ea9"),
         content: "string",
@@ -41,7 +41,7 @@ describe("test for acccces attempts", () => {
         userLogin: 'string',
         addedAt: new Date('1995-12-17T03:24:00')
     }
-      const oldXComment = {
+    const oldXComment = {
         _id: new ObjectId("62ed67b5bbf342ea511a0ea1"),
         postId: new ObjectId("62ed67b5bbf343ea571a0ea2"),
         content: "string",
