@@ -12,6 +12,11 @@ export class LikeDbType {
     ) {
     }
 }
+export type Newest3Likes = {
+    addedAt?: Date,
+    userId?: ObjectId,
+    login?: string
+}
 
 export type ExtendedLikesInfo = {
     likesCount: number,

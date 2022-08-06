@@ -18,13 +18,14 @@ export class CommentsRepositories {
     }
 
     async commentCount(post: ObjectId): Promise<number> {
+
         return CommentsModelClass.countDocuments({postid: post})
 
     }
 
     async createComment(comment: CommentsDBType): Promise<NewCommentType | null> {
         const commentInstance = new CommentsModelClass
-        commentInstance.id = comment._id
+        commentInstance._id = comment._id
         commentInstance.postid = comment.postid
         commentInstance.content = comment.content
         commentInstance.userId = comment.userId
@@ -32,12 +33,12 @@ export class CommentsRepositories {
         commentInstance.addedAt = comment.addedAt
         await commentInstance.save()
 
-        if (commentInstance) {
+       // if (commentInstance) {
 
 
             return this.reqComment(commentInstance)
-        }
-        return null
+        //}
+        //return null
 
 
     }
