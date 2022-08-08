@@ -92,7 +92,9 @@ export class UserRepositories {
     }
 
     async findUserByCode(code: string): Promise<UserType | null> {
-        const user = await UsersModelClass.findOne({"emailConfirmation.confirmationCode": code})
+        const user:UserDBType|null = await UsersModelClass.findOne({"emailConfirmation.confirmationCode": code})
+
+
         if (user) {
             return this.reqUsers(user)
 

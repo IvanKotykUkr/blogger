@@ -111,7 +111,7 @@ export const CommentsModelClass = mongoose.model('Comments', CommentsSchema);
 export const TrafficModelClass = mongoose.model('Traffic', TrafficSchema);
 export const TokensModelClass = mongoose.model('Tokens', TokenSchema);
 export const LikesModelClass = mongoose.model('Likes', LikeSchema);
-const cleanToken = async () => {
+/*const cleanToken = async () => {
     await TokensModelClass.deleteMany({addedAt: {$lt: Date.now() - 1000 * 60 * 60 * 24}}).lean()
 
     console.log("cleared token")
@@ -120,6 +120,8 @@ const cleanToken = async () => {
 
 }
 
+ */
+
 export async function runDb() {
     try {
 
@@ -127,7 +129,7 @@ export async function runDb() {
         // await client.connect();
         //await client.db("blogger").command({ping: 1});
         console.log("Connected successfully to mongo server")
-        setInterval(cleanToken, 1000 * 60 * 60 * 24)
+      //  setInterval(cleanToken, 1000 * 60 * 60 * 24)
 
 
     } catch {
