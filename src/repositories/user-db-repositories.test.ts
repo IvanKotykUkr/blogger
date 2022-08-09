@@ -209,11 +209,11 @@ describe("test for user repo", () => {
     })
     describe("test for  renewConfirmationCode", () => {
         it("should return code", async () => {
-            const result = await userRepositories.renewConfirmationCode(userVasya.accountData.email,"tyrf",new Date('2001-12-17T03:24:00'))
+            const result = await userRepositories.renewConfirmationCode(userVasya.accountData.email, "tyrf", new Date('2001-12-17T03:24:00'))
             expect(result).toBe("tyrf")
         });
         it("should return null", async () => {
-            const result = await userRepositories.renewConfirmationCode(userMasha.accountData.email,"tyrf",new Date('2001-12-17T03:24:00'))
+            const result = await userRepositories.renewConfirmationCode(userMasha.accountData.email, "tyrf", new Date('2001-12-17T03:24:00'))
             expect(result).toBe("tyrf")
         });
 

@@ -14,6 +14,13 @@ export class UsersService {
 
     }
 
+    async createUser(login: string, email: string, password: string): Promise<UserRoutType> {
+
+        const newUser: UserDBType | null = await this.userHelper.makeUser(login, email, password)
+
+        return {id: newUser!._id, login: newUser!.accountData.login}
+
+    }
 
     async findUserById(userid: ObjectId): Promise<UserResponseType | null> {
 
@@ -45,13 +52,4 @@ export class UsersService {
     }
 
 
-    async createUser(login: string, email: string, password: string): Promise<UserRoutType | null> {
-
-        const newUser: UserDBType = await this.userHelper.makeUser(login, email, password)
-        const generatedUser = await this.userRepositories.createUser(newUser)
-        if (generatedUser) {
-            return {id: generatedUser._id, login: newUser.accountData.login}
-        }
-        return null
-    }
 }

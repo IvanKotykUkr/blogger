@@ -1,13 +1,17 @@
-import {injectable} from "inversify";
+import {inject, injectable} from "inversify";
 import * as bcrypt from "bcrypt";
 import {UserDBType} from "../../types/user-type";
 import {ObjectId} from "mongodb";
 import {v4 as uuidv4} from "uuid";
 import add from "date-fns/add";
+import {UserRepositories} from "../../repositories/user-db-repositories";
 
 @injectable()
 export class UserHelper {
-    async makeUser(login: string, email: string, password: string): Promise<UserDBType> {
+    constructor(@inject(UserRepositories) protected userRepositories: UserRepositories) {
+    }
+
+    async makeUser(login: string, email: string, password: string): Promise<UserDBType | null> {
         const passwordSalt: string = await bcrypt.genSalt(10)
         const passwordHash: string = await this.generateHash(password, passwordSalt)
 
@@ -34,7 +38,10 @@ export class UserHelper {
             }
 
         }
+        await this.userRepositories.createUser(newUser)
+
         return newUser
+
     }
 
     async generateHash(password: string, salt: string): Promise<string> {

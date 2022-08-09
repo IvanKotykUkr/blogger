@@ -22,6 +22,7 @@ export const inputValidationLikeStatus = (req: Request, res: Response, next: Nex
 }
 
 export const likeOrDislakeValidation = (req: Request, res: Response, next: NextFunction) => {
+
     const likeStatus = req.body.likeStatus
     if (likeStatus !== "Dislike" && likeStatus !== "Like" && likeStatus !== "None") {
         res.status(400).json({errorsMessages: [{message: "Should be Like or Dislike", field: "likeStatus"}]})

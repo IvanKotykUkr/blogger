@@ -25,23 +25,20 @@ export class AuthService {
     async createUser(login: string, email: string, password: string) {
 
 
-        const newUser: UserDBType = await this.userHelper.makeUser(login, email, password)
+        const newUser: UserDBType | null = await this.userHelper.makeUser(login, email, password)
 
-        const generatedUser = await this.userRepositories.createUser(newUser)
-
-        if (generatedUser) {
+        if (newUser) {
             try {
                 await this.emailManager.sendEmailConfirmationMessage(newUser.accountData.email, newUser.emailConfirmation.confirmationCode)
             } catch (error) {
                 console.error(error)
-                if (generatedUser) {
 
-                    await this.userRepositories.deleteUserById(new ObjectId(generatedUser._id))
-                    return null;
-                }
+                await this.userRepositories.deleteUserById(new ObjectId(newUser._id))
+                return null;
+
 
             }
-            return generatedUser
+            return newUser
         }
 
         return null
