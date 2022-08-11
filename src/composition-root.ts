@@ -25,6 +25,8 @@ import {CommentHelper} from "./domain/helpers/comment-helper";
 import {LikeHelper} from "./domain/helpers/like-helper";
 import {BloggerHelper} from "./domain/helpers/blogger-helper";
 import {UserHelper} from "./domain/helpers/user-helper";
+import {PairQuizGameController} from "./contoller/pairquizgame-controller";
+import {PairQuizGameService} from "./domain/pairquizgame-service";
 
 export const container = new Container();
 container.bind(BloggersController).to(BloggersController)
@@ -52,6 +54,8 @@ container.bind<CommentHelper>(CommentHelper).to(CommentHelper)
 container.bind<LikeHelper>(LikeHelper).to(LikeHelper)
 container.bind<BloggerHelper>(BloggerHelper).to(BloggerHelper)
 container.bind<UserHelper>(UserHelper).to(UserHelper)
+container.bind<PairQuizGameController>(PairQuizGameController).to(PairQuizGameController)
+container.bind<PairQuizGameService>(PairQuizGameService).to(PairQuizGameService)
 
 
 

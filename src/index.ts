@@ -9,6 +9,7 @@ import {commentsRouter} from "./routes/comments-router";
 import {usersRouter} from "./routes/users-router";
 import {testingRouter} from "./routes/testing-router";
 import cookieParser from "cookie-parser";
+import {pairQuizGameRouter} from "./routes/pairquizgame-router";
 
 
 const app = express();
@@ -25,6 +26,7 @@ app.use('/auth', authRouter)
 app.use('/comments', commentsRouter)
 app.use('/users', usersRouter)
 app.use('/testing', testingRouter)
+app.use('/pair-game-quiz', pairQuizGameRouter)
 
 
 const startApp = async () => {
