@@ -8,6 +8,7 @@ import {CommentsDBType} from "../types/commnet-type";
 import {TokensType} from "../types/tokens-types";
 import {RecordType} from "../types/traffic-type";
 import {LikeDbType} from "../types/like-type";
+import {GameType} from "../types/pairQuizGame-type";
 
 
 //export const client = new MongoClient(settings.MONGO_URL);
@@ -103,6 +104,42 @@ const LikeSchema = new mongoose.Schema<LikeDbType>({
         versionKey: false,
     });
 
+const GameSchema = new mongoose.Schema<GameType>({
+        _id: ObjectId,
+        firstPlayer: {
+            answers: {
+                questionId: String,
+                answerStatus: String,
+                addedAt: Date
+            } || [],
+            user: {
+                _id: ObjectId,
+                login: String,
+            },
+            score: Number,
+        },
+        secondPlayer: {
+            answers: {
+                questionId: String,
+                answerStatus: String,
+                addedAt: Date
+            } || [],
+            user: {
+                _id: ObjectId,
+                login: String,
+            },
+            score: Number
+        } || null,
+        questions: [{}
+        ],
+        status: String,
+        pairCreatedDate: Date,
+        startGameDate: Date || null,
+        finishGameDate: Date || null,
+    },
+    {
+        versionKey: false,
+    })
 
 export const BloggersModelClass = mongoose.model('Bloggers', BloggerSchema);
 export const PostsModelClass = mongoose.model('Posts', PostsSchema);
@@ -111,6 +148,7 @@ export const CommentsModelClass = mongoose.model('Comments', CommentsSchema);
 export const TrafficModelClass = mongoose.model('Traffic', TrafficSchema);
 export const TokensModelClass = mongoose.model('Tokens', TokenSchema);
 export const LikesModelClass = mongoose.model('Likes', LikeSchema);
+export const GameModel = mongoose.model("Game", GameSchema)
 
 /*const cleanToken = async () => {
     await TokensModelClass.deleteMany({addedAt: {$lt: Date.now() - 1000 * 60 * 60 * 24}}).lean()

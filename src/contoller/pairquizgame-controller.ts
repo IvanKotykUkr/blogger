@@ -11,7 +11,7 @@ export class PairQuizGameController {
     }
 
     async myCurrent(req: Request, res: Response) {
-        const currentGame = await this.pairQuizGameService.myCurrentGame(new ObjectId(req.user.id),)
+        //   const currentGame = await this.pairQuizGameService.myCurrentGame(new ObjectId(req.user.id),)
     }
 
     async getGameById(req: Request, res: Response) {
@@ -23,7 +23,8 @@ export class PairQuizGameController {
     }
 
     async connectUser(req: Request, res: Response) {
-
+        const connectedUser = await this.pairQuizGameService.connectGame(new ObjectId(req.user.id), req.user.login)
+        res.status(200).send(connectedUser)
     }
 
     async sendAnswer(req: Request, res: Response) {
