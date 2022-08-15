@@ -36,7 +36,7 @@ describe("test for game repositories", () => {
     const user3 = {
         user: {
             _id: new ObjectId("62ed677fbbd342ea570a0ea1"),
-            login: "Masha"
+            login: "Olya"
         },
         score: 0
     }
@@ -107,8 +107,16 @@ describe("test for game repositories", () => {
         });
 
         it("should create connectToNewGame", async () => {
-            const result = await gameRepositories.connectToNewGame(user1)
+            const result = await gameRepositories.connectToNewGame(user3)
             expect(result).toBeNull()
+        });
+
+
+    })
+    describe("test for  checkParticipating", () => {
+        it("should return true", async () => {
+            const result = await gameRepositories.checkParticipating(user1.user._id)
+            expect(result).toBeTruthy()
         });
 
 

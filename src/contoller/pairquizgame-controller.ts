@@ -28,6 +28,7 @@ export class PairQuizGameController {
     }
 
     async sendAnswer(req: Request, res: Response) {
+        const sendAnswer = await this.pairQuizGameService.sendAnswer(new ObjectId(req.user.id), new ObjectId(req.params.id), req.body.answer)
 
     }
 

@@ -20,5 +20,12 @@ export class PairQuizGameService {
         availableGame = true
         return game
     }
+
+
+    async sendAnswer(userId: ObjectId, gameId: ObjectId, answer: string,) {
+        const newAnswer = await this.pairQuizGameHelper.makeAnswer(userId, gameId, answer)
+        return newAnswer
+
+    }
 }
 

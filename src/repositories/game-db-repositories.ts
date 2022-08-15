@@ -13,7 +13,7 @@ const questions: QuestionsType[] = [
     {
         id: "62ed677fbbf342ea570a0ea2",
         body: "What was the name of the actor who played Jack Dawson in Titanic?",
-        correctAnswer: "Leonardo DiCaprio",
+        correctAnswer: "Leonardo Dicaprio",
     },
     {
         id: "62ed677fbbf342ea570a0ea3",
@@ -61,28 +61,75 @@ export class GameRepositories {
         game._id = new ObjectId()
         game.firstPlayer = newPlayer
         game.secondPlayer = null
-
-
         game.status = "PendingSecondPlayer"
         game.pairCreatedDate = new Date()
         game.startGameDate = null
         game.finishGameDate = null
         await game.save()
         game.questions = this.randomQuestions(questions, 5)
+
         await game.save()
         return game
-
     }
 
     async connectToNewGame(newPlayer: PlayerType): Promise<GameType | null> {
-        const game = await GameModel.findOneAndUpdate({status: "PendingSecondPlayer"})
+        const game = await GameModel.findOne({status: "PendingSecondPlayer"})
         if (game) {
-
             game.secondPlayer = newPlayer
             game.status = "Active"
-
+            game.firstPlayer.answers = game.questions
             await game.save()
             return game
+        }
+        return null
+    }
+
+    async checkParticipating(user: ObjectId): Promise<boolean> {
+        const player = await GameModel.findOne(
+            {
+                $and: [
+                    {
+                        $or: [
+                            {"status": "PendingSecondPlayer"},
+                            {"status": "Active"}
+                        ]
+                    },
+                    {
+                        $or: [
+                            {"firstPlayer.user._id": user},
+                            {"secondPlayer.user._id": user}
+                        ]
+                    }
+                ]
+            })
+
+        if (player) {
+            return true
+        }
+        return false
+    }
+
+    async findPlayerInDB(userId: ObjectId, gameId: ObjectId): Promise<PlayerType | null> {
+        const game = await GameModel.findOne(
+            {
+                $and: [
+                    {
+                        _id: gameId
+                    },
+                    {
+                        $or: [
+                            {"firstPlayer.user._id": userId},
+                            {"secondPlayer.user._id": userId}
+                        ]
+                    }
+                ]
+            })
+        if (game && game.firstPlayer.user._id === userId) {
+            return game.firstPlayer
+
+        }
+        if (game && game.secondPlayer!.user._id === userId) {
+            return game.secondPlayer
         }
         return null
     }

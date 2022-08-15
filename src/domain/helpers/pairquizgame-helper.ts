@@ -36,5 +36,15 @@ export class PairQuizGameHelper {
 
     }
 
+    async findPlayer(userId: ObjectId, gameId: ObjectId) {
+        const player: PlayerType | null = await this.gameRepositories.findPlayerInDB(userId, gameId)
 
+        return player
+    }
+
+    async makeAnswer(userId: ObjectId, gameId: ObjectId, answer: string) {
+        const player = await this.findPlayer(userId, gameId)
+
+
+    }
 }
