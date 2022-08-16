@@ -12,14 +12,12 @@ export type GameType = WithId<{
 }>
 
 export type GamePlayerType = {
-    answers?: AnswersType[],
+    answers: AnswersType[],
     user: GameUserType,
     score: number
 }
 export type AnswersType = {
-    questionId: string,
-    answerStatus: "Correct" | "Incorrect",
-    addedAt: Date
+    answer: AnswerType
 } | []
 export type QuestionsType = {
     id: string
@@ -45,3 +43,12 @@ export  type GameUserType = {
     login: string
 }
 
+export type FindPlayerDbType = {
+    gameId: ObjectId,
+    questions: QuestionsType
+}
+export type AnswerType = {
+    questionId: string,
+    answerStatus: "Correct" | "Incorrect",
+    addedAt: Date
+}

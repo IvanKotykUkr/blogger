@@ -1,6 +1,6 @@
 import {inject, injectable} from "inversify";
 import {ObjectId} from "mongodb";
-import {GameType} from "../types/pairQuizGame-type";
+import {AnswerType, GameType} from "../types/pairQuizGame-type";
 import {PairQuizGameHelper} from "./helpers/pairquizgame-helper";
 
 let availableGame = false
@@ -22,8 +22,9 @@ export class PairQuizGameService {
     }
 
 
-    async sendAnswer(userId: ObjectId, gameId: ObjectId, answer: string,) {
-        const newAnswer = await this.pairQuizGameHelper.makeAnswer(userId, gameId, answer)
+    async sendAnswer(userId: ObjectId, answer: string,): Promise<AnswerType | null> {
+        const newAnswer = await this.pairQuizGameHelper.createAnswerHelper(userId, answer)
+
         return newAnswer
 
     }

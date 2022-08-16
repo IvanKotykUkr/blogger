@@ -107,11 +107,11 @@ const LikeSchema = new mongoose.Schema<LikeDbType>({
 const GameSchema = new mongoose.Schema<GameType>({
         _id: ObjectId,
         firstPlayer: {
-            answers: {
+            answers: [{
                 questionId: String,
                 answerStatus: String,
                 addedAt: Date
-            } || [],
+            }] || [],
             user: {
                 _id: ObjectId,
                 login: String,
@@ -119,11 +119,11 @@ const GameSchema = new mongoose.Schema<GameType>({
             score: Number,
         },
         secondPlayer: {
-            answers: {
+            answers: [{
                 questionId: String,
                 answerStatus: String,
                 addedAt: Date
-            } || [],
+            }] || [],
             user: {
                 _id: ObjectId,
                 login: String,

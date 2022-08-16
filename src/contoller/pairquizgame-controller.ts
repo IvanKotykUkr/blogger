@@ -28,8 +28,17 @@ export class PairQuizGameController {
     }
 
     async sendAnswer(req: Request, res: Response) {
-        const sendAnswer = await this.pairQuizGameService.sendAnswer(new ObjectId(req.user.id), new ObjectId(req.params.id), req.body.answer)
-
+        const sendAnswer = await this.pairQuizGameService.sendAnswer(new ObjectId(req.user.id), req.body.answer)
+        if (sendAnswer) {
+            res.status(200).send(sendAnswer)
+            return
+        }
+        res.status(403).json({
+            errorsMessages: [{
+                message: "current user is not inside active pair or user is in active pair but has already answered to all questions",
+                field: "User"
+            }]
+        })
     }
 
     async getUserTop(req: Request, res: Response) {

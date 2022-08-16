@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {injectable} from "inversify";
-import {GameType, PlayerType, QuestionsType} from "../types/pairQuizGame-type";
+import {AnswerType, FindPlayerDbType, GamePlayerType, GameType, QuestionsType} from "../types/pairQuizGame-type";
 import {GameModel} from "./db";
 import {ObjectId} from "mongodb";
 
@@ -53,10 +53,10 @@ export class GameRepositories {
     randomQuestions(questions: QuestionsType[], n: number): QuestionsType[] {
         const result = questions.sort(() => Math.random() - Math.random()).slice(0, n)
 
-        return result.map((d => ({id: d.id, body: d.body})))
+        return result.map((d => ({id: d.id, body: d.body, correctAnswer: d.correctAnswer})))
     }
 
-    async startNewGame(newPlayer: PlayerType): Promise<GameType> {
+    async startNewGame(newPlayer: GamePlayerType): Promise<GameType> {
         const game = new GameModel()
         game._id = new ObjectId()
         game.firstPlayer = newPlayer
@@ -72,12 +72,11 @@ export class GameRepositories {
         return game
     }
 
-    async connectToNewGame(newPlayer: PlayerType): Promise<GameType | null> {
+    async connectToNewGame(newPlayer: GamePlayerType): Promise<GameType | null> {
         const game = await GameModel.findOne({status: "PendingSecondPlayer"})
         if (game) {
             game.secondPlayer = newPlayer
             game.status = "Active"
-            game.firstPlayer.answers = game.questions
             await game.save()
             return game
         }
@@ -109,28 +108,83 @@ export class GameRepositories {
         return false
     }
 
-    async findPlayerInDB(userId: ObjectId, gameId: ObjectId): Promise<PlayerType | null> {
+    async findFirstPlayerDB(userId: ObjectId): Promise<FindPlayerDbType | null> {
         const game = await GameModel.findOne(
             {
                 $and: [
                     {
-                        _id: gameId
+                        "status": "Active"
                     },
-                    {
-                        $or: [
-                            {"firstPlayer.user._id": userId},
-                            {"secondPlayer.user._id": userId}
-                        ]
-                    }
+
+
+                    {"firstPlayer.user._id": userId}
+
+
                 ]
             })
-        if (game && game.firstPlayer.user._id === userId) {
-            return game.firstPlayer
-
+        if (!game) {
+            return null
         }
-        if (game && game.secondPlayer!.user._id === userId) {
-            return game.secondPlayer
+        const answers = game.firstPlayer!.answers.length
+
+        if (answers >= 5) {
+            return null
+        }
+        const questionsGame = game.questions[answers]
+
+        if (questionsGame) {
+            return {
+                gameId: game._id,
+                questions: questionsGame
+            }
         }
         return null
+    }
+
+    async findSecondPlayerDB(userId: ObjectId): Promise<FindPlayerDbType | null> {
+        const game = await GameModel.findOne(
+            {
+                $and: [
+                    {
+                        "status": "Active"
+                    },
+                    {"secondPlayer.user._id": userId}
+                ]
+            })
+        if (!game) {
+            return null
+        }
+        const answers = game.secondPlayer!.answers.length
+        if (answers >= 5) {
+            return null
+        }
+
+        const questionsGame = game.questions[answers]
+
+        if (questionsGame) {
+            return {
+                gameId: game._id,
+                questions: questionsGame
+            }
+        }
+        return null
+
+    }
+
+    async addAnswerForFirstPlayer(_id: ObjectId, answer: AnswerType): Promise<boolean> {
+        const newAnswer = await GameModel.updateOne({_id}, {$push: {"firstPlayer.answers": answer}})
+        return newAnswer.modifiedCount === 1
+    }
+
+    async addAnswerForSecondPlayer(_id: ObjectId, answer: AnswerType): Promise<boolean> {
+        const newAnswer = await GameModel.findOneAndUpdate({_id}, {$push: {"secondPlayer.answers": answer}})
+
+        let score: number = newAnswer.secondPlayer.score
+
+        if (answer.answerStatus === "Correct") {
+            score++
+            return true
+        }
+        return true
     }
 }
