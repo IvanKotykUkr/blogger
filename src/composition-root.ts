@@ -29,6 +29,8 @@ import {PairQuizGameController} from "./contoller/pairquizgame-controller";
 import {PairQuizGameService} from "./domain/pairquizgame-service";
 import {PairQuizGameHelper} from "./domain/helpers/pairquizgame-helper";
 import {GameRepositories} from "./repositories/game-db-repositories";
+import {ScoreGameRepositories} from "./repositories/score-game-repositories";
+import {TopRatedHelper} from "./domain/helpers/toprated-helper";
 
 export const container = new Container();
 container.bind(BloggersController).to(BloggersController)
@@ -60,6 +62,8 @@ container.bind<PairQuizGameController>(PairQuizGameController).to(PairQuizGameCo
 container.bind<PairQuizGameService>(PairQuizGameService).to(PairQuizGameService)
 container.bind<PairQuizGameHelper>(PairQuizGameHelper).to(PairQuizGameHelper)
 container.bind<GameRepositories>(GameRepositories).to(GameRepositories)
+container.bind<ScoreGameRepositories>(ScoreGameRepositories).to(ScoreGameRepositories)
+container.bind<TopRatedHelper>(TopRatedHelper).to(TopRatedHelper)
 
 
 

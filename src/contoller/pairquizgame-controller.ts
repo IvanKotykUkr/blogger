@@ -2,11 +2,13 @@ import {inject, injectable} from "inversify";
 import {Request, Response} from "express";
 import {PairQuizGameService} from "../domain/pairquizgame-service";
 import {ObjectId} from "mongodb";
+import {TopRatedHelper} from "../domain/helpers/toprated-helper";
 
 @injectable()
 export class PairQuizGameController {
 
-    constructor(@inject(PairQuizGameService) protected pairQuizGameService: PairQuizGameService) {
+    constructor(@inject(PairQuizGameService) protected pairQuizGameService: PairQuizGameService,
+                @inject(TopRatedHelper) protected topRatedHelper: TopRatedHelper) {
 
     }
 
@@ -42,7 +44,10 @@ export class PairQuizGameController {
     }
 
     async getUserTop(req: Request, res: Response) {
-
+        const pagenumber = req.query.PageNumber || 1;
+        const pagesize = req.query.PageSize || 10;
+        const rating = await this.topRatedHelper.TopRatedWithPagination(+pagenumber, +pagesize)
+        res.status(200).send(rating)
     }
 
 }

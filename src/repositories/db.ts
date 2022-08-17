@@ -8,7 +8,7 @@ import {CommentsDBType} from "../types/commnet-type";
 import {TokensType} from "../types/tokens-types";
 import {RecordType} from "../types/traffic-type";
 import {LikeDbType} from "../types/like-type";
-import {GameType} from "../types/pairQuizGame-type";
+import {GameType, TopRatingType} from "../types/pairQuizGame-type";
 
 
 //export const client = new MongoClient(settings.MONGO_URL);
@@ -34,6 +34,7 @@ const BloggerSchema = new mongoose.Schema<BloggerDBType>({
     {
         versionKey: false,
     });
+
 const PostsSchema = new mongoose.Schema<PostsDBType>({
         title: String,
         shortDescription: String,
@@ -45,6 +46,7 @@ const PostsSchema = new mongoose.Schema<PostsDBType>({
     {
         versionKey: false,
     });
+
 const UserSchema = new mongoose.Schema<UserDBType>({
             accountData: {
                 login: String,
@@ -63,9 +65,9 @@ const UserSchema = new mongoose.Schema<UserDBType>({
         },
         {
             versionKey: false,
-        }
-    )
+        })
 ;
+
 const CommentsSchema = new mongoose.Schema<CommentsDBType>({
         postid: ObjectId,
         content: String,
@@ -76,6 +78,7 @@ const CommentsSchema = new mongoose.Schema<CommentsDBType>({
     {
         versionKey: false,
     });
+
 const TrafficSchema = new mongoose.Schema<RecordType>({
         ip: String,
         date: Date,
@@ -84,6 +87,7 @@ const TrafficSchema = new mongoose.Schema<RecordType>({
     {
         versionKey: false,
     });
+
 const TokenSchema = new mongoose.Schema<TokensType>({
         token: String,
         addedAt: Number
@@ -140,6 +144,22 @@ const GameSchema = new mongoose.Schema<GameType>({
     {
         versionKey: false,
     })
+const TopRatedPlayerSchema = new mongoose.Schema<TopRatingType>({
+        user: {
+            id: String,
+            login: String,
+        },
+        allScore: Number,
+        sumScore: Number,
+        avgScores: Number,
+        gamesCount: Number,
+        winsCount: Number,
+        lossesCount: Number,
+    },
+    {
+        versionKey: false,
+
+    });
 
 export const BloggersModelClass = mongoose.model('Bloggers', BloggerSchema);
 export const PostsModelClass = mongoose.model('Posts', PostsSchema);
@@ -149,6 +169,7 @@ export const TrafficModelClass = mongoose.model('Traffic', TrafficSchema);
 export const TokensModelClass = mongoose.model('Tokens', TokenSchema);
 export const LikesModelClass = mongoose.model('Likes', LikeSchema);
 export const GameModel = mongoose.model("Game", GameSchema)
+export const TopRatedPlayerModel = mongoose.model("Rating", TopRatedPlayerSchema)
 
 /*const cleanToken = async () => {
     await TokensModelClass.deleteMany({addedAt: {$lt: Date.now() - 1000 * 60 * 60 * 24}}).lean()

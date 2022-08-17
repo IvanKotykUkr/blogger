@@ -1,6 +1,13 @@
 import "reflect-metadata";
 import {injectable} from "inversify";
-import {AnswerType, FindPlayerDbType, GamePlayerType, GameType, QuestionsType} from "../types/pairQuizGame-type";
+import {
+    AnswerType,
+    FindPlayerDbType,
+    GamePlayerType,
+    GameType,
+    QuestionsType,
+    TotalGameScoreWithUser
+} from "../types/pairQuizGame-type";
 import {GameModel} from "./db";
 import {ObjectId} from "mongodb";
 
@@ -158,7 +165,6 @@ export class GameRepositories {
         if (answers >= 5) {
             return null
         }
-
         const questionsGame = game.questions[answers]
 
         if (questionsGame) {
@@ -172,19 +178,60 @@ export class GameRepositories {
     }
 
     async addAnswerForFirstPlayer(_id: ObjectId, answer: AnswerType): Promise<boolean> {
-        const newAnswer = await GameModel.updateOne({_id}, {$push: {"firstPlayer.answers": answer}})
-        return newAnswer.modifiedCount === 1
+        const newAnswer = await GameModel.findOneAndUpdate({_id}, {$push: {"firstPlayer.answers": answer}})
+
+        if (answer.answerStatus === "Correct") {
+            newAnswer!.firstPlayer!.score++
+            await newAnswer!.save()
+            return true
+        }
+        return true
     }
 
     async addAnswerForSecondPlayer(_id: ObjectId, answer: AnswerType): Promise<boolean> {
         const newAnswer = await GameModel.findOneAndUpdate({_id}, {$push: {"secondPlayer.answers": answer}})
 
-        let score: number = newAnswer.secondPlayer.score
-
         if (answer.answerStatus === "Correct") {
-            score++
+            newAnswer!.secondPlayer!.score++
+            await newAnswer!.save()
             return true
         }
         return true
+    }
+
+    async checkGameFinishDb(user: ObjectId): Promise<TotalGameScoreWithUser | null> {
+        const game = await GameModel.findOne(
+            {
+                $and: [
+                    {"status": "Active"}
+                    ,
+                    {
+                        $or: [
+                            {"firstPlayer.user._id": user},
+                            {"secondPlayer.user._id": user}
+                        ]
+                    }
+                ]
+            })
+
+        if (game!.firstPlayer.answers.length >= 5 && game!.secondPlayer!.answers.length >= 5) {
+            game!.status = "Finished"
+            await game!.save()
+            const gameResult = {
+                firstPlayer: {
+                    user: game!.firstPlayer!.user,
+                    score: game!.firstPlayer!.score
+                },
+                secondPlayer: {
+                    user: game!.secondPlayer!.user,
+                    score: game!.secondPlayer!.score
+                }
+
+            }
+            return gameResult
+        }
+        return null
+
+
     }
 }

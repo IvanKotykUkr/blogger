@@ -1,4 +1,6 @@
 import {ObjectId, WithId} from "mongodb";
+import {UserRoutType} from "./user-type";
+import {NewPaginationType} from "./posts-type";
 
 export type GameType = WithId<{
 
@@ -52,3 +54,35 @@ export type AnswerType = {
     answerStatus: "Correct" | "Incorrect",
     addedAt: Date
 }
+export type ResponseScoreType = {
+    user: UserRoutType,
+    score: number
+
+}
+export type TotalGameScoreWithUser = {
+    firstPlayer: ResponseScoreType,
+    secondPlayer: ResponseScoreType
+}
+export type TopRatingType = {
+    user: UserRoutType,
+    allScore: number,
+    sumScore: number,
+    avgScores: number,
+    gamesCount: number,
+    winsCount: number,
+    lossesCount: number,
+}
+export type winnerAndLoserType = {
+    winner: {
+        user: UserRoutType,
+        score: number
+
+    },
+    loser: {
+        user: UserRoutType,
+        score: number
+
+
+    }
+}
+export type RatingPaginationType = NewPaginationType<TopRatingType>

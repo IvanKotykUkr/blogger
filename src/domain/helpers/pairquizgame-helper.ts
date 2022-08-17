@@ -1,11 +1,21 @@
 import {inject, injectable} from "inversify";
 import {ObjectId} from "mongodb";
 import {GameRepositories} from "../../repositories/game-db-repositories";
-import {AnswerType, FindPlayerDbType, GamePlayerType, GameType, QuestionsType} from "../../types/pairQuizGame-type";
+import {
+    AnswerType,
+    FindPlayerDbType,
+    GamePlayerType,
+    GameType,
+    QuestionsType,
+    TotalGameScoreWithUser,
+    winnerAndLoserType
+} from "../../types/pairQuizGame-type";
+import {ScoreGameRepositories} from "../../repositories/score-game-repositories";
 
 @injectable()
 export class PairQuizGameHelper {
-    constructor(@inject(GameRepositories) protected gameRepositories: GameRepositories) {
+    constructor(@inject(GameRepositories) protected gameRepositories: GameRepositories,
+                @inject(ScoreGameRepositories) protected scoreGameRepositories: ScoreGameRepositories) {
     }
 
     makeUser(userid: ObjectId, login: string): GamePlayerType {
@@ -37,6 +47,21 @@ export class PairQuizGameHelper {
 
     }
 
+    async createAnswerHelper(userId: ObjectId, answer: string): Promise<AnswerType | null> {
+        const firstPlayerWithAnswers = await this.findFirsPlayerHelper(userId)
+        const secondPlayerWithAnswers = await this.findSecondPlayerHelper(userId)
+
+        if (firstPlayerWithAnswers) {
+            return this.addAnswerFirstPlayerDB(firstPlayerWithAnswers, answer)
+        }
+        if (secondPlayerWithAnswers) {
+            return this.addAnswerSecondPlayerDB(secondPlayerWithAnswers, answer)
+        }
+        return null
+
+
+    }
+
     async findFirsPlayerHelper(userId: ObjectId): Promise<FindPlayerDbType | null> {
         return this.gameRepositories.findFirstPlayerDB(userId)
     }
@@ -45,34 +70,23 @@ export class PairQuizGameHelper {
         return this.gameRepositories.findSecondPlayerDB(userId)
     }
 
-    async addAnswerDB(firstPlayerWithAnswers: FindPlayerDbType | null, secondPlayerWithAnswers: FindPlayerDbType | null, answer: string): Promise<AnswerType | null> {
-        if (firstPlayerWithAnswers) {
-            const answersDb: AnswerType = this.checkAnswer(firstPlayerWithAnswers.questions, answer)
-            await this.gameRepositories.addAnswerForFirstPlayer(firstPlayerWithAnswers.gameId, answersDb)
-            return answersDb
-        }
-        if (secondPlayerWithAnswers) {
-            const answersDb: AnswerType = this.checkAnswer(secondPlayerWithAnswers.questions, answer)
-            await this.gameRepositories.addAnswerForSecondPlayer(secondPlayerWithAnswers.gameId, answersDb)
-            return answersDb
-        }
-        return null
-    }
+    async addAnswerFirstPlayerDB(firstPlayerWithAnswers: FindPlayerDbType, answer: string): Promise<AnswerType> {
 
-    async createAnswerHelper(userId: ObjectId, answer: string): Promise<AnswerType | null> {
-        const firstPlayerWithAnswers = await this.findFirsPlayerHelper(userId)
-        const secondPlayerWithAnswers = await this.findSecondPlayerHelper(userId)
-
-        if (!firstPlayerWithAnswers && !secondPlayerWithAnswers) {
-            return null
-        }
-
-        return this.addAnswerDB(firstPlayerWithAnswers, secondPlayerWithAnswers, answer)
+        const answersDb: AnswerType = this.checkAnswer(firstPlayerWithAnswers.questions, answer)
+        await this.gameRepositories.addAnswerForFirstPlayer(firstPlayerWithAnswers.gameId, answersDb)
+        return answersDb
 
     }
+
+    async addAnswerSecondPlayerDB(secondPlayerWithAnswers: FindPlayerDbType, answer: string): Promise<AnswerType> {
+        const answersDb: AnswerType = this.checkAnswer(secondPlayerWithAnswers.questions, answer)
+        await this.gameRepositories.addAnswerForSecondPlayer(secondPlayerWithAnswers.gameId, answersDb)
+        return answersDb
+
+    }
+
 
     checkAnswer(question: QuestionsType, answer: string): AnswerType {
-        console.log(question)
         if (question.correctAnswer == answer) {
             return {
                 questionId: question.id,
@@ -84,8 +98,56 @@ export class PairQuizGameHelper {
             questionId: question.id,
             answerStatus: "Incorrect",
             addedAt: new Date()
-
         }
 
+    }
+
+    async finishGameHelper(userId: ObjectId): Promise<boolean> {
+        const checkGameFinish = await this.gameRepositories.checkGameFinishDb(userId)
+
+        if (checkGameFinish) {
+            await this.addFinishScore(checkGameFinish)
+            return true
+        }
+
+        return false
+
+    }
+
+    async addFinishScore(resultGame: TotalGameScoreWithUser) {
+        let winnerAndLoser: winnerAndLoserType;
+        const firstPlayer = resultGame.firstPlayer
+        const secondPlayer = resultGame.secondPlayer
+        if (firstPlayer.score > secondPlayer.score) {
+            winnerAndLoser = {
+                winner: {
+                    user: firstPlayer.user,
+                    score: firstPlayer.score
+
+                },
+                loser: {
+                    user: secondPlayer.user,
+                    score: secondPlayer.score
+
+                }
+            }
+            await this.scoreGameRepositories.addWinnerAndLoser(winnerAndLoser)
+        }
+        winnerAndLoser = {
+            winner: {
+                user: secondPlayer.user,
+                score: secondPlayer.score
+
+            },
+            loser: {
+                user: firstPlayer.user,
+                score: firstPlayer.score
+
+
+            }
+        }
+        await this.scoreGameRepositories.addWinnerAndLoser(winnerAndLoser)
+
+        return true
     }
 }

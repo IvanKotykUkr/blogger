@@ -22,9 +22,13 @@ export class PairQuizGameService {
     }
 
 
-    async sendAnswer(userId: ObjectId, answer: string,): Promise<AnswerType | null> {
+    async sendAnswer(userId: ObjectId, answer: string): Promise<AnswerType | null> {
         const newAnswer = await this.pairQuizGameHelper.createAnswerHelper(userId, answer)
+        const finishGame = await this.pairQuizGameHelper.finishGameHelper(userId)
 
+        if (finishGame) {
+            return null
+        }
         return newAnswer
 
     }

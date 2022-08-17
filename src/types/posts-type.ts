@@ -1,6 +1,6 @@
 import {ObjectId, WithId} from "mongodb";
 
-type NewPaginationType<D> = {
+export type NewPaginationType<D> = {
     pagesCount: number,
     page: number,
     pageSize: number,
