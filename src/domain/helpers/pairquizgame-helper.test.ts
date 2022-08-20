@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import {GameRepositories} from "../../repositories/game-db-repositories";
 import {PairQuizGameHelper} from "./pairquizgame-helper";
 import {ObjectId} from "mongodb";
+import {ScoreGameRepositories} from "../../repositories/score-game-repositories";
 
 
 jest.setTimeout(60_0000)
@@ -37,7 +38,8 @@ describe("test for user helper", () => {
 
     }
     const gameRepositories = new GameRepositories()
-    const pairQuizGameHelper = new PairQuizGameHelper(gameRepositories)
+    const scoreGameRepository = new ScoreGameRepositories()
+    const pairQuizGameHelper = new PairQuizGameHelper(gameRepositories, scoreGameRepository)
     describe("test for  makeUser", () => {
         it("should create makeUser", async () => {
             const result = pairQuizGameHelper.makeUser(user1._id, user1.login)

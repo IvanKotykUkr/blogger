@@ -5,17 +5,15 @@ import {
     AnswerType,
     FindPlayerDbType,
     GamePlayerType,
+    GameResponseType,
     GameType,
-    QuestionsType,
-    TotalGameScoreWithUser,
-    winnerAndLoserType
+    GameWithPagination,
+    QuestionsType
 } from "../../types/pairQuizGame-type";
-import {ScoreGameRepositories} from "../../repositories/score-game-repositories";
 
 @injectable()
 export class PairQuizGameHelper {
-    constructor(@inject(GameRepositories) protected gameRepositories: GameRepositories,
-                @inject(ScoreGameRepositories) protected scoreGameRepositories: ScoreGameRepositories) {
+    constructor(@inject(GameRepositories) protected gameRepositories: GameRepositories) {
     }
 
     makeUser(userid: ObjectId, login: string): GamePlayerType {
@@ -102,52 +100,105 @@ export class PairQuizGameHelper {
 
     }
 
-    async finishGameHelper(userId: ObjectId): Promise<boolean> {
-        const checkGameFinish = await this.gameRepositories.checkGameFinishDb(userId)
 
-        if (checkGameFinish) {
-            await this.addFinishScore(checkGameFinish)
-            return true
+    async currentGame(player: ObjectId): Promise<GameResponseType | boolean> {
+        const game = await this.gameRepositories.findCurrentGame(player)
+        if (!game) {
+            return false
         }
-
-        return false
+        const goodGame = this.makeGame(game)
+        return goodGame
 
     }
 
-    async addFinishScore(resultGame: TotalGameScoreWithUser) {
-        let winnerAndLoser: winnerAndLoserType;
-        const firstPlayer = resultGame.firstPlayer
-        const secondPlayer = resultGame.secondPlayer
-        if (firstPlayer.score > secondPlayer.score) {
-            winnerAndLoser = {
-                winner: {
-                    user: firstPlayer.user,
-                    score: firstPlayer.score
+    makeGame(game: GameType): Promise<GameResponseType> {
 
+
+        return {
+            // @ts-ignore
+            id: game._id,
+            firstPlayer: {
+                answers: game.firstPlayer.answers,
+                user: {
+                    id: game.firstPlayer.user._id,
+                    login: game.firstPlayer.user.login
                 },
-                loser: {
-                    user: secondPlayer.user,
-                    score: secondPlayer.score
-
-                }
-            }
-            await this.scoreGameRepositories.addWinnerAndLoser(winnerAndLoser)
-        }
-        winnerAndLoser = {
-            winner: {
-                user: secondPlayer.user,
-                score: secondPlayer.score
-
+                score: game.firstPlayer.score
             },
-            loser: {
-                user: firstPlayer.user,
-                score: firstPlayer.score
+            secondPlayer: {// @ts-ignore
+                answers: game.secondPlayer.answers,
+                user: {// @ts-ignore
+                    id: game.secondPlayer.user._id,
+                    // @ts-ignore
+                    login: game.secondPlayer.user.login
+                },// @ts-ignore
+                score: game.secondPlayer.score
+            },
+            questions: game.questions.map(d => ({id: d.id, body: d.body})),
+            status: game.status,
+            pairCreatedDate: game.pairCreatedDate,
+            startGameDate: game.startGameDate,
+            finishGameDate: game.finishGameDate
 
 
-            }
         }
-        await this.scoreGameRepositories.addWinnerAndLoser(winnerAndLoser)
 
-        return true
+    }
+
+    async findGame(gameId: ObjectId): Promise<GameResponseType | null> {
+
+        const game = await this.gameRepositories.findGameById(gameId)
+
+        if (!game) {
+            return null
+        }
+        const goodGame = this.makeGame(game)
+        return goodGame
+
+    }
+
+    async getAllGamesByUserId(userid: ObjectId, pagenumber: number, pagesize: number): Promise<GameWithPagination> {
+        let totalCount: number = await this.gameRepositories.countGame(userid)
+        let page: number = pagenumber
+        let pageSize: number = pagesize
+        let pagesCount: number = Math.ceil(totalCount / pageSize)
+        let items = await this.gameRepositories.getAllGamesOfOnePlayer(userid, page, pageSize)
+        let mapItems = items.map(p => ({
+            id: p._id,
+            firstPlayer: {
+                answers: p.firstPlayer.answers,
+                user: {
+                    id: p.firstPlayer.user._id,
+                    login: p.firstPlayer.user.login
+                },
+                score: p.firstPlayer.score
+            },
+            secondPlayer: {// @ts-ignore
+                answers: p.secondPlayer.answers,
+                user: {// @ts-ignore
+                    id: p.secondPlayer.user._id,
+                    // @ts-ignore
+                    login: p.secondPlayer.user.login
+                },// @ts-ignore
+                score: p.secondPlayer.score
+            },
+            questions: p.questions.map(d => ({id: d.id, body: d.body})),
+            status: p.status,
+            pairCreatedDate: p.pairCreatedDate,
+            startGameDate: p.startGameDate,
+            finishGameDate: p.finishGameDate
+
+        }))
+
+
+        return {
+            pagesCount,
+            page,
+            pageSize,
+            totalCount,
+            // @ts-ignore
+            items: mapItems
+        }
+
     }
 }

@@ -1,10 +1,4 @@
-import {MongoMemoryServer} from "mongodb-memory-server";
-import mongoose from "mongoose";
-import {GameRepositories} from "./game-db-repositories";
-import {ObjectId} from "mongodb";
-import {QuestionsType} from "../types/pairQuizGame-type";
-
-
+/*
 jest.setTimeout(60_0000)
 
 describe("test for game repositories", () => {
@@ -19,21 +13,24 @@ describe("test for game repositories", () => {
         await mongoServer.stop()
     })
     const gameRepositories = new GameRepositories()
-    const user1 = {
+    const user1:GamePlayerType = {
         user: {
             _id: new ObjectId("62ed677fbbf342ea570a0ea1"),
             login: "Vasya"
         },
+        answers:{
+            qu
+        },
         score: 0
     }
-    const user2 = {
+    const user2:GamePlayerType = {
         user: {
             _id: new ObjectId("62ed677fbbd342ea570a0ea1"),
             login: "Masha"
         },
         score: 0
     }
-    const user3 = {
+    const user3:GamePlayerType = {
         user: {
             _id: new ObjectId("62ed677fbbd342ea570a0ea1"),
             login: "Olya"
@@ -124,3 +121,5 @@ describe("test for game repositories", () => {
 
 
 })
+
+ */

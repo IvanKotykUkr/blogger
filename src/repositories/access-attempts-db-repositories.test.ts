@@ -4,7 +4,7 @@ import {AccessAttemptsRepositories} from "./access-attempts-db-repositories";
 import {ObjectId} from "mongodb";
 
 jest.setTimeout(60_0000)
-describe("test for acccces attempts", () => {
+describe("test for access attempts", () => {
     let mongoServer: MongoMemoryServer
     beforeAll(async () => {
         mongoServer = await MongoMemoryServer.create()

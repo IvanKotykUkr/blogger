@@ -1,27 +1,35 @@
+import "reflect-metadata";
 import {injectable} from "inversify";
-import {TopRatingType, winnerAndLoserType} from "../types/pairQuizGame-type";
+import {TopRatingType, winnerOrLoserType} from "../types/pairQuizGame-type";
 import {TopRatedPlayerModel} from "./db";
 
 @injectable()
 export class ScoreGameRepositories {
+    async countPlayer(): Promise<number> {
+        return TopRatedPlayerModel.countDocuments()
+    }
 
-    async addWinnerAndLoser(winnerAndLoser: winnerAndLoserType) {
-        const winner = await TopRatedPlayerModel.findOne({"user.id": winnerAndLoser.winner.user.id})
-        const loser = await TopRatedPlayerModel.findOne({"user.id": winnerAndLoser.loser.user.id})
-        const winnerScore: number = winnerAndLoser.winner.score
-        const loserScore: number = winnerAndLoser.loser.score
+    async getAllPlayers(number: number, size: number): Promise<TopRatingType[]> {
+        return TopRatedPlayerModel.find({}, {_id: 0})
+            .skip(number > 0 ? ((number - 1) * size) : 0)
+            .limit(size)
+            .sort({avgScores: -1})
+            .lean()
 
+    }
 
-        if (winner) {
-            winner.allScore = winner.allScore + winnerScore
-            winner.sumScore = winner.sumScore + winnerScore
-            winner.winsCount = winner.winsCount++
-            winner.gamesCount = winner.gamesCount++
-            winner.avgScores = winner.allScore / winner.gamesCount
-            await winner.save()
+    async addWinner(winner: winnerOrLoserType): Promise<TopRatingType> {
+        let player = await TopRatedPlayerModel.findOne({"user.id": winner.user.id})
+        const winnerScore: number = winner.score
+        if (player) {
+            player.sumScore = player.sumScore + winnerScore
+            player.winsCount = player.winsCount + 1
+            player.gamesCount = player.gamesCount + 1
+            player.avgScores = player.sumScore / player.gamesCount
+            await player.save()
         }
-        await TopRatedPlayerModel.insertMany({
-            user: winnerAndLoser.winner.user,
+        player = await TopRatedPlayerModel.create({
+            user: winner.user,
             allScore: winnerScore,
             sumScore: winnerScore,
             avgScores: winnerScore,
@@ -30,17 +38,26 @@ export class ScoreGameRepositories {
             lossesCount: 0
 
         })
-        if (loser) {
-            loser.allScore = loser!.allScore + loserScore
-            loser.sumScore = loser.sumScore + 0
-            loser.lossesCount = loser.lossesCount++
-            loser.gamesCount = loser.gamesCount++
-            loser.avgScores = loser.allScore / loser.gamesCount
-            await loser.save()
+
+        return player
+
+    }
+
+    async addLoser(loser: winnerOrLoserType): Promise<TopRatingType> {
+        let player = await TopRatedPlayerModel.findOne({"user.id": loser.user.id})
+        const loserScore: number = loser.score
+
+        if (player) {
+            player.sumScore = player.sumScore + 0
+            player.lossesCount = player.lossesCount + 1
+            player.gamesCount = player.gamesCount + 1
+            player.avgScores = player.sumScore / player.gamesCount
+            await player.save()
 
         }
-        await TopRatedPlayerModel.insertMany({
-            user: winnerAndLoser.loser.user,
+
+        player = await TopRatedPlayerModel.create({
+            user: loser.user,
             allScore: loserScore,
             sumScore: 0,
             avgScores: loserScore,
@@ -49,19 +66,8 @@ export class ScoreGameRepositories {
             lossesCount: 1
 
         })
-        return true
-    }
 
-    async countPlayer(): Promise<number> {
-        return TopRatedPlayerModel.countDocuments()
-    }
 
-    async getAllPlayers(number: number, size: number): Promise<TopRatingType[]> {
-        return TopRatedPlayerModel.find({}, {allScore: 0})
-            .skip(number > 0 ? ((number - 1) * size) : 0)
-            .limit(size)
-
-            .lean()
-
+        return player
     }
 }

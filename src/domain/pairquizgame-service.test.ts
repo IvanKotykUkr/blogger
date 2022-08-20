@@ -4,6 +4,8 @@ import {ObjectId} from "mongodb";
 import {GameRepositories} from "../repositories/game-db-repositories";
 import {PairQuizGameHelper} from "./helpers/pairquizgame-helper";
 import {PairQuizGameService} from "./pairquizgame-service";
+import {container} from "../composition-root";
+import {ScoreGameRepositories} from "../repositories/score-game-repositories";
 
 jest.setTimeout(60_0000)
 describe("test for user helper", () => {
@@ -37,7 +39,8 @@ describe("test for user helper", () => {
 
     }
     const gameRepositories = new GameRepositories()
-    const pairQuizGameHelper = new PairQuizGameHelper(gameRepositories)
+    const scoreGameRopisitory = container.resolve(ScoreGameRepositories)
+    const pairQuizGameHelper = new PairQuizGameHelper(gameRepositories, scoreGameRopisitory)
     const pairQuizGameService = new PairQuizGameService(pairQuizGameHelper)
 
     describe("test for  connectGame", () => {

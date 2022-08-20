@@ -84,14 +84,15 @@ export class GameRepositories {
         if (game) {
             game.secondPlayer = newPlayer
             game.status = "Active"
+            game.startGameDate = new Date()
             await game.save()
             return game
         }
         return null
     }
 
-    async checkParticipating(user: ObjectId): Promise<boolean> {
-        const player = await GameModel.findOne(
+    async findCurrentGame(user: ObjectId): Promise<GameType | null> {
+        const game = await GameModel.findOne(
             {
                 $and: [
                     {
@@ -109,10 +110,10 @@ export class GameRepositories {
                 ]
             })
 
-        if (player) {
-            return true
+        if (!game) {
+            return null
         }
-        return false
+        return game
     }
 
     async findFirstPlayerDB(userId: ObjectId): Promise<FindPlayerDbType | null> {
@@ -189,6 +190,7 @@ export class GameRepositories {
     }
 
     async addAnswerForSecondPlayer(_id: ObjectId, answer: AnswerType): Promise<boolean> {
+
         const newAnswer = await GameModel.findOneAndUpdate({_id}, {$push: {"secondPlayer.answers": answer}})
 
         if (answer.answerStatus === "Correct") {
@@ -200,6 +202,7 @@ export class GameRepositories {
     }
 
     async checkGameFinishDb(user: ObjectId): Promise<TotalGameScoreWithUser | null> {
+
         const game = await GameModel.findOne(
             {
                 $and: [
@@ -214,24 +217,75 @@ export class GameRepositories {
                 ]
             })
 
-        if (game!.firstPlayer.answers.length >= 5 && game!.secondPlayer!.answers.length >= 5) {
-            game!.status = "Finished"
-            await game!.save()
-            const gameResult = {
-                firstPlayer: {
-                    user: game!.firstPlayer!.user,
-                    score: game!.firstPlayer!.score
-                },
-                secondPlayer: {
-                    user: game!.secondPlayer!.user,
-                    score: game!.secondPlayer!.score
-                }
+        const firstPlayer = game!.firstPlayer!.answers.length
+        const secondPlayer = game!.secondPlayer!.answers.length
 
-            }
-            return gameResult
+        if (firstPlayer < 5) {
+
+            return null
         }
-        return null
+        if (secondPlayer < 5) {
+
+            return null
+        }
+
+        const dateLastAnswerFirstPlayer = game!.firstPlayer!.answers[firstPlayer - 1]
+        const dateLastAnswerSecondPlayer = game!.secondPlayer!.answers[secondPlayer - 1]
+
+        if (dateLastAnswerFirstPlayer > dateLastAnswerSecondPlayer) {
+            game!.secondPlayer!.score++
+            game!.status = "Finished"
+            game!.finishGameDate = new Date()
+
+        }
+        if (dateLastAnswerFirstPlayer < dateLastAnswerSecondPlayer) {
+            game!.firstPlayer!.score++
+            game!.status = "Finished"
+            game!.finishGameDate = new Date()
+        }
 
 
+        await game!.save()
+        const gameResult = {
+            firstPlayer: {
+                user: game!.firstPlayer!.user,
+                score: game!.firstPlayer!.score
+            },
+            secondPlayer: {
+                user: game!.secondPlayer!.user,
+                score: game!.secondPlayer!.score
+            }
+
+        }
+        return gameResult
+
+
+    }
+
+    async findGameById(gameId: ObjectId): Promise<GameType | null> {
+        return GameModel.findById(gameId)
+
+    }
+
+    async countGame(userid: ObjectId): Promise<number> {
+        return GameModel.countDocuments({
+            $or: [
+                {"firstPlayer.user._id": userid},
+                {"secondPlayer.user._id": userid}
+            ]
+        })
+
+    }
+
+    async getAllGamesOfOnePlayer(userid: ObjectId, number: number, size: number): Promise<GameType[]> {
+        return GameModel.find({
+            $or: [
+                {"firstPlayer.user._id": userid},
+                {"secondPlayer.user._id": userid}
+            ]
+        })
+            .skip(number > 0 ? ((number - 1) * size) : 0)
+            .limit(size)
+            .lean()
     }
 }

@@ -26,6 +26,11 @@ export type QuestionsType = {
     body: string
     correctAnswer?: string,
 }
+type QuestionsForResponseType = {
+    id: string
+    body: string
+
+}
 export type PlayerType = {
 
     user: {
@@ -65,24 +70,33 @@ export type TotalGameScoreWithUser = {
 }
 export type TopRatingType = {
     user: UserRoutType,
-    allScore: number,
     sumScore: number,
     avgScores: number,
     gamesCount: number,
     winsCount: number,
     lossesCount: number,
 }
-export type winnerAndLoserType = {
-    winner: {
-        user: UserRoutType,
-        score: number
+export type winnerOrLoserType = {
+    user: UserRoutType,
+    score: number
+}
+export type GamePlayerResponseType = {
+    answers: AnswersType[] | null,
+    user: UserRoutType,
+    score: number
 
-    },
-    loser: {
-        user: UserRoutType,
-        score: number
+}
+export type GameResponseType = {
+    id: ObjectId,
+    firstPlayer: GamePlayerResponseType,
+    secondPlayer: GamePlayerResponseType | null,
+    questions: QuestionsForResponseType[]
+    status: "PendingSecondPlayer" | "Active" | "Finished"
+    pairCreatedDate: Date,
+    startGameDate: Date | null,
+    finishGameDate: Date | null,
 
 
-    }
 }
 export type RatingPaginationType = NewPaginationType<TopRatingType>
+export type GameWithPagination = NewPaginationType<GamePlayerResponseType>

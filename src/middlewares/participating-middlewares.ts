@@ -6,7 +6,25 @@ const gameRepositories = container.resolve(GameRepositories)
 export const participatingMiddlewares = async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user.id
 
-    const participating = await gameRepositories.checkParticipating(user)
+    const participating = await gameRepositories.findCurrentGame(user)
+    if (participating) {
+        res.status(403).json({
+            errorsMessages: [{
+                message: "current user is already participating in active pair",
+                field: "User"
+            }]
+        })
+        return
+    }
+
+
+    next()
+
+}
+export const participatingForIdMiddlewares = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user.id
+
+    const participating = await gameRepositories.findCurrentGame(user)
     if (participating) {
         res.status(403).json({
             errorsMessages: [{
