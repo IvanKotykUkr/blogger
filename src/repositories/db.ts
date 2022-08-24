@@ -149,7 +149,6 @@ const TopRatedPlayerSchema = new mongoose.Schema<TopRatingType>({
             id: String,
             login: String,
         },
-        allScore: Number,
         sumScore: Number,
         avgScores: Number,
         gamesCount: Number,
