@@ -20,6 +20,7 @@ export class BloggersController {
             res.sendStatus(404)
             return
         }
+
         res.status(200).json(blogger)
     }
 
@@ -28,6 +29,8 @@ export class BloggersController {
         const pagenumber = req.query.PageNumber || 1;
         const pagesize = req.query.PageSize || 10;
         const bloggers: BloggerResponseTypeWithPagination = await this.bloggersService.getBloggers(searchnameterm, +pagesize, +pagenumber)
+
+
         res.status(200).json(bloggers)
     }
 

@@ -221,11 +221,9 @@ export class GameRepositories {
         const secondPlayer = game!.secondPlayer!.answers.length
 
         if (firstPlayer < 5) {
-
             return null
         }
         if (secondPlayer < 5) {
-
             return null
         }
 
