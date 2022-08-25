@@ -1,6 +1,8 @@
+
 import {ObjectId} from 'mongodb'
 import {settings} from "../settings";
 import mongoose from 'mongoose';
+import 'dotenv/config'
 import {BloggerDBType} from "../types/blogger-type";
 import {PostsDBType} from "../types/posts-type";
 import {UserDBType} from "../types/user-type";
@@ -184,7 +186,8 @@ export const TopRatedPlayerModel = mongoose.model("Rating", TopRatedPlayerSchema
 export async function runDb() {
     try {
 
-        await mongoose.connect(settings.MONGO_URL);
+        // @ts-ignore
+        await mongoose.connect(process.env.MONGO_URL)
         // await client.connect();
         //await client.db("blogger").command({ping: 1});
         console.log("Connected successfully to mongo server")

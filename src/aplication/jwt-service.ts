@@ -1,8 +1,4 @@
 import jwt from 'jsonwebtoken'
-
-
-import {settings} from "../settings";
-
 import {UserFromTokenType} from "../types/user-type";
 import {injectable} from "inversify";
 import "reflect-metadata";
@@ -14,7 +10,8 @@ export class JwtService {
     async createAccessToken(id: string): Promise<{ accessToken: string }> {
 
 
-        const access: string = jwt.sign({userId: id}, settings.ACCESS_JWT_SECRET, {expiresIn: "1h"})
+        // @ts-ignore
+        const access:string = jwt.sign({userId: id}, process.env.ACCESS_JWT_SECRET, {expiresIn: "1h"})
 
         return {accessToken: access}
 
@@ -23,7 +20,8 @@ export class JwtService {
 
     async createRefreshToken(id: string): Promise<string> {
 
-        const refresh: string = jwt.sign({userId: id}, settings.REFRESH_JWT_SECRET, {expiresIn: "2h"})
+        // @ts-ignore
+        const refresh: string = jwt.sign({userId: id}, process.env.REFRESH_JWT_SECRET, {expiresIn: "2h"})
 
 
         return refresh
