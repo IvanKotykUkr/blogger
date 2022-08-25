@@ -186,6 +186,8 @@ export const TopRatedPlayerModel = mongoose.model("Rating", TopRatedPlayerSchema
 export async function runDb() {
     try {
 
+        console.log(" url   "+process.env.MONGO_URL)
+
         // @ts-ignore
         await mongoose.connect(process.env.MONGO_URL)
         // await client.connect();
