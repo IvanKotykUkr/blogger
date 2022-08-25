@@ -29,8 +29,12 @@ export class BloggersController {
         const pagenumber = req.query.PageNumber || 1;
         const pagesize = req.query.PageSize || 10;
         const bloggers: BloggerResponseTypeWithPagination = await this.bloggersService.getBloggers(searchnameterm, +pagesize, +pagenumber)
-
-
+       console.log("refresh")
+        console.log(process.env.REFRESH_JWT_SECRET)
+        console.log("port")
+        console.log(process.env.PORT);
+        console.log("env")
+        console.log(process.env)
         res.status(200).json(bloggers)
     }
 
