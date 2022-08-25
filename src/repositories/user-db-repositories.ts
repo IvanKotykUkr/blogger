@@ -73,7 +73,6 @@ export class UserRepositories {
                 {"accountData.email": loginOrEmail}
             ]
         })
-
         if (user) {
 
             return this.reqUsers(user)

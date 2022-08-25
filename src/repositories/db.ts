@@ -1,6 +1,5 @@
 
 import {ObjectId} from 'mongodb'
-import {settings} from "../settings";
 import mongoose from 'mongoose';
 import 'dotenv/config'
 import {BloggerDBType} from "../types/blogger-type";
@@ -186,7 +185,7 @@ export const TopRatedPlayerModel = mongoose.model("Rating", TopRatedPlayerSchema
 export async function runDb() {
     try {
 
-        console.log(" url   "+process.env.MONGO_URL)
+
 
         // @ts-ignore
         await mongoose.connect(process.env.MONGO_URL)

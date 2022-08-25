@@ -34,7 +34,7 @@ export class JwtService {
 
 
             // @ts-ignore
-            return jwt.verify(token, settings.ACCESS_JWT_SECRET)
+            return jwt.verify(token, process.env.ACCESS_JWT_SECRET)
 
 
         } catch (error) {
@@ -48,7 +48,7 @@ export class JwtService {
 
 
             // @ts-ignore
-            return jwt.verify(token, settings.REFRESH_JWT_SECRET)
+            return jwt.verify(token, process.env.REFRESH_JWT_SECRET)
 
 
         } catch (error) {
