@@ -11,7 +11,7 @@ export class JwtService {
 
 
         // @ts-ignore
-        const access:string = jwt.sign({userId: id}, process.env.ACCESS_JWT_SECRET, {expiresIn: "1h"})
+        const access:string = jwt.sign({userId: id}, process.env.ACCESS_JWT_SECRET, {expiresIn: "10s"})
 
         return {accessToken: access}
 
@@ -21,7 +21,7 @@ export class JwtService {
     async createRefreshToken(id: string): Promise<string> {
 
         // @ts-ignore
-        const refresh: string = jwt.sign({userId: id}, process.env.REFRESH_JWT_SECRET, {expiresIn: "2h"})
+        const refresh: string = jwt.sign({userId: id}, process.env.REFRESH_JWT_SECRET, {expiresIn: "20s"})
 
 
         return refresh
