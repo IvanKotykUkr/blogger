@@ -16,14 +16,14 @@ export class UsersController {
         const pagenumber = req.query?.PageNumber || 1;
         const pagesize = req.query?.PageSize || 10;
         const users = await this.usersService.getAllUsers(+pagenumber, +pagesize)
-        res.status(200).json({users})
+        res.status(200).json(users)
 
     }
 
     async createUser(req: Request, res: Response) {
         const newUser = await this.usersService.createUser(req.body.login, req.body.email, req.body.password)
 
-        res.status(201).json({newUser})
+        res.status(201).json(newUser)
     }
 
     async deleteUser(req: Request, res: Response) {
