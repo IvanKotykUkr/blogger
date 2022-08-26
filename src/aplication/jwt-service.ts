@@ -11,7 +11,7 @@ export class JwtService {
 
 
         // @ts-ignore
-        const access:string = jwt.sign({userId: id}, process.env.ACCESS_JWT_SECRET, {expiresIn: "10s"})
+        const access: string = jwt.sign({userId: id}, process.env.ACCESS_JWT_SECRET, {expiresIn: "10s"})
 
         return {accessToken: access}
 

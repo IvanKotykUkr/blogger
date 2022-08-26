@@ -1,4 +1,3 @@
-
 import {ObjectId} from 'mongodb'
 import mongoose from 'mongoose';
 import 'dotenv/config'
@@ -184,7 +183,6 @@ export const TopRatedPlayerModel = mongoose.model("Rating", TopRatedPlayerSchema
 
 export async function runDb() {
     try {
-
 
 
         // @ts-ignore
