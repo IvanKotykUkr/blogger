@@ -99,22 +99,22 @@ describe("test for posts repository", () => {
     })
     describe("test for  findPostsByIdBloggerPagination", () => {
         it("should return 1 vlogger ", async () => {
-            const result = await postsRepositories.findPostsByIdBloggerPagination(undefined, 3, 3)
+            const result = await postsRepositories.findAllPosts(undefined, 3, 3)
             expect(result).toStrictEqual([])
         });
         it("should sould returl all bloger ", async () => {
-            const result = await postsRepositories.findPostsByIdBloggerPagination("", 3, 3)
+            const result = await postsRepositories.findAllPosts("", 3, 3)
 
             expect(result).toStrictEqual([])
         });
         it("should return 0 ", async () => {
-            const result = await postsRepositories.findPostsByIdBloggerPagination(new ObjectId("63eadc3f08eb1aeddb1bb98b"), 3, 3)
+            const result = await postsRepositories.findAllPosts(new ObjectId("63eadc3f08eb1aeddb1bb98b"), 3, 3)
 
             expect(result).toStrictEqual([])
         });
 
         it("should return 1", async () => {
-            const result = await postsRepositories.findPostsByIdBloggerPagination(new ObjectId("62eadc5f08eb1aeddb1bb98b"), 3, 3)
+            const result = await postsRepositories.findAllPosts(new ObjectId("62eadc5f08eb1aeddb1bb98b"), 3, 3)
 
             expect(result).toStrictEqual([])
         });

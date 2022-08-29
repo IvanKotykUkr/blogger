@@ -33,3 +33,11 @@ export type ExtendedLikesInfo = {
 
 
 }
+export type ArrayIdType=Array<{
+    _id:ObjectId
+}>
+export type ArrayCountIdType=Array<{
+    _id:ObjectId,
+    count:number
+}>
+

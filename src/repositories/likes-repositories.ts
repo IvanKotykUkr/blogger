@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {injectable} from "inversify";
-import {LikeDbType} from "../types/like-type";
+import {ArrayIdType, LikeDbType} from "../types/like-type";
 import {LikesModelClass} from "./db";
 import {ObjectId} from "mongodb";
 import {NewestLike} from "../types/posts-type";
@@ -23,8 +23,8 @@ export class LikesRepositories {
     }
 
     async countLike(post: ObjectId): Promise<number> {
-
-        return LikesModelClass.countDocuments({post, status: "Like"})
+        const b = await LikesModelClass.find({post, status: "Like"}).exec()
+        return b.length
     }
 
     async countDislake(post: ObjectId): Promise<number> {
@@ -61,30 +61,24 @@ export class LikesRepositories {
 
     }
 
+    async findLikesInDb(post: ArrayIdType) {
 
-    /* async findLike(post: ObjectId, userId: ObjectId, status: string) {
-         const likeInstance = await LikesModelClass.findOne({$and: [{post}, {userId}]})
-         if (!likeInstance) return false
-         if (likeInstance && status !== "None") {
-             return true
-         }
-         await likeInstance.deleteOne()
-         return true
+        return LikesModelClass.find({post, status: "Like"}).lean()
 
-                 if (likeInstance) {
-                     likeInstance.status = status
-                     await likeInstance.save()
+    }
 
-                     return likeInstance
-                 }
+    async findDislikeInDb(post: ArrayIdType) {
 
+        return LikesModelClass.find({post, status: "Dislike"}).lean()
+    }
 
+    async findStatus(userId: ObjectId, post: ArrayIdType) {
 
+        return LikesModelClass.find({$and: [{post}, {userId}]}).lean()
+    }
 
-
-     }
-
-     */
-
-
+   async findLastLikes(post: ArrayIdType) {
+        return  LikesModelClass.find({$and: [{post}, {status: "Like"}]})
+           .lean()
+    }
 }

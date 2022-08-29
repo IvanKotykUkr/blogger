@@ -27,6 +27,7 @@ export const authValidationMiddleware = async (req: Request, res: Response, next
     }
     const token: string = req.headers.authorization.split(' ')[1]
     const user: UserFromTokenType | null = await jwtService.getUserIdByAccessToken(token)
+
     if (!user) {
         res.status(401).json({errorsMessages: [{message: "Should be valide JWT Token", field: "token"}]})
         return
@@ -43,7 +44,7 @@ export const authValidationMiddleware = async (req: Request, res: Response, next
 export const authForLikeMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.headers.authorization) {
         req.user = {
-            id: new ObjectId()
+            id: new ObjectId("630a2e022e212e98223c97ba")
         }
         next()
         return

@@ -2,7 +2,7 @@ import {inject, injectable} from "inversify";
 import {ObjectId} from "mongodb";
 import {NewestLike} from "../../types/posts-type";
 import {LikesRepositories} from "../../repositories/likes-repositories";
-import {LikeDbType} from "../../types/like-type";
+import {ArrayIdType, LikeDbType} from "../../types/like-type";
 
 @injectable()
 export class LikeHelper {
@@ -10,7 +10,7 @@ export class LikeHelper {
     }
 
 
-    async likesCount(id: ObjectId): Promise<number> {
+    async likesCount(id: ObjectId) {
 
         return this.likesRepositories.countLike(id)
     }
@@ -21,8 +21,9 @@ export class LikeHelper {
     }
 
     async myStatus(id: ObjectId, post: ObjectId): Promise<string> {
-
-
+        if (id.toString() === "630a2e022e212e98223c97ba") {
+            return "None"
+        }
         return this.likesRepositories.myStatus(id, post)
     }
 
@@ -50,5 +51,28 @@ export class LikeHelper {
         }
 
         return this.likesRepositories.createLike(like)
+    }
+
+    async findLikes(id: ArrayIdType) {
+        return this.likesRepositories.findLikesInDb(id)
+
+    }
+
+    async findDislike(id: ArrayIdType) {
+        return this.likesRepositories.findDislikeInDb(id)
+
+    }
+
+    async findStatus(id: ObjectId, idItems: ArrayIdType) {
+        if (id.toString() === "630a2e022e212e98223c97ba") {
+            return []
+        } else {
+            return this.likesRepositories.findStatus(id, idItems)
+        }
+    }
+
+    async findLastThreLikes(idItems: ArrayIdType) {
+        return this.likesRepositories.findLastLikes(idItems)
+
     }
 }

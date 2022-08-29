@@ -34,7 +34,7 @@ export class PostsRepositories {
         return PostsModelClass.countDocuments(filter)
     }
 
-    async findPostsByIdBloggerPagination(bloggerId: undefined | string | ObjectId, number: number, size: number): Promise<PostsDBType[]> {
+    async findAllPosts(bloggerId: undefined | string | ObjectId, number: number, size: number): Promise<PostsDBType[]> {
         const filter = await this.paginationFilter(bloggerId)
 
         return PostsModelClass.find(filter)
