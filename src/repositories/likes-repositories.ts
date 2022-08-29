@@ -1,6 +1,12 @@
 import "reflect-metadata";
 import {injectable} from "inversify";
-import {ArrayIdType, LikeDbType} from "../types/like-type";
+import {
+    ArrayIdType,
+    ArrayLikesType,
+    LikeDbType,
+    LikeOrDislikeIdType,
+    StatusLikeOrDislikeType
+} from "../types/like-type";
 import {LikesModelClass} from "./db";
 import {ObjectId} from "mongodb";
 import {NewestLike} from "../types/posts-type";
@@ -61,24 +67,27 @@ export class LikesRepositories {
 
     }
 
-    async findLikesInDb(post: ArrayIdType) {
+    async findLikesInDb(post: ArrayIdType):Promise<LikeOrDislikeIdType> {
 
-        return LikesModelClass.find({post, status: "Like"}).lean()
+        return LikesModelClass.find({post, status: "Like"},{_id:0,post:1}).lean()
 
     }
 
-    async findDislikeInDb(post: ArrayIdType) {
+    async findDislikeInDb(post: ArrayIdType):Promise<LikeOrDislikeIdType> {
 
-        return LikesModelClass.find({post, status: "Dislike"}).lean()
+        return LikesModelClass.find({post, status: "Dislike"},{_id:0,post:1}).lean()
     }
 
-    async findStatus(userId: ObjectId, post: ArrayIdType) {
+    async findStatus(userId: ObjectId, post: ArrayIdType):Promise<StatusLikeOrDislikeType> {
 
-        return LikesModelClass.find({$and: [{post}, {userId}]}).lean()
+        return LikesModelClass.find({$and: [{post}, {userId}]},{_id:0,post:1,status:1}).lean()
     }
 
-   async findLastLikes(post: ArrayIdType) {
-        return  LikesModelClass.find({$and: [{post}, {status: "Like"}]})
+   async findLastLikes(post: ArrayIdType):Promise<ArrayLikesType> {
+
+        return  LikesModelClass.find({$and: [{post}, {status: "Like"}]},{_id:0,post:1,addedAt:1,userId:1,login:1})
+            .sort({post:1})
+         //   .sort({addedAt: -1})
            .lean()
     }
 }

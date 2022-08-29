@@ -5,7 +5,7 @@ import {inject, injectable} from "inversify";
 import {BloggersRepositories} from "../../repositories/bloggers-db-repositories";
 import {PostsRepositories} from "../../repositories/posts-db-repositories";
 import {LikeHelper} from "./like-helper";
-import {ArrayCountIdType, ArrayIdType, LikeDbType} from "../../types/like-type";
+import {ArrayCountIdType, ArrayIdType, ArrayLikesType, LikeDbType, LikeOrDislikeIdType} from "../../types/like-type";
 
 @injectable()
 export class PostsHelper {
@@ -13,7 +13,13 @@ export class PostsHelper {
                 @inject(PostsRepositories) protected postsRepositories: PostsRepositories,
                 @inject(LikeHelper) protected likeHelper: LikeHelper) {
     }
+    private takePostId(items: PostsDBType[]): ArrayIdType {
 
+        return items.map((p: { _id: ObjectId; }) => ({
+            _id: p._id,
+        }))
+
+    }
     async makePost(title: string, shortDescription: string, content: string, bloggerId: ObjectId): Promise<PostsDBType | null> {
         const blogger: BloggerResponseType | null = await this.bloggersRepositories.findBloggersById(new ObjectId(bloggerId))
         if (blogger) {
@@ -40,20 +46,14 @@ export class PostsHelper {
         let pagesCount: number = Math.ceil(totalCount / pageSize)
 
         const itemsFromDb: PostsDBType[] = await this.postsRepositories.findAllPosts(bloggerId, page, pageSize)
-        const idItems = this.mapPostAndLikeOrDislike(itemsFromDb, "P")
+        const idItems = this.takePostId(itemsFromDb)
         const likes = await this.likeHelper.findLikes(idItems)
-        const dislike = await this.likeHelper.findDislike(idItems)
+        const dislikes = await this.likeHelper.findDislike(idItems)
         const status = await this.likeHelper.findStatus(userId, idItems)
-        const lastLikes = await this.likeHelper.findLastThreLikes(idItems)
-        console.log(lastLikes)
+        const allLikes = await this.likeHelper.findLastThreLikes(idItems)
 
 
-        const postIdFromLikes = this.mapPostAndLikeOrDislike(likes, "L")
-        const postIdFromDislike = this.mapPostAndLikeOrDislike(dislike, "L")
-        const likesFromArray = this.countLikesOrDislikesFromArray(postIdFromLikes)
-        const dislikeFromArray = this.countLikesOrDislikesFromArray(postIdFromDislike)
-
-        const newItems = itemsFromDb.map(p => ({
+        const items = itemsFromDb.map(p => ({
             id: p._id,
             title: p.title,
             shortDescription: p.shortDescription,
@@ -62,81 +62,26 @@ export class PostsHelper {
             bloggerName: p.bloggerName,
             addedAt: p.addedAt,
             extendedLikesInfo: {
-                likesCount: this.findAmountLikeOrDislike(p._id, likesFromArray),
-                dislikesCount: this.findAmountLikeOrDislike(p._id, dislikeFromArray),
-                myStatus: this.findStatus(p._id,status),
-                newestLikes: [],
+                likesCount: this.likeHelper.findAmountLikeOrDislike(p._id, likes),
+                dislikesCount: this.likeHelper.findAmountLikeOrDislike(p._id, dislikes),
+                myStatus: this.likeHelper.findStatusInArray(p._id, status),
+                newestLikes: this.likeHelper.groupAndSortLikes(allLikes, p._id),
             }
         }))
 
-        const mapItems = async () => {
-            return Promise.all(itemsFromDb.map(
-                async p => ({
-                    id: p._id,
-                    title: p.title,
-                    shortDescription: p.shortDescription,
-                    content: p.content,
-                    bloggerId: p.bloggerId,
-                    bloggerName: p.bloggerName,
-                    addedAt: p.addedAt,
-                    extendedLikesInfo: {
 
-                        likesCount: this.findAmountLikeOrDislike(p._id, likesFromArray),
-                        dislikesCount: this.findAmountLikeOrDislike(p._id, dislikeFromArray),
-                        myStatus: this.findStatus(p._id,status),
-                        newestLikes: await this.likeHelper.newestLikes(p._id),
-                    }
-
-                })))
-        }
-
-
-        let post = {
+        return {
             pagesCount,
             page,
             pageSize,
             totalCount,
-            items: await mapItems(),
+            items
 
         }
 
 
-        return post
-    }
-
-    countLikesOrDislikesFromArray(arr: ArrayIdType): ArrayCountIdType {
-
-        const res = {};
-        arr.forEach((obj) => {
-            const key: ObjectId = obj._id;
-
-            // @ts-ignore
-            if (!res[key]) {
-                // @ts-ignore
-                res[key] = {...obj, count: 0};
-            }
-            ;
-            // @ts-ignore
-            res[key].count += 1;
-        });
-        return Object.values(res);
-    }
-
-    findAmountLikeOrDislike(id: ObjectId, likes: ArrayCountIdType): number {
-        let amount: number = 0
-
-        for (let i = 0; i < likes.length; i++) {
-            if (id.toString() === likes[i]._id.toString()) {
-                amount = likes[i].count
-
-                break
-            }
-        }
-
-        return amount
 
     }
-
 
     async makePostResponse(post: PostsType, userId?: ObjectId): Promise<PostsResponseType> {
 
@@ -158,30 +103,9 @@ export class PostsHelper {
         }
     }
 
-    private mapPostAndLikeOrDislike(items: any, process: string) {
-        if (process === "P") {
-            return items.map((p: { _id: ObjectId; }) => ({
-                _id: p._id,
-            }))
-        }
-        return items.map((p: { post: ObjectId; }) => ({
-            _id: p.post
-        }))
 
-    }
 
-    findStatus(post:ObjectId,allStatus:LikeDbType[]){
-       let status="None"
-        for (let i = 0; i < allStatus.length; i++) {
-            if(post.toString()===allStatus[i].post.toString()){
 
-                status = allStatus[i].status
-                break
-            }
-
-        }
-        return status
-    }
 }
 
 /*const mapItems = async () => {

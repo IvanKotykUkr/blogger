@@ -13,7 +13,7 @@ export class LikeDbType {
     }
 }
 
-export type Newest3Likes = {
+export type NewestThreeLikes = {
     addedAt?: Date,
     userId?: ObjectId,
     login?: string
@@ -36,8 +36,23 @@ export type ExtendedLikesInfo = {
 export type ArrayIdType=Array<{
     _id:ObjectId
 }>
+export type LikeOrDislikeIdType =Array<{
+    post:ObjectId
+}>
 export type ArrayCountIdType=Array<{
-    _id:ObjectId,
+    post:ObjectId,
     count:number
+}>
+export type ArrayLikesType=Array<{
+    post:ObjectId,
+    addedAt: Date,
+    userId: ObjectId,
+    login: string
+
+
+}>
+export type StatusLikeOrDislikeType=Array<{
+    post:ObjectId,
+    status:string
 }>
 

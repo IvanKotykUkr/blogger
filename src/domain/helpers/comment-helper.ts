@@ -8,6 +8,8 @@ import {
 import {ObjectId} from "mongodb";
 import {CommentsRepositories} from "../../repositories/comments-db-repositories";
 import {LikeHelper} from "./like-helper";
+import {PostsDBType} from "../../types/posts-type";
+import {ArrayIdType} from "../../types/like-type";
 
 @injectable()
 export class CommentHelper {
@@ -15,7 +17,13 @@ export class CommentHelper {
     constructor(@inject(LikeHelper) protected likeHelper: LikeHelper,
                 @inject(CommentsRepositories) protected commentsRepositories: CommentsRepositories) {
     }
+    private takeCommentsId(items: CommentsDBType[]): ArrayIdType {
 
+        return items.map((c: { _id: ObjectId; }) => ({
+            _id: c._id,
+        }))
+
+    }
     async createComment(postid: ObjectId, content: string, userid: ObjectId, userLogin: string): Promise<NewCommentType | null> {
         const newComment: CommentsDBType = {
             _id: new ObjectId(),
@@ -40,35 +48,38 @@ export class CommentHelper {
         let pageSize: number = pagesize
         let pagesCount: number = Math.ceil(totalCount / pageSize)
         const itemsFromDb: CommentsDBType[] = await this.commentsRepositories.allCommentByPostIdPagination(postId, page, pageSize)
+        const idItems = this.takeCommentsId(itemsFromDb)
+        const likes = await this.likeHelper.findLikes(idItems)
+        const dislikes = await this.likeHelper.findDislike(idItems)
+        const status = await this.likeHelper.findStatus(userId, idItems)
 
-        const mapItems = async () => {
-            return Promise.all(itemsFromDb.map(
-                async d => ({
+
+        const items = itemsFromDb.map(d => ({
                     id: d._id,
                     content: d.content,
                     userId: d.userId,
                     userLogin: d.userLogin,
                     addedAt: d.addedAt,
                     likesInfo: {
-                        likesCount: await this.likeHelper.likesCount(d._id),
-                        dislikesCount: await this.likeHelper.dislikesCount(d._id),
-                        myStatus: await this.likeHelper.myStatus(userId, d._id),
+                        likesCount: this.likeHelper.findAmountLikeOrDislike(d._id, likes),
+                        dislikesCount: this.likeHelper.findAmountLikeOrDislike(d._id, dislikes),
+                        myStatus:this.likeHelper.findStatusInArray(d._id, status),
 
                     }
 
-                })))
-        }
+                }))
 
 
-        let comment = {
+
+        return  {
             pagesCount,
             page,
             pageSize,
             totalCount,
-            items: await mapItems(),
+            items
         }
 
-        return comment
+
     }
 
     async deleteCommentsByPost(id: ObjectId): Promise<boolean> {
