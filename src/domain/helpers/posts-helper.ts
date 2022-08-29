@@ -5,7 +5,7 @@ import {inject, injectable} from "inversify";
 import {BloggersRepositories} from "../../repositories/bloggers-db-repositories";
 import {PostsRepositories} from "../../repositories/posts-db-repositories";
 import {LikeHelper} from "./like-helper";
-import {ArrayCountIdType, ArrayIdType, ArrayLikesType, LikeDbType, LikeOrDislikeIdType} from "../../types/like-type";
+import {ArrayIdType} from "../../types/like-type";
 
 @injectable()
 export class PostsHelper {
@@ -13,13 +13,7 @@ export class PostsHelper {
                 @inject(PostsRepositories) protected postsRepositories: PostsRepositories,
                 @inject(LikeHelper) protected likeHelper: LikeHelper) {
     }
-    private takePostId(items: PostsDBType[]): ArrayIdType {
 
-        return items.map((p: { _id: ObjectId; }) => ({
-            _id: p._id,
-        }))
-
-    }
     async makePost(title: string, shortDescription: string, content: string, bloggerId: ObjectId): Promise<PostsDBType | null> {
         const blogger: BloggerResponseType | null = await this.bloggersRepositories.findBloggersById(new ObjectId(bloggerId))
         if (blogger) {
@@ -80,7 +74,6 @@ export class PostsHelper {
         }
 
 
-
     }
 
     async makePostResponse(post: PostsType, userId?: ObjectId): Promise<PostsResponseType> {
@@ -103,7 +96,13 @@ export class PostsHelper {
         }
     }
 
+    private takePostId(items: PostsDBType[]): ArrayIdType {
 
+        return items.map((p: { _id: ObjectId; }) => ({
+            _id: p._id,
+        }))
+
+    }
 
 
 }

@@ -67,27 +67,33 @@ export class LikesRepositories {
 
     }
 
-    async findLikesInDb(post: ArrayIdType):Promise<LikeOrDislikeIdType> {
+    async findLikesInDb(post: ArrayIdType): Promise<LikeOrDislikeIdType> {
 
-        return LikesModelClass.find({post, status: "Like"},{_id:0,post:1}).lean()
+        return LikesModelClass.find({post, status: "Like"}, {_id: 0, post: 1}).lean()
 
     }
 
-    async findDislikeInDb(post: ArrayIdType):Promise<LikeOrDislikeIdType> {
+    async findDislikeInDb(post: ArrayIdType): Promise<LikeOrDislikeIdType> {
 
-        return LikesModelClass.find({post, status: "Dislike"},{_id:0,post:1}).lean()
+        return LikesModelClass.find({post, status: "Dislike"}, {_id: 0, post: 1}).lean()
     }
 
-    async findStatus(userId: ObjectId, post: ArrayIdType):Promise<StatusLikeOrDislikeType> {
+    async findStatus(userId: ObjectId, post: ArrayIdType): Promise<StatusLikeOrDislikeType> {
 
-        return LikesModelClass.find({$and: [{post}, {userId}]},{_id:0,post:1,status:1}).lean()
+        return LikesModelClass.find({$and: [{post}, {userId}]}, {_id: 0, post: 1, status: 1}).lean()
     }
 
-   async findLastLikes(post: ArrayIdType):Promise<ArrayLikesType> {
+    async findLastLikes(post: ArrayIdType): Promise<ArrayLikesType> {
 
-        return  LikesModelClass.find({$and: [{post}, {status: "Like"}]},{_id:0,post:1,addedAt:1,userId:1,login:1})
-            .sort({post:1})
-         //   .sort({addedAt: -1})
-           .lean()
+        return LikesModelClass.find({$and: [{post}, {status: "Like"}]}, {
+            _id: 0,
+            post: 1,
+            addedAt: 1,
+            userId: 1,
+            login: 1
+        })
+            .sort({post: 1})
+            //   .sort({addedAt: -1})
+            .lean()
     }
 }

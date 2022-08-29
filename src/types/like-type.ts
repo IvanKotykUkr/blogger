@@ -33,26 +33,26 @@ export type ExtendedLikesInfo = {
 
 
 }
-export type ArrayIdType=Array<{
-    _id:ObjectId
+export type ArrayIdType = Array<{
+    _id: ObjectId
 }>
-export type LikeOrDislikeIdType =Array<{
-    post:ObjectId
+export type LikeOrDislikeIdType = Array<{
+    post: ObjectId
 }>
-export type ArrayCountIdType=Array<{
-    post:ObjectId,
-    count:number
+export type ArrayCountIdType = Array<{
+    post: ObjectId,
+    count: number
 }>
-export type ArrayLikesType=Array<{
-    post:ObjectId,
+export type ArrayLikesType = Array<{
+    post: ObjectId,
     addedAt: Date,
     userId: ObjectId,
     login: string
 
 
 }>
-export type StatusLikeOrDislikeType=Array<{
-    post:ObjectId,
-    status:string
+export type StatusLikeOrDislikeType = Array<{
+    post: ObjectId,
+    status: string
 }>
 

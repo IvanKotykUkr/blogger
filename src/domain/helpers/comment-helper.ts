@@ -8,7 +8,6 @@ import {
 import {ObjectId} from "mongodb";
 import {CommentsRepositories} from "../../repositories/comments-db-repositories";
 import {LikeHelper} from "./like-helper";
-import {PostsDBType} from "../../types/posts-type";
 import {ArrayIdType} from "../../types/like-type";
 
 @injectable()
@@ -17,13 +16,7 @@ export class CommentHelper {
     constructor(@inject(LikeHelper) protected likeHelper: LikeHelper,
                 @inject(CommentsRepositories) protected commentsRepositories: CommentsRepositories) {
     }
-    private takeCommentsId(items: CommentsDBType[]): ArrayIdType {
 
-        return items.map((c: { _id: ObjectId; }) => ({
-            _id: c._id,
-        }))
-
-    }
     async createComment(postid: ObjectId, content: string, userid: ObjectId, userLogin: string): Promise<NewCommentType | null> {
         const newComment: CommentsDBType = {
             _id: new ObjectId(),
@@ -55,23 +48,22 @@ export class CommentHelper {
 
 
         const items = itemsFromDb.map(d => ({
-                    id: d._id,
-                    content: d.content,
-                    userId: d.userId,
-                    userLogin: d.userLogin,
-                    addedAt: d.addedAt,
-                    likesInfo: {
-                        likesCount: this.likeHelper.findAmountLikeOrDislike(d._id, likes),
-                        dislikesCount: this.likeHelper.findAmountLikeOrDislike(d._id, dislikes),
-                        myStatus:this.likeHelper.findStatusInArray(d._id, status),
+            id: d._id,
+            content: d.content,
+            userId: d.userId,
+            userLogin: d.userLogin,
+            addedAt: d.addedAt,
+            likesInfo: {
+                likesCount: this.likeHelper.findAmountLikeOrDislike(d._id, likes),
+                dislikesCount: this.likeHelper.findAmountLikeOrDislike(d._id, dislikes),
+                myStatus: this.likeHelper.findStatusInArray(d._id, status),
 
-                    }
+            }
 
-                }))
+        }))
 
 
-
-        return  {
+        return {
             pagesCount,
             page,
             pageSize,
@@ -101,6 +93,14 @@ export class CommentHelper {
                 myStatus: await this.likeHelper.myStatus(new ObjectId(userId), new ObjectId(comment.id)),
             }
         }
+    }
+
+    private takeCommentsId(items: CommentsDBType[]): ArrayIdType {
+
+        return items.map((c: { _id: ObjectId; }) => ({
+            _id: c._id,
+        }))
+
     }
 
 

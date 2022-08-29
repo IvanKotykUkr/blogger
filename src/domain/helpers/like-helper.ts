@@ -72,7 +72,7 @@ export class LikeHelper {
                 // @ts-ignore
                 res[key] = {...obj, count: 0};
             }
-            ;
+
             // @ts-ignore
             res[key].count += 1;
         });
@@ -80,7 +80,7 @@ export class LikeHelper {
     }
 
     findAmountLikeOrDislike(id: ObjectId, likesOrDislikesId: LikeOrDislikeIdType): number {
-        const likesOrDislikes=this.countLikesOrDislikesFromArray(likesOrDislikesId)
+        const likesOrDislikes = this.countLikesOrDislikesFromArray(likesOrDislikesId)
         let amount: number = 0
 
         for (let i = 0; i < likesOrDislikes.length; i++) {

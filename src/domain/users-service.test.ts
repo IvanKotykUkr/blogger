@@ -18,7 +18,7 @@ describe("test for user helper", () => {
         await mongoose.disconnect()
         await mongoServer.stop()
     })
-    let b = 40+"40"
+    let b = 40 + "40"
     const userRepositories = new UserRepositories()
     const userHelper = new UserHelper(userRepositories)
     const userService = new UsersService(userRepositories, userHelper)
